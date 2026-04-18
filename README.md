@@ -14,3 +14,6 @@ Very cool game..
 - Prefix private member variables with `_`
 - Classes/Enums are `PascalCase`
 - local variables are `camelCase`
+
+###
+Google Doc link: https://docs.google.com/document/d/1PMxtutjPkZs_tRWwkJyVKzRexCkkPaQXIVrrOJQFEFE/edit?usp=sharing
