@@ -20,7 +20,7 @@ target_include_directories(PA9 PRIVATE include)
 add_subdirectory(external/box2d)
 add_subdirectory(external/SFML)
 
-target_link_libraries(PA9 box2d SFML::Graphics)
+target_link_libraries(PA9 SFML::Graphics SFML::Audio SFML::Network)
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
