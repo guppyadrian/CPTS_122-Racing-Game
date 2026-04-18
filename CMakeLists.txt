@@ -16,6 +16,7 @@ add_executable (PA9 "src/PA9.cpp" "include/PA9.h")
 
 target_include_directories(PA9 PRIVATE include)
 
+
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET PA9 PROPERTY CXX_STANDARD 20)
 endif()
