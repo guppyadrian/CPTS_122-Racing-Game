@@ -16,6 +16,12 @@ add_executable (PA9 "src/PA9.cpp" "include/PA9.h")
 
 target_include_directories(PA9 PRIVATE include)
 
+# add libs
+add_subdirectory(external/box2d)
+add_subdirectory(external/SFML)
+
+target_link_libraries(PA9 box2d SFML::Graphics)
+
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET PA9 PROPERTY CXX_STANDARD 20)
