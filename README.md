@@ -3,7 +3,7 @@
 Very cool game..
 
 ## Installing
-- run `git clone --recurse-submodules`
+- run `git clone https://github.com/guppyadrian/CPTS_122-Racing-Game.git --recurse-submodules`
 - Open `CMakeLists.txt` with Visual Studio
 
 ## Contributing
