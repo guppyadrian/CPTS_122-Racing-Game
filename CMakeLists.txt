@@ -1,7 +1,9 @@
 ﻿# CMakeList.txt : CMake project for PA9, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 4.0)
+
+set(CMAKE_CXX_STANDARD 20)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -17,14 +19,9 @@ add_executable (PA9 "src/PA9.cpp")
 target_include_directories(PA9 PRIVATE include)
 
 # add libs
-add_subdirectory(external/box2d)
 add_subdirectory(external/SFML)
+add_subdirectory(external/box2d)
 
-target_link_libraries(PA9 SFML::Graphics SFML::Audio SFML::Network)
-
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET PA9 PROPERTY CXX_STANDARD 20)
-endif()
+target_link_libraries(PA9 box2d SFML::Graphics SFML::Audio SFML::Network)
 
 install(TARGETS PA9 DESTINATION .)
