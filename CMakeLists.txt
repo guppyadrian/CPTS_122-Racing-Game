@@ -13,8 +13,14 @@ endif()
 
 project ("PA9")
 
+set(PA9_SOURCES
+    "src/PA9.cpp"
+    "src/Scene.cpp"
+    "src/SceneManager.cpp"
+)
+
 # Add source to this project's executable.
-add_executable (PA9 "src/PA9.cpp")
+add_executable (PA9 ${PA9_SOURCES})
 
 target_include_directories(PA9 PRIVATE include)
 
