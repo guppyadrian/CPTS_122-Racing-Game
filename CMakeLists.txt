@@ -17,7 +17,9 @@ project ("PA9")
 add_executable (PA9 src/PA9.cpp
         src/network/NetworkClient.cpp
         src/network/NetworkManager.cpp
-        src/network/Serialize.cpp)
+        src/network/Serialize.cpp
+        src/network/ReadBuffer.cpp
+        include/network/ReadBuffer.hpp)
 
 target_include_directories(PA9 PRIVATE include)
 

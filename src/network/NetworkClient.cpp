@@ -4,12 +4,9 @@
 
 #include <iostream>
 
-#include "asio/connect.hpp"
-#include "asio/read.hpp"
+#include "asio.hpp"
 
 #include "network/NetworkClient.hpp"
-
-#include "asio/write.hpp"
 
 namespace gp::network
 {
@@ -42,19 +39,9 @@ namespace gp::network
         );
     }
 
-    void NetworkClient::send(std::string_view eventName, std::vector<uint8_t> data)
+    void NetworkClient::send(const std::string_view eventName, const std::vector<uint8_t>& data)
     {
-        // packet format: [uint32_t bytesSize][uint16_t eventNameSize][char* eventName][uint8_t bytes]
-        std::vector<uint8_t> packet;
-        packet.reserve(data.size() + sizeof(uint32_t) + sizeof(uint16_t) + eventName.size()); // should be what I need to reserve right?
-
-        // append sizes
-        AppendAsBytes(packet, static_cast<uint32_t>(data.size()));
-        AppendAsBytes(packet, static_cast<uint16_t>(eventName.size())); // TODO: checking to make sure this doesn't overflow
-
-        packet.insert(packet.end(), eventName.begin(), eventName.end());
-        packet.insert(packet.end(), data.begin(), data.end());
-
+        const auto packet = CreatePacket(eventName, data);
 
         asio::post(_io, [this, packet]()
         {
@@ -66,20 +53,44 @@ namespace gp::network
 
     void NetworkClient::_onConnect()
     {
-        _socket.async_read_some(asio::buffer(_readBuffer),
-            [this](const std::error_code ec, const std::size_t bytes)
+        doReadHeader();
+    }
+
+    void NetworkClient::doReadHeader()
+    {
+        asio::async_read(_socket, asio::buffer(_readBuffer.header(), ReadBuffer::headerMaxLength), [this](const std::error_code ec, std::size_t bytes)
+        {
+            if (ec)
             {
-                if (ec)
-                {
-                    std::cout << "Failed to read: " << ec.message() << std::endl;
-                    return;
-                }
+                std::cerr << "Failed to read message! Shutting down socket" << std::endl;
+                _socket.close();
+                return;
+            }
 
-                const std::string msg(_readBuffer.data(), bytes);
-                std::cout << "Received: " << msg << std::endl;
+            doReadBody();
+        });
+    }
 
-                _onConnect();
-            });
+    void NetworkClient::doReadBody()
+    {
+        std::cout << "now reading body... bytes: " << _readBuffer.getTotalLength() << std::endl;
+        _readBuffer.body().resize(_readBuffer.getTotalLength());
+        asio::async_read(_socket, asio::buffer(_readBuffer.body(), _readBuffer.getTotalLength()), [this](const std::error_code ec, std::size_t bytes)
+        {
+            std::cout << "finished reading body" << std::endl;
+            if (ec)
+            {
+                std::cerr << "Failed to read message! Shutting down socket" << std::endl;
+                _socket.close();
+                return;
+            }
+
+            const NetworkPacket packet = _readBuffer.collectPacket();
+            std::cout << "got packet: " << packet.eventName << std::endl;
+
+            doReadHeader();
+            // TODO: do something with this packet
+        });
     }
 
     void NetworkClient::_onWrite() // TODO: maybe call this doWrite also while ur at it also change _onConnect to a better name
@@ -97,4 +108,6 @@ namespace gp::network
             if (!_writeBuffer.empty()) _onWrite();
         });
     }
+
+
 } // gp

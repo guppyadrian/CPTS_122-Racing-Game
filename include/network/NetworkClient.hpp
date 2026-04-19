@@ -6,6 +6,7 @@
 
 #include <deque>
 
+#include "ReadBuffer.hpp"
 #include "network/NetworkManager.hpp"
 #include "asio/ip/tcp.hpp"
 #include "Serialize.hpp"
@@ -21,7 +22,8 @@ namespace gp::network
         tcp::resolver _resolver;
         tcp::socket _socket;
 
-        std::array<char, 1024> _readBuffer{}; // getting stuff from server... Maybe 1024 is too small? TODO: can this be a vector safely?
+        std::vector<uint8_t> _rawReadBuffer{}; // getting stuff from server... Maybe 1024 is too small? TODO: can this be a vector safely?
+        ReadBuffer _readBuffer;
         std::deque<std::vector<uint8_t>> _writeBuffer;
     public:
         NetworkClient() : _io(NetworkManager::io()), _resolver(_io), _socket(_io) {}
@@ -29,18 +31,21 @@ namespace gp::network
 
         void connect(const std::string& address, uint16_t port);
 
-        template<NetworkPacket T>
+        template<NetworkData T>
         void emit(std::string_view eventName, const T& data);
 
         [[nodiscard]] bool connected() const { return _socket.is_open(); }
 
     private:
-        void send(std::string_view eventName, std::vector<uint8_t> data);
+        void send(std::string_view eventName, const std::vector<uint8_t>& data);
         void _onConnect();
         void _onWrite();
+
+        void doReadHeader();
+        void doReadBody(); // TODO: start renaming stuff to Body instead of Data
     };
 
-    template <NetworkPacket T>
+    template <NetworkData T>
     void NetworkClient::emit(std::string_view eventName, const T& data)
     {
         if constexpr (!Serializable<T>) // means that this is already a byte vector  TODO: maybe be more verbose about this?
