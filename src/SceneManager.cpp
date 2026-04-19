@@ -4,45 +4,46 @@ SceneManager::SceneManager() : _curScene(nullptr), _sceneList() {}
 
 SceneManager::~SceneManager()
 {
-	for (int i = 0; i < _sceneList.size(); i++)
-	{
-		this->removeScene(i);
-	}
+	_sceneList.clear();
 	_sceneList.shrink_to_fit();
 }
 
 void SceneManager::update()
 {
-	for (int i = 0; i < _sceneList.size(); i++)
-	{
-		_sceneList[i].update();
-	}
+	_curScene->update();
 }
 
 //Return: true if success, false if failed
-bool SceneManager::switchScene(const int index)
+bool SceneManager::switchScene(const std::string uuid)
 {
-	if (index > _sceneList.size())
+	for (int i = 0; i < _sceneList.size(); i++)
 	{
-		return false;
+		if (_sceneList[i]->uuid == uuid)
+		{
+			if(_curScene) _curScene->onExit();
+			_curScene = _sceneList[i].get();
+			_curScene->onEnter();
+			return true;
+		}
 	}
-	_curScene = &(_sceneList[index]);
-
-	return true;
+	return false;
 }
 
-void SceneManager::addScene(Scene& newScene)
+void SceneManager::addScene(std::unique_ptr<Scene> newScene)
 {
 	_sceneList.push_back(newScene);
 }
 
 //Return: true if success, false if failed
-bool SceneManager::removeScene(const int index)
+bool SceneManager::removeScene(const std::string uuid)
 {
-	if (index > _sceneList.size())
+	for (int i = 0; i < _sceneList.size(); i++)
 	{
-		return false;
+		if (_sceneList[i]->uuid == uuid)
+		{
+			_sceneList.erase(_sceneList.begin() + i);
+			return true;
+		}
 	}
-	_sceneList.erase(_sceneList.begin() + index);
-	return true;
+	return false;
 }

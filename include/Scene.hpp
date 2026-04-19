@@ -1,14 +1,19 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "GameObject.hpp"
 
 class Scene
 {
 public:
 	Scene();
-	~Scene() = default;
+	virtual ~Scene() = default;
 	virtual void initialize() = 0;
 	virtual void update() = 0;
+	virtual void onEnter();
+	virtual void onExit();
+	
+	std::string uuid;
 };
 
 class LevelScene : public Scene

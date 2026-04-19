@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <string>
+#include <memory>
 #include "Scene.hpp"
 
 
@@ -7,13 +9,13 @@ class SceneManager
 {
 private:
 	Scene* _curScene;
-	std::vector<Scene> _sceneList;
+	std::vector<std::unique_ptr<Scene>> _sceneList;
 
 public:
 	SceneManager();
 	~SceneManager();
 	void update();
-	bool switchScene(const int index);
-	void addScene(Scene& newScene);
-	bool removeScene(const int index);
+	bool switchScene(const std::string uuid);
+	void addScene(std::unique_ptr<Scene> newScene);
+	bool removeScene(const std::string uuid);
 };
