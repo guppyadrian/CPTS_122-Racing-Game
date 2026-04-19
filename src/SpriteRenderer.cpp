@@ -9,7 +9,8 @@ namespace flow
 			// Handle error (texture failed to load)
 		}
 
-		mSprite.setTexture(mTexture);
+		mSprite.setTexture(mTexture, true);
+		//mSprite.setOrigin(mSprite.getTextureRect().size);
 
 		Renderer::getGlobalRenderer().addSpriteRenderer(this);
 	}

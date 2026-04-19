@@ -23,9 +23,9 @@ int main()
     for (int i = 0; i < 20; i++)
     {
         gameobjects.push_back(std::make_unique<flow::GameObject>()); // make a new GameObject
-        gameobjects.back()->mTransform.setPosition(sf::Vector2f(i * 10,i * 10));
-        gameobjects.back()->mTransform.setRotationDeg(i * 18);
-        gameobjects.back()->mTransform.setScale(sf::Vector2f(1.f, 1.f));
+        gameobjects.back()->mTransform.setPosition(sf::Vector2f(i * 50, i * 50));
+        gameobjects.back()->mTransform.setRotationDeg(0);
+        gameobjects.back()->mTransform.setScale(sf::Vector2f(0.1f, 0.1f));
         auto srComponent = std::make_unique<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
         gameobjects.back()->addComponent(std::move(srComponent)); // move the component into the object
     }

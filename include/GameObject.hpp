@@ -23,6 +23,8 @@ namespace flow
 	private:
 		std::vector<std::unique_ptr<Component>> mComponents;
 	public:
+		GameObject() : mTransform() {};
+
 		flow::Transform mTransform;
 		
 		// get the first component of type T
