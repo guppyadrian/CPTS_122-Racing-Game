@@ -17,7 +17,7 @@ set(PA9_SOURCES
     "src/PA9.cpp"
     "src/Scene.cpp"
     "src/SceneManager.cpp"
-)
+    "src/LevelScene.cpp")
 
 # Add source to this project's executable.
 add_executable (PA9 ${PA9_SOURCES})

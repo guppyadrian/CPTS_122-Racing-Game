@@ -18,7 +18,7 @@ bool SceneManager::switchScene(const std::string uuid)
 {
 	for (int i = 0; i < _sceneList.size(); i++)
 	{
-		if (_sceneList[i]->uuid == uuid)
+		if (_sceneList[i]->get_uuid() == uuid)
 		{
 			if(_curScene) _curScene->onExit();
 			_curScene = _sceneList[i].get();
@@ -39,7 +39,7 @@ bool SceneManager::removeScene(const std::string uuid)
 {
 	for (int i = 0; i < _sceneList.size(); i++)
 	{
-		if (_sceneList[i]->uuid == uuid)
+		if (_sceneList[i]->get_uuid() == uuid)
 		{
 			_sceneList.erase(_sceneList.begin() + i);
 			return true;

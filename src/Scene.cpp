@@ -1,8 +1,9 @@
 #include "Scene.hpp"
 
-Scene::Scene() : uuid("") {}
+Scene::Scene() : _uuid("") {}
+Scene::Scene(const std::string uuid) : _uuid(uuid) {}
 
 void Scene::onEnter() { return; }
 void Scene::onExit() { return; }
 
-LevelScene::LevelScene() : _gameObjects() {}
+std::string Scene::get_uuid() { return _uuid; }
