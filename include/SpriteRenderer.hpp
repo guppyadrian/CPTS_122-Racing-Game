@@ -13,6 +13,7 @@ namespace flow
 		sf::Sprite mSprite;
 	public:
 		SpriteRenderer(std::string textureSrc);
+		~SpriteRenderer();
 
 		sf::Sprite& getSprite();
 

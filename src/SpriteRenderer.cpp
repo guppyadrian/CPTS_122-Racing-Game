@@ -1,4 +1,5 @@
 #include "SpriteRenderer.hpp"
+#include "Renderer.hpp"
 
 namespace flow
 {
@@ -9,7 +10,15 @@ namespace flow
 		}
 
 		mSprite.setTexture(mTexture);
+
+		Renderer::getGlobalRenderer().addSpriteRenderer(this);
 	}
+
+	SpriteRenderer::~SpriteRenderer()
+	{
+		Renderer::getGlobalRenderer().removeSpriteRenderer(this);
+	}
+
 	sf::Sprite& SpriteRenderer::getSprite()
 	{
 		return mSprite;

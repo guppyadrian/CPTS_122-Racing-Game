@@ -16,7 +16,7 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode({600, 400}), "Game");
 
-    flow::Renderer fRenderer(window);
+    flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
     std::vector<std::unique_ptr<flow::GameObject>> gameobjects; // replace with scene management
 
@@ -27,9 +27,7 @@ int main()
         gameobjects.back()->mTransform.setRotationDeg(i * 18);
         gameobjects.back()->mTransform.setScale(sf::Vector2f(1.f, 1.f));
         auto srComponent = std::make_unique<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
-        flow::SpriteRenderer* srPtr = srComponent.get(); // keep a raw pointer for registration with the renderer
         gameobjects.back()->addComponent(std::move(srComponent)); // move the component into the object
-        fRenderer.addSprite(srPtr); // register the sprite with the renderer so it will be drawn
     }
 
     // move to scene manager
@@ -55,7 +53,7 @@ int main()
         }
 
         window.clear();
-        fRenderer.drawAll();
+        flow::Renderer::getGlobalRenderer().drawAll();
         window.display();
     }
 

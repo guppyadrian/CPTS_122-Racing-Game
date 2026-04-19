@@ -8,17 +8,31 @@ namespace flow
 {
 	class Renderer
 	{
-		//static Renderer Instance;
 
-		sf::RenderWindow& windowRef;
+		sf::RenderWindow* windowRef;
 		std::vector<SpriteRenderer*> mActiveSprites;
+
+		Renderer() {};
+
 
 	public:
 
-		Renderer(sf::RenderWindow& window) : windowRef(window) {};
+		// Singleton Pattern
+		Renderer(const Renderer&) = delete;
+		Renderer& operator=(const Renderer&) = delete;
 
-		void addSprite(SpriteRenderer* sprite);
-		void removeSprite(SpriteRenderer* sprite);
+		static Renderer& getGlobalRenderer() {
+			static Renderer Instance;
+			return Instance;
+		}
+
+	
+		void attachWindow(sf::RenderWindow* window)
+		{
+			windowRef = window;
+		};
+		void addSpriteRenderer(SpriteRenderer* sprite);
+		void removeSpriteRenderer(SpriteRenderer* sprite);
 		void drawAll();
 
 	};
