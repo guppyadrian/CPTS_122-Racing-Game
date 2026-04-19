@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <fstream>
+#include <iostream>
 #include "Scene.hpp"
 
 
@@ -16,6 +18,8 @@ public:
 	~SceneManager();
 	void update();
 	bool switchScene(const std::string uuid);
-	void addScene(std::unique_ptr<Scene> newScene);
+	bool loadScene(std::unique_ptr<Scene> newScene);
+	bool loadScene(std::string uuid);
 	bool removeScene(const std::string uuid);
 };
+	

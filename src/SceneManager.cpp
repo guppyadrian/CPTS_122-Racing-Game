@@ -29,9 +29,21 @@ bool SceneManager::switchScene(const std::string uuid)
 	return false;
 }
 
-void SceneManager::addScene(std::unique_ptr<Scene> newScene)
+bool SceneManager::loadScene(std::unique_ptr<Scene> newScene)
 {
 	_sceneList.push_back(newScene);
+	return true;
+}
+
+//Used for 
+bool SceneManager::loadScene(std::string uuid)
+{
+	std::ifstream inFile;
+	inFile.open(uuid);
+	if (!inFile.is_open()) return false;
+	//#TODO: Load file stuff here
+
+	return true;
 }
 
 //Return: true if success, false if failed
