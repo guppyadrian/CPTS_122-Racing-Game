@@ -12,7 +12,7 @@ endif()
 project ("PA9")
 
 # Add source to this project's executable.
-add_executable (PA9 "src/PA9.cpp" "include/PA9.h")
+add_executable (PA9 "src/PA9.cpp")
 
 target_include_directories(PA9 PRIVATE include)
 

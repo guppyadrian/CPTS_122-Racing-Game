@@ -4,7 +4,7 @@ Very cool game..
 
 ## Installing
 - run `git clone --recurse-submodules`
-- Open `CMakeLists.txt` with Visual Studio
+- Open the folder in Visual Studio
 
 ## Contributing
 - All external libraries must go in the `external/` folder!
@@ -21,6 +21,7 @@ Very cool game..
 - Classes/Enums are `PascalCase`
 - Local variables are `camelCase`
 - Give functions descriptive names
+- Sources files are `.cpp`, headers are `.hpp`
 
 ###
 Google Doc link: https://docs.google.com/document/d/1PMxtutjPkZs_tRWwkJyVKzRexCkkPaQXIVrrOJQFEFE/edit?usp=sharing
