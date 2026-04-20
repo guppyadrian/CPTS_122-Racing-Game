@@ -1,5 +1,4 @@
 #include "Renderer.hpp"
-
 #include <iostream>
 
 namespace flow

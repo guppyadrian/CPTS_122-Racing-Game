@@ -16,7 +16,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project ("PA9")
 
 # Add source to this project's executable.
-add_executable (PA9 "src/PA9.cpp"  "src/Transform.cpp" "src/GameObject.cpp" "src/Renderer.cpp" "src/SpriteRenderer.cpp")
+add_executable (PA9 "src/PA9.cpp"  "src/Transform.cpp" "src/GameObject.cpp" "src/Renderer.cpp" "src/SpriteRenderer.cpp" "src/Rigidbody.cpp" "src/PhysicsManager.cpp")
 
 target_include_directories(PA9 PRIVATE include)
 

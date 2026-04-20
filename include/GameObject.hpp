@@ -14,7 +14,8 @@ namespace flow
 		GameObject* mGameObject = nullptr;
 		virtual ~Component() = default;
 		virtual void init() = 0;
-		virtual void update() = 0;
+		virtual void update(float dt) = 0;
+		virtual void fixedUpdate() = 0;
 	};
 
 	class GameObject
@@ -38,7 +39,8 @@ namespace flow
 		};
 
 		void init(); // init all components
-		void update(); // update all components
+		void update(float dt); // update all components
+		void fixedUpdate();
 
 	};
 

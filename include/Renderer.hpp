@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "SpriteRenderer.hpp"
 #include <SFML/Graphics.hpp>
+#include "SpriteRenderer.hpp"
 
 namespace flow
 {

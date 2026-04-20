@@ -10,11 +10,19 @@ namespace flow
 		}
 	}
 
-	void GameObject::update()
+	void GameObject::update(float dt)
 	{
 		for (auto& component : mComponents)
 		{
-			component->update();
+			component->update(dt);
+		}
+	}
+
+	void GameObject::fixedUpdate()
+	{
+		for (auto& component : mComponents)
+		{
+			component->fixedUpdate();
 		}
 	}
 }
