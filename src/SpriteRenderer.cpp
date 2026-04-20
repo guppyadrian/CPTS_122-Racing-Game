@@ -10,7 +10,9 @@ namespace flow
 		}
 
 		mSprite.setTexture(mTexture, true);
-		//mSprite.setOrigin(mSprite.getTextureRect().size);
+
+		sf::FloatRect local = mSprite.getLocalBounds();
+		mSprite.setOrigin(local.size * 0.5f);
 
 		Renderer::getGlobalRenderer().addSpriteRenderer(this);
 	}

@@ -21,7 +21,7 @@ add_executable (PA9 "src/PA9.cpp"  "src/Transform.cpp" "src/GameObject.cpp" "src
 target_include_directories(PA9 PRIVATE include)
 
 # Add assets folder
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets" 
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets"
      DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 # add libs
 add_subdirectory(external/SFML)

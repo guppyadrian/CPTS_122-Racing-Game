@@ -8,7 +8,6 @@ namespace flow
 {
 	class Renderer
 	{
-
 		sf::RenderWindow* windowRef;
 		std::vector<SpriteRenderer*> mActiveSprites;
 

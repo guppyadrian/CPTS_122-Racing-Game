@@ -22,7 +22,9 @@ namespace flow
     {
         for (auto& sprite : mActiveSprites)
         {
-            windowRef->draw(sprite->getSprite(), sprite->mGameObject->mTransform.getTransform());
+            sf::Transform tf = sprite->mGameObject->mTransform.getTransform();
+            //tf.scale(sf::Vector2f(0.01f, 0.01f));
+            windowRef->draw(sprite->getSprite(), tf);
         }
     }
 }

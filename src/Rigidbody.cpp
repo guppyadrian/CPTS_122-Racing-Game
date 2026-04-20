@@ -6,7 +6,8 @@ namespace flow
 {
 	Rigidbody::Rigidbody()
 	{
-		mBodyId = b2_nullBodyId;
+		b2BodyDef def = b2DefaultBodyDef();
+		mBodyId = PhysicsManager::get().addRigidbody(this, &def);
 	}
 
 	Rigidbody::~Rigidbody()
@@ -15,19 +16,13 @@ namespace flow
 		PhysicsManager::get().destroyBody(mBodyId);
 	}
 
-	void Rigidbody::onAttach()
-	{
-		b2BodyDef def = b2DefaultBodyDef();
-		sf::Vector2f pos = mGameObject->mTransform.getPosition();
-		def.position = { pos.x, pos.y };
-		def.rotation = b2MakeRot(mGameObject->mTransform.getRotationRad());
-		mBodyId = PhysicsManager::get().addRigidbody(this, &def);
-		std::cout << "attached rb " << mBodyId.index1 << std::endl;
-	}
-
 	void Rigidbody::init()
 	{
+		sf::Vector2f pos = mGameObject->mTransform.getPosition();
+		float rot = mGameObject->mTransform.getRotationRad();
 
+		b2Body_SetTransform(mBodyId, { pos.x, pos.y }, b2MakeRot(rot));
+		std::cout << "initialized rb " << mBodyId.index1 << std::endl;
 	}
 
 	void Rigidbody::update(float dt)

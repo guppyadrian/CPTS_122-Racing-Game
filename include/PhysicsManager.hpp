@@ -9,7 +9,8 @@ namespace flow
 	{
 		b2WorldId mWorldId;
 		float mAccum;
-		const float fixedTimestep = 20; // 20 ms between fixedUpdate (50 tps)
+		const float fixedTimestep = 0.016f; // (60 tps)
+		const int mQuality = 8; // substep count
 
 		std::vector<Rigidbody*> mActiveRigidbodies;
 

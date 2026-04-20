@@ -4,7 +4,7 @@ namespace flow
 {
 	void PhysicsManager::tick(float dt)
 	{
-		mAccum += std::min(dt, 0.25f); // clamp
+		mAccum += std::min(dt, 0.5f); // clamp to (0.5 seconds max)
 
 		// if the accumulation threshold is not met physics does not update
 		// if the framerate is poor and physics needs to update at a higher frequency call multiple steps per frame
@@ -18,7 +18,7 @@ namespace flow
 
 				rb->mGameObject->fixedUpdate();
 			}
-			b2World_Step(mWorldId, fixedTimestep, 6);
+			b2World_Step(mWorldId, fixedTimestep, mQuality);
 
 			// the rigidbody simulation is authoritative over the gameobject's transforms
 			for (auto* rb : mActiveRigidbodies)
