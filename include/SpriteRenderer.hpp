@@ -18,6 +18,7 @@ namespace flow
 		sf::Sprite& getSprite();
 
 		// implement Component interface
+		void onAttach() override {};
 		void init() override {};
 		void update(float dt) override {};
 		void fixedUpdate() override {};

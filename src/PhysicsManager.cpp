@@ -35,7 +35,7 @@ namespace flow
 
 	b2BodyId PhysicsManager::addRigidbody(Rigidbody* rb, b2BodyDef *bodyDef)
 	{
-		b2BodyId bId =  b2CreateBody(mWorldId, bodyDef);
+		b2BodyId bId = b2CreateBody(mWorldId, bodyDef);
 		mActiveRigidbodies.push_back(rb);
 		return bId;
 	}

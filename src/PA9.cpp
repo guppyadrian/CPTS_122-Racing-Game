@@ -37,7 +37,6 @@ int main()
 
 		// Create a rigidbody component ---
 		auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
-		gameobjects.back()->addComponent(std::move(rbComponent)); // move the component into the object
 
 		// --- Create the shape for the rigidBody --- 
 		// Note: You can have multiple collision shapes on a single body!
@@ -51,7 +50,12 @@ int main()
 		b2Polygon box = b2MakeBox(1.0f, 1.0f);
 
 		// Attach it to the existing bodyId
-		b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
+		b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box); // FIX SHAPE DEFINITION (IT IS WRONG)
+
+		gameobjects.back()->addComponent(std::move(rbComponent)); // move the component into the object
+
+		//Note: make sure you set up components before you move them into the class
+		// or get a new reference after you move it because the old ptr will be null
 
 	}
 

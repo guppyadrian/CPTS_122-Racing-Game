@@ -9,6 +9,7 @@ namespace flow
 	class Transform : public sf::Transformable
 	{
 	public:
+		Transform() = default;
 
 		void setRotationRad(float radians);
 		void setRotationDeg(float degrees);

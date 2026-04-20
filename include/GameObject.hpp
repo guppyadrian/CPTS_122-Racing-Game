@@ -13,6 +13,7 @@ namespace flow
 	public:
 		GameObject* mGameObject = nullptr;
 		virtual ~Component() = default;
+		virtual void onAttach() = 0;
 		virtual void init() = 0;
 		virtual void update(float dt) = 0;
 		virtual void fixedUpdate() = 0;
@@ -35,6 +36,7 @@ namespace flow
 		{
            // set the parent pointer on the component and store it
 			c->mGameObject = this;
+			c->onAttach();
 			mComponents.push_back(std::move(c));
 		};
 

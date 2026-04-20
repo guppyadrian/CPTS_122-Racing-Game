@@ -20,6 +20,7 @@ namespace flow
 			return mBodyId;
 		};
 
+		void onAttach() override;
 		void init() override;
 		void update(float dt) override;
 		void fixedUpdate() override;
