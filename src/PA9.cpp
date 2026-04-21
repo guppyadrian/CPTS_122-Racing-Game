@@ -13,6 +13,13 @@
 #include "Rigidbody.hpp"
 #include "PhysicsManager.hpp"
 #include "SceneManager.hpp"
+#include "SFML/Graphics/CircleShape.hpp"
+#include "SFML/Graphics/RenderWindow.hpp"
+#include "SFML/Window/Window.hpp"
+#include "network/NetworkClient.hpp"
+#include "network/NetworkManager.hpp"
+
+using namespace gp::network;
 
 int main()
 {
@@ -42,7 +49,7 @@ int main()
 		// Create a rigidbody component ---
 		auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
 
-		// --- Configure the rigidBody's parameters --- 
+		// --- Configure the rigidBody's parameters ---
 		// Note: You can have multiple collision shapes on a single body!
 		b2BodyId bodyId = rbComponent->getBodyId();
 		b2Body_SetType(bodyId, b2_dynamicBody); // Make the body dynamic (it moves)
