@@ -1,4 +1,5 @@
 #include "SceneManager.hpp"
+#include <utility>
 
 SceneManager::SceneManager() : _curScene(nullptr), _sceneList() {}
 
@@ -8,9 +9,9 @@ SceneManager::~SceneManager()
 	_sceneList.shrink_to_fit();
 }
 
-void SceneManager::update()
+void SceneManager::update(float dt)
 {
-	_curScene->update();
+	_curScene->update(dt);
 }
 
 //Return: true if success, false if failed
@@ -31,7 +32,7 @@ bool SceneManager::switchScene(const std::string uuid)
 
 bool SceneManager::loadScene(std::unique_ptr<Scene> newScene)
 {
-	_sceneList.push_back(newScene);
+    _sceneList.push_back(std::move(newScene));
 	return true;
 }
 
