@@ -6,10 +6,10 @@
 class LevelScene : public Scene
 {
 private:
-	std::vector<GameObject> _gameObjects;
+	std::vector<flow::GameObject> _gameObjects;
 public:
 	LevelScene();
 	~LevelScene() = default;
 	void initialize();
-	void update();
+	void update(float dt);
 };

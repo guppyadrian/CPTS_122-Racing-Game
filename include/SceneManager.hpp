@@ -16,7 +16,7 @@ private:
 public:
 	SceneManager();
 	~SceneManager();
-	void update();
+	void update(float dt);
 	bool switchScene(const std::string uuid);
 	bool loadScene(std::unique_ptr<Scene> newScene);
 	bool loadScene(std::string uuid);

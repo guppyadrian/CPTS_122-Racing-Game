@@ -8,9 +8,9 @@ SceneManager::~SceneManager()
 	_sceneList.shrink_to_fit();
 }
 
-void SceneManager::update()
+void SceneManager::update(float dt)
 {
-	_curScene->update();
+	_curScene->update(dt);
 }
 
 //Return: true if success, false if failed

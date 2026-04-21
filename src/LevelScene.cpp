@@ -6,14 +6,14 @@ void LevelScene::initialize()
 {
 	for (int i = 0; i < _gameObjects.size(); i++)
 	{
-		_gameObjects[i].initialize(); //TODO
+		_gameObjects[i].init();
 	}
 }
 
-void LevelScene::update()
+void LevelScene::update(float dt)
 {
 	for (int i = 0; i < _gameObjects.size(); i++)
 	{
-		_gameObjects[i].update(); //TODO
+		_gameObjects[i].update(dt);
 	}
 }

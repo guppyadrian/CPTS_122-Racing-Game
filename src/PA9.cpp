@@ -12,6 +12,7 @@
 #include "Renderer.hpp"
 #include "Rigidbody.hpp"
 #include "PhysicsManager.hpp"
+#include "SceneManager.hpp"
 
 int main()
 {

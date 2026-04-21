@@ -27,7 +27,7 @@ set(PA9_SOURCES
     "src/SceneManager.cpp"
     "src/LevelScene.cpp")
 
-# Add source to this project's executable.
+# Add source to this project's executable. 
 add_executable (PA9 ${PA9_SOURCES})
 
 target_include_directories(PA9 PRIVATE include)
