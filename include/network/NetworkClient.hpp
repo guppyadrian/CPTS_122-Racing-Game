@@ -12,6 +12,7 @@
 #include "Serialize.hpp"
 
 using asio::ip::tcp;
+using EventCallback = std::function<void()>;
 
 namespace gp::network
 {
@@ -22,9 +23,10 @@ namespace gp::network
         tcp::resolver _resolver;
         tcp::socket _socket;
 
-        std::vector<uint8_t> _rawReadBuffer{}; // getting stuff from server... Maybe 1024 is too small? TODO: can this be a vector safely?
         ReadBuffer _readBuffer;
         std::deque<std::vector<uint8_t>> _writeBuffer;
+
+        std::unordered_map<std::string, EventCallback> _listeners;
     public:
         NetworkClient() : _io(NetworkManager::io()), _resolver(_io), _socket(_io) {}
         explicit NetworkClient(asio::io_context& io) : _io(io), _resolver(_io), _socket(_io) {} // alternative constructor if you want to manually pass the io
@@ -33,6 +35,8 @@ namespace gp::network
 
         template<NetworkData T>
         void emit(std::string_view eventName, const T& data);
+
+        void on(const std::string& eventName, const EventCallback& callback);
 
         [[nodiscard]] bool connected() const { return _socket.is_open(); }
 

@@ -8,15 +8,15 @@
 
 #include "network/NetworkClient.hpp"
 
+
+
 namespace gp::network
 {
     void NetworkClient::connect(const std::string& address, const uint16_t port)
     {
-        std::cout << "Connecting to " << address << ":" << port << std::endl;
         _resolver.async_resolve(address, std::to_string(port),
             [this](const std::error_code ec, const tcp::resolver::results_type& results)
             {
-                std::cout << "resolved!" << std::endl;
                 if (ec)
                 {
                     std::cout << "Failed to resolve: " << ec.message() << std::endl;
@@ -24,19 +24,22 @@ namespace gp::network
                 }
 
                 asio::async_connect(_socket, results,
-                    [this](const std::error_code ec, const tcp::endpoint& endpoint)
+                    [this](const std::error_code ec2, const tcp::endpoint& endpoint)
                     {
-                        if (ec)
+                        if (ec2)
                         {
-                            std::cout << "Failed to connect: " << ec.message() << std::endl;
+                            std::cerr << "Failed to connect: " << ec2.message() << std::endl;
                             return;
                         }
-
-                        std::cout << "Connected" << std::endl;
                         _onConnect();
                     });
             }
         );
+    }
+
+    void NetworkClient::on(const std::string& eventName, const EventCallback& callback)
+    {
+        _listeners[eventName] = callback;
     }
 
     void NetworkClient::send(const std::string_view eventName, const std::vector<uint8_t>& data)
@@ -53,6 +56,10 @@ namespace gp::network
 
     void NetworkClient::_onConnect()
     {
+        if (_listeners.contains("connection"))
+        {
+            _listeners["connection"]();
+        }
         doReadHeader();
     }
 
@@ -73,11 +80,9 @@ namespace gp::network
 
     void NetworkClient::doReadBody()
     {
-        std::cout << "now reading body... bytes: " << _readBuffer.getTotalLength() << std::endl;
         _readBuffer.body().resize(_readBuffer.getTotalLength());
         asio::async_read(_socket, asio::buffer(_readBuffer.body(), _readBuffer.getTotalLength()), [this](const std::error_code ec, std::size_t bytes)
         {
-            std::cout << "finished reading body" << std::endl;
             if (ec)
             {
                 std::cerr << "Failed to read message! Shutting down socket" << std::endl;
@@ -86,10 +91,11 @@ namespace gp::network
             }
 
             const NetworkPacket packet = _readBuffer.collectPacket();
-            std::cout << "got packet: " << packet.eventName << std::endl;
+
+            if (_listeners.contains(packet.eventName)) _listeners[packet.eventName]();
+            else std::cerr << "gp::network::NetworkClient recieved unhandled event name: " << packet.eventName << std::endl;
 
             doReadHeader();
-            // TODO: do something with this packet
         });
     }
 
@@ -100,7 +106,7 @@ namespace gp::network
         {
             if (ec)
             {
-                std::cout << "Failed to write: " << ec.message() << std::endl;
+                std::cerr << "Failed to write: " << ec.message() << std::endl;
                 _socket.close();
                 return;
             }
