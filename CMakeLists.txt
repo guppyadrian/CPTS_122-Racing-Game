@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : CMake project for PA9, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 4.2.3)
+cmake_minimum_required (VERSION 4.0.2)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -28,16 +28,12 @@ set(PA9_SOURCES
     "src/LevelScene.cpp")
 
 # Add source to this project's executable.
-add_executable (PA9 ${PA9_SOURCES})
-# Add source to this project's executable.
-add_executable (PA9 src/PA9.cpp
+add_executable (PA9 ${PA9_SOURCES} src/PA9.cpp
         src/network/NetworkClient.cpp
         src/network/NetworkManager.cpp
         src/network/Serialize.cpp
         src/network/ReadBuffer.cpp
-        include/network/ReadBuffer.hpp
-        src/network/NetworkServer.cpp
-        src/network/NetworkServer.hpp)
+        src/network/NetworkServer.cpp)
 
 target_include_directories(PA9 PRIVATE include)
 
