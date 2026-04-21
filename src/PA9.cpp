@@ -18,12 +18,23 @@ int main()
 
     client.connect("localhost", 3000);
 
+    client.on("connection", [&client]()
+    {
+        std::cout << "Connected!" << std::endl;
+
+        client.emit("hello", std::string_view("world..."));
+    });
+
+    client.on("hello", []()
+    {
+        std::cout << "got hello event" << std::endl;
+    });
+
     sf::RenderWindow window(sf::VideoMode({600, 400}), "Game");
 
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
-    bool sent = false;
 
     while (window.isOpen())
     {
@@ -36,12 +47,6 @@ int main()
         window.clear();
         window.draw(shape);
         window.display();
-
-        if (client.connected() && !sent)
-        {
-            client.emit("hello", std::string_view("world..."));
-            sent = true;
-        }
     }
 
     NetworkManager::Stop();
