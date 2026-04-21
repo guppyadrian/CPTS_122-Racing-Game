@@ -15,5 +15,5 @@ public:
 	virtual void onEnter();
 	virtual void onExit();
 	
-	inline std::string get_uuid();
+    std::string get_uuid();
 };
