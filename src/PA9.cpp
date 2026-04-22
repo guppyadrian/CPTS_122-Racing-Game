@@ -7,12 +7,12 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "GameObject.hpp"
-#include "SpriteRenderer.hpp"
-#include "Renderer.hpp"
-#include "Rigidbody.hpp"
-#include "PhysicsManager.hpp"
-#include "SceneManager.hpp"
+#include "flow/GameObject.hpp"
+#include "flow/SpriteRenderer.hpp"
+#include "flow/Renderer.hpp"
+#include "flow/Rigidbody.hpp"
+#include "flow/PhysicsManager.hpp"
+#include "flow/SceneManager.hpp"
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/Window.hpp"
@@ -25,6 +25,8 @@ int main()
 {
 
 	sf::RenderWindow window(sf::VideoMode({ 600, 400 }), "Game");
+
+	window.setFramerateLimit(60);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 

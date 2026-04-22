@@ -6,10 +6,10 @@
 
 #include <deque>
 
-#include "ReadBuffer.hpp"
+#include "network/ReadBuffer.hpp"
 #include "network/NetworkManager.hpp"
 #include "asio/ip/tcp.hpp"
-#include "Serialize.hpp"
+#include "network/Serialize.hpp"
 
 using asio::ip::tcp;
 using EventCallback = std::function<void()>;

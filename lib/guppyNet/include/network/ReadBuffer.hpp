@@ -6,7 +6,7 @@
 #include <array>
 #include <vector>
 
-#include "Serialize.hpp"
+#include "network/Serialize.hpp"
 
 // TODO: work on this more later
 namespace gp::network
