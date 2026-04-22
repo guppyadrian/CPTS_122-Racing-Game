@@ -22,17 +22,13 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 
-
-
 # Add source to this project's executable.
 add_executable (PA9 src/PA9.cpp)
 
 target_include_directories(PA9 PRIVATE include)
 
-
-# add all of our libraries WE made
-add_subdirectory(src/flow)
-add_subdirectory(src/network)
+add_subdirectory(lib/guppyNet)
+add_subdirectory(lib/flowEngine)
 
 # examples
 add_subdirectory(examples)
@@ -51,14 +47,7 @@ set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE BOOL "" FORCE)
 set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
 
 # add libs
-add_subdirectory(external/SFML)
-add_subdirectory(external/box2d)
 
-target_include_directories(PA9 PRIVATE ${CMAKE_SOURCE_DIR}/external/asio/include)
-target_compile_definitions(PA9 PRIVATE ASIO_STANDALONE)
-
-target_include_directories(PA9 PRIVATE ${CMAKE_SOURCE_DIR}/external/json)
-
-target_link_libraries(PA9 box2d SFML::Graphics flowEngine guppyNet)
+target_link_libraries(PA9 flowEngine guppyNet)
 
 install(TARGETS PA9 DESTINATION .)

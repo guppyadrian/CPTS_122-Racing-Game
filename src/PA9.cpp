@@ -16,8 +16,8 @@
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/Window.hpp"
-#include "network/NetworkClient.hpp"
-#include "network/NetworkManager.hpp"
+#include "../lib/guppyNet/include/network/NetworkClient.hpp"
+#include "../lib/guppyNet/include/network/NetworkManager.hpp"
 
 using namespace gp::network;
 
