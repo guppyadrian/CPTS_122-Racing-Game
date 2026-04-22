@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GameObject.hpp"
+#include "flow/Component.hpp"
+#include "flow/GameObject.hpp"
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <string>

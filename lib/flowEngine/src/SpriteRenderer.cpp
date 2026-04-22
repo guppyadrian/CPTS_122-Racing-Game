@@ -1,4 +1,4 @@
-#include "flow/SpriteRenderer.hpp"
+#include "flow/components/SpriteRenderer.hpp"
 #include "flow/Renderer.hpp"
 
 namespace flow

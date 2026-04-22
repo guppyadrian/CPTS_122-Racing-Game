@@ -2,14 +2,18 @@
 #include "Scene.hpp"
 #include "GameObject.hpp"
 
-
-class LevelScene : public Scene
+namespace flow
 {
-private:
-	std::vector<flow::GameObject> _gameObjects;
-public:
-	LevelScene();
-	~LevelScene() = default;
-	void initialize();
-	void update(float dt);
-};
+	class LevelScene : public Scene
+	{
+	private:
+		std::vector<flow::GameObject> _gameObjects;
+	public:
+		LevelScene(const std::string uuid);
+		~LevelScene() = default;
+		void initialize();
+		void update(float dt);
+		void AddGameObject(const flow::GameObject& gameObject);
+		//TODO: Implement RemoveGameObject
+	};
+}

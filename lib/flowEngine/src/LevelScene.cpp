@@ -1,19 +1,32 @@
 #include "flow/LevelScene.hpp"
 
-LevelScene::LevelScene() : _gameObjects() {}
-
-void LevelScene::initialize()
+namespace flow
 {
-	for (int i = 0; i < _gameObjects.size(); i++)
+
+	LevelScene::LevelScene(const std::string uuid)
+		: Scene(uuid), _gameObjects()
 	{
-		_gameObjects[i].init();
+		// Scene base constructed with uuid
 	}
-}
 
-void LevelScene::update(float dt)
-{
-	for (int i = 0; i < _gameObjects.size(); i++)
+	void LevelScene::initialize()
 	{
-		_gameObjects[i].update(dt);
+		for (int i = 0; i < _gameObjects.size(); i++)
+		{
+			_gameObjects[i].init();
+		}
+	}
+
+	void LevelScene::update(float dt)
+	{
+		for (int i = 0; i < _gameObjects.size(); i++)
+		{
+			_gameObjects[i].update(dt);
+		}
+	}
+
+	void LevelScene::AddGameObject(const flow::GameObject& gameObject)
+	{
+		_gameObjects.push_back(gameObject);
 	}
 }

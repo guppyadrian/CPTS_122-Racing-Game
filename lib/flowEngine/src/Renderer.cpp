@@ -27,4 +27,9 @@ namespace flow
             windowRef->draw(sprite->getSprite(), tf);
         }
     }
+
+    void Renderer::setView(const sf::View& view)
+    {
+        windowRef->setView(view);
+    }
 }

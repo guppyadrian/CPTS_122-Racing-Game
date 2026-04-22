@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GameObject.hpp"
+#include "flow/Component.hpp"
+#include "flow/GameObject.hpp"
 #include <box2d/box2d.h>
 
 namespace flow
