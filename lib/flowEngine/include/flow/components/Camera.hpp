@@ -1,3 +1,5 @@
+#pragma once
+
 #include "flow/Component.hpp"
 #include "flow/GameObject.hpp"
 #include <SFML/Graphics.hpp>
