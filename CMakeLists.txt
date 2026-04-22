@@ -15,43 +15,50 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project ("PA9")
 
-set(PA9_SOURCES
-    "src/PA9.cpp"
-    "src/Transform.cpp"
-    "src/GameObject.cpp"
-    "src/Renderer.cpp"
-    "src/SpriteRenderer.cpp"
-    "src/Rigidbody.cpp"
-    "src/PhysicsManager.cpp"
-    "src/Scene.cpp"
-    "src/SceneManager.cpp"
-    "src/LevelScene.cpp")
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+  enable_testing()
+  add_subdirectory(test)
+endif()
+
+
+
 
 # Add source to this project's executable.
-add_executable (PA9 ${PA9_SOURCES} src/PA9.cpp
-        src/network/NetworkClient.cpp
-        src/network/NetworkManager.cpp
-        src/network/Serialize.cpp
-        src/network/ReadBuffer.cpp
-        src/network/NetworkServer.cpp)
+add_executable (PA9 src/PA9.cpp)
 
 target_include_directories(PA9 PRIVATE include)
 
-# Add assets folder
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets"
-     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
-# add libs
+# add all of our libraries WE made
+add_subdirectory(src/flow)
+add_subdirectory(src/network)
+
+# examples
+add_subdirectory(examples)
+
+# Add assets folder
+set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/assets") # TODO: hey while this is nice... remember that copying a lot of assets may be slow
+add_custom_command(                          #       you could swap back to cmake style folder copying, but remember to regenerate CMAKE!!!
+        OUTPUT "${CMAKE_BINARY_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${SOURCE_DIR}" "${CMAKE_BINARY_DIR}"
+        DEPENDS "${SOURCE_DIR}"
+)
+add_custom_target(copy_mydata ALL DEPENDS "${CMAKE_BINARY_DIR}")
+
+# I heard this is supposed to help with SFML fetching from github all the time
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE BOOL "" FORCE)
 set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
+
+# add libs
 add_subdirectory(external/SFML)
 add_subdirectory(external/box2d)
 
-target_include_directories(PA9 PRIVATE external/asio/include)
+target_include_directories(PA9 PRIVATE ${CMAKE_SOURCE_DIR}/external/asio/include)
 target_compile_definitions(PA9 PRIVATE ASIO_STANDALONE)
 
-target_include_directories(PA9 PRIVATE external/json)
+target_include_directories(PA9 PRIVATE ${CMAKE_SOURCE_DIR}/external/json)
 
-target_link_libraries(PA9 box2d SFML::Graphics)
+target_link_libraries(PA9 box2d SFML::Graphics flowEngine guppyNet)
 
 install(TARGETS PA9 DESTINATION .)

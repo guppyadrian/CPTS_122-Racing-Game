@@ -1,4 +1,4 @@
-#include "GameObject.hpp"
+#include "flow/GameObject.hpp"
 
 namespace flow
 {

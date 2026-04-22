@@ -1,4 +1,4 @@
-#include "Scene.hpp"
+#include "flow/Scene.hpp"
 
 Scene::Scene() : _uuid("") {}
 Scene::Scene(const std::string uuid) : _uuid(uuid) {}
