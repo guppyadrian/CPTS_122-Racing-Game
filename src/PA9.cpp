@@ -12,12 +12,12 @@
 #include "../include/flow/Renderer.hpp"
 #include "flow/Rigidbody.hpp"
 #include "flow/PhysicsManager.hpp"
-#include "../include/flow/SceneManager.hpp"
+#include "flow/SceneManager.hpp"
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/Window.hpp"
-#include "../lib/guppyNet/include/network/NetworkClient.hpp"
-#include "../lib/guppyNet/include/network/NetworkManager.hpp"
+#include "network/NetworkClient.hpp"
+#include "network/NetworkManager.hpp"
 
 using namespace gp::network;
 
@@ -25,6 +25,8 @@ int main()
 {
 
 	sf::RenderWindow window(sf::VideoMode({ 600, 400 }), "Game");
+
+	window.setFramerateLimit(60);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 

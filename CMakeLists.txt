@@ -37,7 +37,7 @@ add_subdirectory(examples)
 set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/assets") # TODO: hey while this is nice... remember that copying a lot of assets may be slow
 add_custom_command(                          #       you could swap back to cmake style folder copying, but remember to regenerate CMAKE!!!
         OUTPUT "${CMAKE_BINARY_DIR}"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${SOURCE_DIR}" "${CMAKE_BINARY_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${SOURCE_DIR}" "${CMAKE_BINARY_DIR}/assets"
         DEPENDS "${SOURCE_DIR}"
 )
 add_custom_target(copy_mydata ALL DEPENDS "${CMAKE_BINARY_DIR}")
