@@ -6,14 +6,15 @@
 
 namespace gp::network
 {
-    std::vector<uint8_t> Serialize(std::string_view string)
+    std::vector<uint8_t> Serialize(const std::string& string)
     {
         return std::vector<uint8_t>(string.begin(), string.end());
     }
 
     std::vector<uint8_t> Serialize(const json& json)
     {
-        return Serialize(static_cast<std::string_view>(json.dump()));
+        std::cout << "json!!!!" << std::endl;
+        return Serialize(json.dump());
     }
 
     std::vector<uint8_t> CreatePacket(std::string_view eventName, const std::vector<uint8_t>& data)

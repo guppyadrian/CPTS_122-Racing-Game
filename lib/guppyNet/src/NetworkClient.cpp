@@ -37,9 +37,9 @@ namespace gp::network
         );
     }
 
-    void NetworkClient::on(const std::string& eventName, const EventCallback& callback)
+    void NetworkClient::on(const std::string &eventName, const std::function<void()>& callback)
     {
-        _listeners[eventName] = callback;
+        _listeners[eventName] = [callback](const std::any& data){ callback(); };
     }
 
     void NetworkClient::send(const std::string_view eventName, const std::vector<uint8_t>& data)
@@ -58,7 +58,8 @@ namespace gp::network
     {
         if (_listeners.contains("connection"))
         {
-            _listeners["connection"]();
+            std::vector<uint8_t> vec; // TODO: this is ugly
+            _listeners["connection"](vec);
         }
         doReadHeader();
     }
@@ -91,9 +92,8 @@ namespace gp::network
             }
 
             const NetworkPacket packet = _readBuffer.collectPacket();
-
-            if (_listeners.contains(packet.eventName)) _listeners[packet.eventName]();
-            else std::cerr << "gp::network::NetworkClient recieved unhandled event name: " << packet.eventName << std::endl;
+            
+            _onReceive(packet.eventName, packet.data); // TODO: take in data type? lowk just take in packet
 
             doReadHeader();
         });
@@ -115,5 +115,14 @@ namespace gp::network
         });
     }
 
+    void NetworkClient::_onReceive(const std::string& eventName, const std::vector<uint8_t>& data)
+    {
+        if (!_listeners.contains(eventName.data()))
+        {
+            std::cerr << "gp::network::NetworkClient got unhandled event type: " << eventName << std::endl;
+            return;
+        }
 
+        _listeners[eventName](data);
+    }
 } // gp

@@ -12,7 +12,10 @@
 #include "network/Serialize.hpp"
 
 using asio::ip::tcp;
-using EventCallback = std::function<void()>;
+
+template <typename F, typename T>
+concept EventCallback = std::invocable<F, T> && std::same_as<std::invoke_result_t<F, T>, void>; // concept slop
+// ^ got this from chatGPT. I wanted to use std::function, but it doesn't work well with templates :(
 
 namespace gp::network
 {
@@ -26,7 +29,7 @@ namespace gp::network
         ReadBuffer _readBuffer;
         std::deque<std::vector<uint8_t>> _writeBuffer;
 
-        std::unordered_map<std::string, EventCallback> _listeners;
+        std::unordered_map<std::string, std::function<void(const std::vector<uint8_t>&)>> _listeners;
     public:
         NetworkClient() : _io(NetworkManager::io()), _resolver(_io), _socket(_io) {}
         explicit NetworkClient(asio::io_context& io) : _io(io), _resolver(_io), _socket(_io) {} // alternative constructor if you want to manually pass the io
@@ -36,7 +39,9 @@ namespace gp::network
         template<NetworkData T>
         void emit(std::string_view eventName, const T& data);
 
-        void on(const std::string& eventName, const EventCallback& callback);
+        template<Serializable T, EventCallback<T> F>
+        void on(const std::string& eventName, F callback);
+        void on(const std::string& eventName, const std::function<void()>& callback);
 
         [[nodiscard]] bool connected() const { return _socket.is_open(); }
 
@@ -44,6 +49,8 @@ namespace gp::network
         void send(std::string_view eventName, const std::vector<uint8_t>& data);
         void _onConnect();
         void _onWrite();
+
+        void _onReceive(const std::string& eventName, const std::vector<uint8_t>& data);
 
         void doReadHeader();
         void doReadBody(); // TODO: start renaming stuff to Body instead of Data
@@ -58,5 +65,14 @@ namespace gp::network
             return;
         }
         send(eventName, Serialize(data));
+    }
+
+    template<Serializable T, EventCallback<T> F>
+    void NetworkClient::on(const std::string &eventName, const F callback)
+    {
+        _listeners[eventName] = [callback](const std::vector<uint8_t>& data)
+        {
+            callback(Deserialize<T>(data));
+        };
     }
 } // gp
