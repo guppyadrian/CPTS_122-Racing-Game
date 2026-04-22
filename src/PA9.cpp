@@ -9,7 +9,7 @@
 
 #include "flow/GameObject.hpp"
 #include "flow/SpriteRenderer.hpp"
-#include "../include/flow/Renderer.hpp"
+#include "flow/Renderer.hpp"
 #include "flow/Rigidbody.hpp"
 #include "flow/PhysicsManager.hpp"
 #include "flow/SceneManager.hpp"
