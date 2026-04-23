@@ -70,7 +70,8 @@ namespace gp::network
         {
             if (ec)
             {
-                std::cerr << "Failed to read message! Shutting down socket" << std::endl;
+                std::cerr << "Failed to read message header!" << std::endl;
+                std::cerr << ec.message() << std::endl;
                 _socket.close();
                 return;
             }
@@ -86,7 +87,8 @@ namespace gp::network
         {
             if (ec)
             {
-                std::cerr << "Failed to read message! Shutting down socket" << std::endl;
+                std::cerr << "Failed to read message body!" << std::endl;
+                std::cerr << ec.message() << std::endl;
                 _socket.close();
                 return;
             }

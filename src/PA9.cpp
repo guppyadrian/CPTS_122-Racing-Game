@@ -26,7 +26,7 @@ int main()
 
 	sf::RenderWindow window(sf::VideoMode({ 600, 400 }), "Game");
 
-	window.setFramerateLimit(60);
+	//window.setFramerateLimit(60);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 

@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "ServerConnection.hpp"
 #include "asio/io_context.hpp"
 #include "asio/ip/tcp.hpp"
 
@@ -15,11 +16,10 @@ namespace gp::network
     private:
         asio::io_context& _io;
         tcp::acceptor _acceptor;
-        std::unordered_map<std::string, tcp::socket> _connections; // TODO: is this right??
+        std::vector<ServerConnection> _connections; // TODO: is this right??
     public:
-        NetworkServer();
-
-        void listen(uint16_t port);
+        explicit NetworkServer(uint16_t port);
+        void listen();
 
     private:
         void doAccept();

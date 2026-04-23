@@ -34,7 +34,10 @@ int main()
 
     while (true)
     {
-        
+        std::string msg;
+        std::cin >> msg;
+
+        client.emit("exampleEvent", msg);
     }
     
     NetworkManager::Stop();
