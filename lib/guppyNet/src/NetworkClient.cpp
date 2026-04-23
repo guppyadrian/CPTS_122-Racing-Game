@@ -4,9 +4,10 @@
 
 #include <iostream>
 
-#include "asio.hpp"
-
 #include "network/NetworkClient.hpp"
+#include <asio/connect.hpp>
+#include <asio/read.hpp>
+#include <asio/write.hpp>
 
 
 
@@ -39,7 +40,7 @@ namespace gp::network
 
     void NetworkClient::on(const std::string &eventName, const std::function<void()>& callback)
     {
-        _listeners[eventName] = [callback](const std::any& data){ callback(); };
+        _listeners[eventName] = [callback](const std::any&){ callback(); };
     }
 
     void NetworkClient::send(const std::string_view eventName, const std::vector<uint8_t>& data)

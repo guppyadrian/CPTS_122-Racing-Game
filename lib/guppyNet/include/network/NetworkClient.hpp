@@ -10,12 +10,9 @@
 #include "network/NetworkManager.hpp"
 #include "asio/ip/tcp.hpp"
 #include "network/Serialize.hpp"
+#include "network/Shared.hpp"
 
 using asio::ip::tcp;
-
-template <typename F, typename T>
-concept EventCallback = std::invocable<F, T> && std::same_as<std::invoke_result_t<F, T>, void>; // concept slop
-// ^ got this from chatGPT. I wanted to use std::function, but it doesn't work well with templates :(
 
 namespace gp::network
 {

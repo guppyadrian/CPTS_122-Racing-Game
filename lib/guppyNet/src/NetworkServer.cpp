@@ -5,7 +5,6 @@
 #include "network/NetworkServer.hpp"
 
 #include <iostream>
-#include <X11/extensions/randr.h>
 
 #include "network/NetworkManager.hpp"
 
@@ -21,6 +20,11 @@ namespace gp::network
         doAccept();
     }
 
+    void NetworkServer::on(const std::string &eventName, const std::function<void()> &callback)
+    { // TODO: error checking... also in the other on() overload
+        _listeners[eventName] = [callback](const std::vector<uint8_t>&) { callback(); };
+    }
+
     void NetworkServer::doAccept()
     {
         _acceptor.async_accept([this](const std::error_code ec, tcp::socket socket)
@@ -34,7 +38,12 @@ namespace gp::network
 
             std::cout << "new connection: " << socket.remote_endpoint() << std::endl;
 
-            _connections.push_back(std::move(ServerConnection(std::move(socket))));
+            ServerConnection conn(std::move(socket)); // TODO: need std::move?
+
+            constexpr std::vector<uint8_t> nothing; // TODO: how can I not do this
+            if (_listeners.contains("connection")) _listeners["connection"](nothing);
+
+            _connections.push_back(std::move(conn));
             
             doAccept();
         });
