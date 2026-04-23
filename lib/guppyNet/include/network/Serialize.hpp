@@ -29,6 +29,10 @@ namespace gp::network
     
 
     std::vector<uint8_t> Serialize(const std::string& string);
+    std::vector<uint8_t> Serialize(std::string_view string);
+    template <std::size_t N>
+    std::vector<uint8_t> Serialize(const char (&string)[N]);
+
     std::vector<uint8_t> Serialize(const json& json);
 
     // Emitting should only allow values which have a Serialize() function for them!
@@ -85,6 +89,12 @@ namespace gp::network
         std::string string(data.begin(), data.end());
 
         return string;
+    }
+
+    template<std::size_t N>
+    std::vector<uint8_t> Serialize(const char(&string)[N])
+    {
+        return std::vector<uint8_t>(string, string + N - 1);
     }
 
 }

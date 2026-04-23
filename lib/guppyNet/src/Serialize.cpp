@@ -11,9 +11,13 @@ namespace gp::network
         return std::vector<uint8_t>(string.begin(), string.end());
     }
 
+    std::vector<uint8_t> Serialize(const std::string_view string)
+    {
+        return std::vector<uint8_t>(string.begin(), string.end());
+    }
+
     std::vector<uint8_t> Serialize(const json& json)
     {
-        std::cout << "json!!!!" << std::endl;
         return Serialize(json.dump());
     }
 

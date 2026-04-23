@@ -20,12 +20,14 @@ int main()
     client.on("connection", [&client]()
     {
         std::cout << "connected" << std::endl;
-        client.emit("exampleEvent", std::string("blah"));
+
+        
+        client.emit("exampleEvent", "test");
     });
 
-    client.on<std::string>("exampleEvent", [](std::string_view event)
+    client.on<std::string>("exampleEvent", [](const std::string_view event)
     {
-        std::cout << "got: " << event << " length: " << event.length() << std::endl;
+        std::cout << "got: " << event << std::endl;
     });
     
     std::cout << "Hello World!" << std::endl;
