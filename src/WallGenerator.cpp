@@ -95,8 +95,6 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 		verts.push_back({ x, y });
 	}
 
-	// rasterize segments onto the image
-	sf::Color drawColor = sf::Color::White;
 	for (int i = 0; i < (int)points.size() - 1; ++i)
 	{
 		auto a = points[i];
@@ -115,7 +113,7 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 			// safe check
 			if (ix >= 0 && ix < (int)image.getSize().x && iy >= 0 && iy < (int)image.getSize().y)
 			{
-				image.setPixel(sf::Vector2u(static_cast<unsigned>(ix), static_cast<unsigned>(iy)), drawColor);
+				image.setPixel(sf::Vector2u(static_cast<unsigned>(ix), static_cast<unsigned>(iy)), color);
 			}
 		}
 	}

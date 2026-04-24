@@ -85,11 +85,11 @@ int main()
 		//SceneManager::getGlobal().
 	}
 
-	flow::GameObject streightWall = WallGenerator::GenerateWall({400,400}, 200, 0, sf::Color::Green);
+	flow::GameObject streightWall = WallGenerator::GenerateWall({100,100}, 200, 0, sf::Color::Green);
 	newScene->AddGameObject(std::move(streightWall));
 
 	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({400, 400}, 200, 0, 3.141f, 32, sf::Color::Blue));
+	newScene->AddGameObject(WallGenerator::GenerateWall({100, 100}, 200, 0, 3.141f / 4, 32, sf::Color::Red));
 
 	// load the scene
 	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
