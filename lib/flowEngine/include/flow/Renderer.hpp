@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "SpriteRenderer.hpp"
+#include "components/SpriteRenderer.hpp"
 
 namespace flow
 {
@@ -33,6 +33,7 @@ namespace flow
 		void addSpriteRenderer(SpriteRenderer* sprite);
 		void removeSpriteRenderer(SpriteRenderer* sprite);
 		void drawAll();
+		void setView(const sf::View& view);
 
 	};
 }
