@@ -31,8 +31,6 @@ int main()
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
 
-	//std::vector<std::unique_ptr<flow::GameObject>> gameobjects; // replace with scene management
-
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
 	for (int i = 0; i < 20; i++)
@@ -86,8 +84,8 @@ int main()
 		//SceneManager::getGlobal().
 	}
 
+	// load the scene
 	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
-	// move to scene manager
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
@@ -113,7 +111,6 @@ int main()
 				window.close();
 		}
 
-		// move to scene manager
 		flow::SceneManager::getGlobal().update(dt);
 
 		flow::PhysicsManager::getGlobal().tick(dt); // yes, this MUST recieve deltatime. It handles the fixed time steps using it
