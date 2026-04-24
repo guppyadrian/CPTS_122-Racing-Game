@@ -77,7 +77,7 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 	// sample vertices along the arc
 	int count = max(2, subdivisions + 1);
 	std::vector<b2Vec2> verts;
-	verts.reserve(count);
+	verts.reserve(count + 2);
 
 	// draw line segments into the image while building verts
 	auto toImgX = [&](float vx) { return static_cast<int>(std::lround(cx + vx)); };
@@ -93,6 +93,8 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 		float y = std::sin(theta) * static_cast<float>(radius);
 		points.emplace_back(x, y);
 		verts.push_back({ x, y });
+		if(i == 0 || i == count - 1)
+			verts.push_back({ x, y });
 	}
 
 	for (int i = 0; i < (int)points.size() - 1; ++i)
