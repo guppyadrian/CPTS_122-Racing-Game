@@ -9,6 +9,11 @@ namespace flow
 		// Scene base constructed with uuid
 	}
 
+	void LevelScene::onEnter()
+	{
+		initialize();
+	}
+
 	void LevelScene::initialize()
 	{
 		for (int i = 0; i < _gameObjects.size(); i++)

@@ -6,7 +6,7 @@
 #include <SFML/System/Vector2.hpp>       // for sf::Vector2f / Vector2u (avoid transitive-include warning)
 #include <iostream>
 
-flow::GameObject WallGenerator::GenerateWall(int length, float angle, sf::Color color)
+flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int length, float angle, sf::Color color)
 {
 	auto gameObject = flow::GameObject();
 
@@ -51,11 +51,12 @@ flow::GameObject WallGenerator::GenerateWall(int length, float angle, sf::Color 
 
 	gameObject.addComponent(std::move(rbComponent)); // move the component into the object
 	gameObject.mTransform.setRotationDeg(angle);
+	gameObject.mTransform.setPosition(pos);
 
 	return gameObject;
 }
 
-flow::GameObject WallGenerator::GenerateWall(int radius, float angle, float arcLength, int subdivisions, sf::Color color)
+flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float angle, float arcLength, int subdivisions, sf::Color color)
 {
 	using namespace std;
 
@@ -151,6 +152,7 @@ flow::GameObject WallGenerator::GenerateWall(int radius, float angle, float arcL
 	b2ChainId shapeId = b2CreateChain(bodyId, &chain);
 
 	gameObject.addComponent(std::move(rbComponent)); // move the component into the object
+	gameObject.mTransform.setPosition(pos);
 
 	return gameObject;
 }
