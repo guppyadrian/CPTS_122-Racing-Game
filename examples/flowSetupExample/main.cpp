@@ -80,12 +80,13 @@ int main()
 		//Note: make sure you set up components before you move them into the class
 		// or get a new reference after you move it because the old ptr will be null
 
-		newScene->AddGameObject(gameObject);
+        newScene->AddGameObject(std::move(gameObject));
 		//SceneManager::getGlobal().
 	}
 
 	// load the scene
 	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
+	flow::SceneManager::getGlobal().switchScene("my scene");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font

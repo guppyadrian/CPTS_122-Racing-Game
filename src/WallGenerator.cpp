@@ -114,7 +114,7 @@ flow::GameObject WallGenerator::GenerateWall(int radius, float angle, float arcL
 			// safe check
 			if (ix >= 0 && ix < (int)image.getSize().x && iy >= 0 && iy < (int)image.getSize().y)
 			{
-				image.setPixel({ ix, iy }, drawColor);
+				image.setPixel(sf::Vector2u(static_cast<unsigned>(ix), static_cast<unsigned>(iy)), drawColor);
 			}
 		}
 	}

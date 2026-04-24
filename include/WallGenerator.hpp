@@ -5,6 +5,7 @@
 
 class WallGenerator
 {
-	flow::GameObject GenerateWall(int length, float angle, sf::Color color);
+public:
+	static flow::GameObject GenerateWall(int length, float angle, sf::Color color);
 	static flow::GameObject GenerateWall(int radius, float angle, float arcLength, int subdivisions, sf::Color color);
 };

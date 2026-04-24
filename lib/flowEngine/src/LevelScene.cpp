@@ -25,8 +25,8 @@ namespace flow
 		}
 	}
 
-	void LevelScene::AddGameObject(const flow::GameObject& gameObject)
+    void LevelScene::AddGameObject(flow::GameObject gameObject)
 	{
-		_gameObjects.push_back(gameObject);
+		_gameObjects.push_back(std::move(gameObject));
 	}
 }
