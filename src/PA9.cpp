@@ -19,6 +19,7 @@
 #include "SFML/Window/Window.hpp"
 #include "network/NetworkClient.hpp"
 #include "network/NetworkManager.hpp"
+#include "WallGenerator.hpp"
 
 using namespace gp::network;
 
