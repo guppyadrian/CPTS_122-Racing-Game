@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include <SFML/Window/Keyboard.hpp>
 
 PlayerController::PlayerController() : _rb(nullptr), input(0){}
 
@@ -14,6 +15,16 @@ void PlayerController::init()
 
 void PlayerController::fixedUpdate()
 {
+	input = 0.f;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+		input = -1.0f; // Move Left
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+		input = 1.0f;  // Move Right
+	}
+
 	//forces
 	b2BodyId id = _rb->getBodyId();
 	auto rot = b2Body_GetRotation(id);
@@ -22,8 +33,22 @@ void PlayerController::fixedUpdate()
 	auto worldForce = b2RotateVector(rot, localForce);
 
 
-	//rotation time
-	b2Body_ApplyTorque(id, input * rotSpeed, true);
+	// 1. Handle Rotation & Braking
+	if (input != 0.f)
+	{
+		b2Body_ApplyTorque(id, input * rotSpeed, true);
+	}
+	else
+	{
+		// Get the current angular velocity
+		float currentAngularVel = b2Body_GetAngularVelocity(id);
+
+		// Calculate counter-torque (braking force)
+		// Adjust 'brakingPower' to make the stop faster or slower
+		float stopTorque = -currentAngularVel * rotBrakingPower;
+
+		b2Body_ApplyTorque(id, stopTorque, true);
+	}
 
 	//Raycast thrust
 	b2Vec2 ray = { 0.0f,-1.0f };
