@@ -18,6 +18,8 @@
 #include <flow/PhysicsManager.hpp>
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
+#include <flow/components/Camera.hpp>
+
 #include "WallGenerator.hpp"
 #include "Player.hpp"
 
@@ -79,6 +81,9 @@ int main()
 
 	player.addComponent<PlayerController>();
 
+	sf::View view = sf::View({ 0,0 }, { 600, 400 });
+	player.addComponent<flow::Camera>(view);
+
 	newScene->AddGameObject(std::move(player));
 
 
@@ -120,6 +125,7 @@ int main()
 
 		window.clear();
 		flow::Renderer::getGlobalRenderer().drawAll();
+		window.setView(window.getDefaultView());
 		window.draw(fpsText);
 		window.display();
 	}
