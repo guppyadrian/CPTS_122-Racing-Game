@@ -1,0 +1,115 @@
+#pragma once
+
+#include <string>
+
+namespace flow
+{
+	namespace shaders
+	{
+		inline const char* blurShaderSource = ""
+			"uniform sampler2D texture;\n"
+			"uniform vec2 offset;\n"
+			"void main() {\n"
+			"vec2 tc = gl_TexCoord[0].xy;\n"
+			"vec4 color = texture2D(texture, tc) * 0.382928;"
+			"color += texture2D(texture, tc + offset) * 0.241732;"
+			"color += texture2D(texture, tc - offset) * 0.241732;"
+			"color += texture2D(texture, tc + 2.0 * offset) * 0.060598;"
+			"color += texture2D(texture, tc - 2.0 * offset) * 0.060598;"
+			"gl_FragColor = color;\n"
+			"}\n"
+			;
+
+		inline const char* brightShaderSource = ""
+			"uniform sampler2D texture;\n"
+			"uniform float threshold;\n"
+			"void main()\n"
+			"{\n"
+			"vec4 color = texture2D(texture, gl_TexCoord[0].xy);\n"
+			"float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));\n"
+			"if (brightness > threshold)\n"
+			"gl_FragColor = color;\n"
+			"else\n"
+			"gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
+			"}\n"
+			;
+
+		// By Xor from GM Shaders
+		//https://mini.gmshaders.com/p/gm-shaders-mini-chromatic-aberration
+		inline const char* chromaticAberrationShaderSource = ""
+			"uniform float samples; //Number of color shift samples (Even!)			  \n"
+			"uniform vec2 offset;						  \n"
+			"uniform sampler2D texture;\n"
+			"void main() {\n"
+			"																		  \n"
+			"		//Color sample and weight sums for weighted average			  \n"
+			"		vec4 color_sum = vec4(0);									  \n"
+			"		vec4 weight_sum = vec4(0);										  \n"
+			"																		  \n"
+			"		//Iterate through samples (should be an even number)			  \n"
+			"		for (float i = 0.0; i <= 1.0; i += 1.0 / samples)				  \n"
+			"		{																  \n"
+			"			//Sample texture coordinates with offset (-0.5 to +0.5)		  \n"
+			"			vec2 coord = gl_TexCoord[0].xy + (i - 0.5) * offset;		  \n"
+			"			//Sample texture at coordinates								  \n"
+			"			vec4 color = texture2D(texture, coord);				  \n"
+			"			//Get separate weight values for each  channel				  \n"
+			"			//R ranges from 0 to 1, G from 0 to 1 to 0 and B from 1 to 0  \n"
+			"			vec4 weight = vec4(i, 1.0 - abs(i * 2.0 - 1.0), 1.0 - i, 0.5);\n"
+			"																		  \n"
+			"			//Add color (squared for gamma) with weight factors			  \n"
+			"			color_sum += color * color * weight;						  \n"
+			"			//Add weight totals for averaging							  \n"
+			"			weight_sum += weight;										  \n"
+			"		}																  \n"
+			"		//Compute average (sqrt for gamma decoding)						  \n"
+			"		gl_FragColor = sqrt(color_sum / weight_sum);					  \n"
+			"}\n"
+			;
+
+		inline const char* scanLinesShaderSource = ""
+			"uniform float spacing;														\n"
+			"uniform sampler2D texture;													\n"
+			"void main() {																\n"
+			"		vec2 coord = gl_TexCoord[0].xy;										\n"
+			"		vec4 temp = texture2D( texture, coord );							\n"
+			"		gl_FragColor = temp * (mod(coord.y, spacing * 2.0) / spacing);		\n"
+			//"		gl_FragColor = temp;												\n"
+			"}"
+			;
+
+		//AI Generated
+		inline const char* crtDistortionShaderSource = ""
+			"// Uniforms (Adjust these values to tweak the effect)\n"
+			"uniform sampler2D texture;\n"
+			"uniform float distortion = 0.6; // Amount of curvature\n"
+			"vec2 curve(vec2 uv) {\n"
+			"// Map UVs from [0, 1] to [-1, 1]\n"
+			"uv = uv * 2.0 - 1.0;\n"
+			"// Apply radial distortion\n"
+			"vec2 offset = abs(uv.yx) / vec2(6.0, 4.0); // Adjusts roundness\n"
+			"uv = uv + uv * offset * offset * distortion;\n"
+			"// Map UVs back to [0, 1]\n"
+			"uv = uv * 0.5 + 0.5;\n"
+			"return uv;\n"
+			"}\n"
+			"void main() {\n"
+			"vec2 distortedUv = curve(gl_TexCoord[0].xy);\n"
+			"// Check if the distorted UV is outside the screen bounds [0, 1]\n"
+			"if (distortedUv.x < 0.0 || distortedUv.x > 1.0 ||\n"
+			"	distortedUv.y < 0.0 || distortedUv.y > 1.0) {\n"
+			"	gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); // Draw black bezel\n"
+			"}\n"
+			"else {\n"
+			"	// Sample the texture with the new coordinates\n"
+			"	vec3 color = texture2D(texture, distortedUv).rgb;\n"
+			"	// Optional: Simple Vignette to darken the edges\n"
+			"	float vignette = (16.0 * distortedUv.x * distortedUv.y * (1.0 - distortedUv.x) * (1.0 - distortedUv.y));\n"
+			"	color *= pow(vignette, 0.1);\n"
+			""
+			"	gl_FragColor = vec4(color, 1.0);\n"
+			"}"
+			"}"
+			;
+	}
+}
