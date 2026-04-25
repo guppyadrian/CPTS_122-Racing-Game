@@ -1,4 +1,4 @@
-﻿// Logan Rainchild
+// Logan Rainchild
 
 #include <iostream>
 #include <memory>
