@@ -26,9 +26,9 @@ namespace flow
 		template <DerivedComponent T, typename... Args>
 		T& addComponent(Args&&... args)
 		{
-			mComponents.emplace_back<T>(std::forward<Args>(args)...);
+			mComponents.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
 			mComponents.back()->mGameObject = this;
-			return dynamic_cast<T>(*mComponents.back());
+			return *dynamic_cast<T*>(mComponents.back().get());
 		}
 
 		void init(); // init all components

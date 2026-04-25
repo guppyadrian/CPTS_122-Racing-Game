@@ -18,10 +18,10 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int length, float
 		std::cerr << "Failed to load texture from image\n";
 	}
 
-	auto sr = gameObject.addComponent<flow::SpriteRenderer>(texture);
+	auto& sr = gameObject.addComponent<flow::SpriteRenderer>(texture);
 
 	// Create a rigidbody component ---
-	auto rbComponent = gameObject.addComponent<flow::Rigidbody>(); // create a rigidbody
+	auto& rbComponent = gameObject.addComponent<flow::Rigidbody>(); // create a rigidbody
 
 	// --- Configure the rigidBody's parameters ---
 	// Note: You can have multiple collision shapes on a single body!
@@ -125,11 +125,11 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 		std::cerr << "Failed to load texture from image\n";
 	}
 
-	auto sr = gameObject.addComponent<flow::SpriteRenderer>(texture);
+	auto& sr = gameObject.addComponent<flow::SpriteRenderer>(texture);
 
 
 	// Create a rigidbody component ---
-	auto rbComponent = gameObject.addComponent<flow::Rigidbody>();
+	auto& rbComponent = gameObject.addComponent<flow::Rigidbody>();
 
 	// --- Configure the rigidBody's parameters ---
 	// A wall should be static

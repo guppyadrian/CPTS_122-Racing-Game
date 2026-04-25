@@ -50,7 +50,7 @@ int main()
 
 	player.addComponent<flow::SpriteRenderer>(std::string("assets/jonah.png"));
 
-	auto rbComponent = player.addComponent<flow::Rigidbody>();
+	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 
 	// --- Configure the rigidBody's parameters ---
 	// Note: You can have multiple collision shapes on a single body!

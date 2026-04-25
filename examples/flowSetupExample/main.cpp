@@ -44,10 +44,10 @@ int main()
 		gameObject.mTransform.setScale(sf::Vector2f(0.08f, 0.08f));
 
 		// -- Create a sprite renderer component ---
-		auto srComponent = gameObject.addComponent<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
+		auto& srComponent = gameObject.addComponent<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
 
 		// Create a rigidbody component ---
-		auto rbComponent = gameObject.addComponent<flow::Rigidbody>(); // create a rigidbody
+		auto& rbComponent = gameObject.addComponent<flow::Rigidbody>(); // create a rigidbody
 
 		// --- Configure the rigidBody's parameters ---
 		// Note: You can have multiple collision shapes on a single body!
