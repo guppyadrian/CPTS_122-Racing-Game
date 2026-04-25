@@ -17,9 +17,11 @@ namespace gp::network
         asio::executor_work_guard<asio::io_context::executor_type> _guard;
         std::thread _thread;
 
-        static inline bool _running = false;
+        static inline bool _running = false; // TODO: is this used?
         static inline std::unique_ptr<NetworkManager> _instance = nullptr;
     public:
+        // Starts running networking in another thread
+        // NOTE: please remember to call Stop()!
         static void Start();
         static void Stop() { _instance->stop(); }
 

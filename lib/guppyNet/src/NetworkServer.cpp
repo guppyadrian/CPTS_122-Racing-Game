@@ -6,17 +6,16 @@
 
 #include <iostream>
 
-#include "network/NetworkManager.hpp"
-
 namespace gp::network
 {
-    NetworkServer::NetworkServer() : _io(NetworkManager::io()), _acceptor(_io)
+    NetworkServer::NetworkServer(const uint16_t port) : _io(NetworkManager::io()), _acceptor(_io, tcp::endpoint(tcp::v4(), port))
     {
     }
 
-    void NetworkServer::listen(uint16_t port)
+    void NetworkServer::listen()
     {
-        
+        // TODO???
+        doAccept();
     }
 
     void NetworkServer::doAccept()
@@ -30,6 +29,16 @@ namespace gp::network
                 return;
             }
 
+            std::cout << "new connection: " << socket.remote_endpoint() << std::endl;
+
+            const auto conn = std::make_shared<ServerConnection>(std::move(socket));
+
+            if (onConnection) onConnection(conn);
+
+            _connections.push_back(conn);
+
+            conn->start();
+            
             doAccept();
         });
     }

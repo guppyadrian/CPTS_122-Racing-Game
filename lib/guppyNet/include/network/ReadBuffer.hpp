@@ -4,11 +4,12 @@
 
 #pragma once
 #include <array>
-#include <vector>
 
+#include "Packet.hpp"
 #include "network/Serialize.hpp"
+#include "network/Shared.hpp"
 
-// TODO: work on this more later
+// TODO: i notice that I feel like its extra effort dealing with header and body being separate. Might be better to just have a single vector? 
 namespace gp::network
 {
     class ReadBuffer
@@ -18,19 +19,15 @@ namespace gp::network
     private:
         std::array<uint8_t, headerMaxLength> _header{};
         uint8_t _headerLength = 0;
-        std::vector<uint8_t> _body{};
+        ByteBuffer _body{};
 
     public:
         ReadBuffer() = default;
 
-        // returns true if a packet is completed
-        bool readData(const uint8_t* start, uint32_t length);
-
-        NetworkPacket collectPacket();
-        bool hasReadyPacket() {return true;} // TODO: implement
+        Packet collectPacket();
 
         std::array<uint8_t, headerMaxLength>& header() {return _header;}
-        std::vector<uint8_t>& body() {return _body;}
+        ByteBuffer& body() {return _body;}
 
         [[nodiscard]] uint32_t getBodyLength() const { return ReadData<uint32_t>(_header.data() + 1); }
         [[nodiscard]] uint16_t getEventNameLength() const { return ReadData<uint16_t>(_header.data() + sizeof(uint32_t) + 1); }
