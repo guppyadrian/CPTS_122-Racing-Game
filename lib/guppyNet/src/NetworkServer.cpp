@@ -6,8 +6,6 @@
 
 #include <iostream>
 
-#include "network/NetworkManager.hpp"
-
 namespace gp::network
 {
     NetworkServer::NetworkServer(const uint16_t port) : _io(NetworkManager::io()), _acceptor(_io, tcp::endpoint(tcp::v4(), port))
@@ -35,7 +33,7 @@ namespace gp::network
 
             const auto conn = std::make_shared<ServerConnection>(std::move(socket));
 
-            if (onConnection) onConnection(conn); // TODO: somewhere in the code there is a ByteBuffer vec{}, make is use ByteBuffer{} in one line
+            if (onConnection) onConnection(conn);
 
             _connections.push_back(conn);
 

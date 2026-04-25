@@ -6,23 +6,26 @@
 #include "ServerConnection.hpp"
 #include "asio/ip/tcp.hpp"
 #include "network/Serialize.hpp"
-#include "network/Shared.hpp"
+#include "network/NetworkManager.hpp" // pls dont delete! this is for forwarding manager
 
 using asio::ip::tcp;
 
 namespace gp::network
 {
+    // Shared pointer to a ServerConnection
+    using Socket = std::shared_ptr<ServerConnection>;
+    
     class NetworkServer
     {
     private:
         asio::io_context& _io;
         tcp::acceptor _acceptor;
-        std::vector<std::shared_ptr<ServerConnection>> _connections; // TODO: is this right??
+        std::vector<Socket> _connections;
     public:
         explicit NetworkServer(uint16_t port);
         void listen();
 
-        std::function<void(std::shared_ptr<ServerConnection>)> onConnection;
+        std::function<void(Socket)> onConnection;
 
     private:
         void doAccept();

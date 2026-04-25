@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <network/NetworkManager.hpp>
 #include <network/NetworkServer.hpp>
 
 using namespace gp::network;
@@ -14,7 +13,7 @@ int main()
 
     NetworkServer server(3000);
 
-    server.onConnection = [](std::shared_ptr<ServerConnection> socket)
+    server.onConnection = [](Socket socket)
     {
         socket->on<std::string>("exampleEvent", [socket](const std::string &data)
         {

@@ -57,9 +57,8 @@ namespace gp::network
         };
         
     public:
-        // TODO: check which constructors I actually use
         Packet(const uint8_t type, const std::string_view eventName, const ByteBuffer& data) : _type(type), _eventName(eventName), _data(data) {}
-        explicit Packet(const ByteBuffer& data);
+        explicit Packet(const ByteBuffer& data); // TODO: unused rn!
         Packet(const std::array<uint8_t, 7>& header, const ByteBuffer& body);
 
         ByteBuffer toBytes() const;

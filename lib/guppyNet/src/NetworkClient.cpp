@@ -39,6 +39,11 @@ namespace gp::network
         );
     }
 
+    void NetworkClient::emit(std::string_view eventName, const ByteBuffer &data)
+    {
+        _emit(0u, eventName, data);
+    }
+
     void NetworkClient::on(const std::string& eventName, const std::function<void()>& callback)
     {
         _listeners[eventName] = [callback](const std::any&){ callback(); };
@@ -50,10 +55,10 @@ namespace gp::network
 
         const ByteBuffer bytes = Packet(type, eventName, data).toBytes(); // TODO: technically tiny overhead to create a packet then run toBytes.
 
-        asio::post(_io, [this, bytes]()
+        asio::post(_io, [this, bytes = std::move(bytes)]() mutable
         {
             const bool writeInProgress = !_writeBuffer.empty();
-            _writeBuffer.push_back(bytes);
+            _writeBuffer.push_back(std::move(bytes));
             if (!writeInProgress) doWrite();
         });
     }
@@ -62,8 +67,7 @@ namespace gp::network
     {
         if (_listeners.contains("connection"))
         {
-            constexpr ByteBuffer vec; // TODO: this is ugly
-            _listeners["connection"](vec);
+            _listeners["connection"](ByteBuffer{});
         }
         doReadHeader();
     }
@@ -99,7 +103,7 @@ namespace gp::network
 
             const Packet packet = _readBuffer.collectPacket();
             
-            onReceive(packet); // TODO: take in data type? lowk just take in packet
+            onReceive(packet);
 
             doReadHeader();
         });

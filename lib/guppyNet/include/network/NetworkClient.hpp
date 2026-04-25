@@ -31,10 +31,15 @@ namespace gp::network
         NetworkClient() : _io(NetworkManager::io()), _resolver(_io), _socket(_io) {}
         explicit NetworkClient(asio::io_context& io) : _io(io), _resolver(_io), _socket(_io) {} // alternative constructor if you want to manually pass the io
 
+        // connect to a TCP server using address and port
         void connect(const std::string& address, uint16_t port);
 
-        template<NetworkData T>
+        // Emits an event to the server
+        template<Serializable T>
         void emit(std::string_view eventName, const T& data);
+        
+        // Emits an event to the server, sends raw bytes
+        void emit(std::string_view eventName, const ByteBuffer& data);
 
         template<Serializable T, EventCallback<T> F>
         void on(const std::string& eventName, F callback);
@@ -43,25 +48,23 @@ namespace gp::network
         [[nodiscard]] bool connected() const { return _socket.is_open(); }
 
     private:
+        // called by emit(), adds event to write queue
         void _emit(uint8_t type, std::string_view eventName, const ByteBuffer& data);
-        
+
+        // called when socket connects to server
         void onConnect();
+        // called when a full packet is received from the server
         void onReceive(const Packet& packet);
 
-        // this do stuff is ran async
+        // this 'do' stuff is ran async
         void doWrite();
         void doReadHeader();
         void doReadBody(); // TODO: start renaming stuff to Body instead of Data
     };
 
-    template <NetworkData T>
+    template <Serializable T>
     void NetworkClient::emit(const std::string_view eventName, const T& data)
     {
-        if constexpr (!Serializable<T>) // means that this is already a byte vector  TODO: maybe be more verbose about this?
-        {
-            send(eventName, data);
-            return;
-        }
         _emit(2u, eventName, Serialize(data)); // TODO: have a SerializeType() thing to find which type this is or something
     }
 

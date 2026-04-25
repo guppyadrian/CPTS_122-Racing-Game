@@ -22,12 +22,13 @@ namespace gp::network
         std::function<void()> _onClose;
     public:
         explicit ServerConnection(tcp::socket socket) : _socket(std::move(socket)) {}
+        // Starts listening :)... TODO: wait shouldn't this be called in constructor? so user can't call start()!
         void start();
 
         template <Serializable T, EventCallback<T> F>
         void on(const std::string& eventName, const F& callback);
         void on(const std::string& eventName, const std::function<void()>& callback);
-        template <NetworkData T>
+        template <Serializable T>
         void emit(std::string_view eventName, const T& data);
         void close() { _onClose(); }
     private:
@@ -49,7 +50,7 @@ namespace gp::network
         };
     }
 
-    template<NetworkData T>
+    template<Serializable T>
     void ServerConnection::emit(const std::string_view eventName, const T &data)
     {
         _emit(2u, eventName, Serialize(data));

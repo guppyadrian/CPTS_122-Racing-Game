@@ -16,7 +16,7 @@ namespace gp::network
         const auto eventNameLength = buffer.read<uint16_t>();
 
         _eventName = buffer.readString(eventNameLength);
-        _data = std::move(buffer.readBytes(dataLength)); // TODO: does this do what I think it does?
+        _data = buffer.readBytes(dataLength);
     }
 
     Packet::Packet(const std::array<uint8_t, 7> &header, const ByteBuffer &body)
@@ -51,6 +51,6 @@ namespace gp::network
         buffer.insert(buffer.end(), _eventName.begin(), _eventName.end());
         buffer.insert(buffer.end(), _data.begin(), _data.end());
 
-        return buffer; // TODO: does std::move here do anything? or does it get optimized automatically?
+        return buffer;
     }
 }

@@ -11,8 +11,6 @@ namespace gp::network
     template <typename F, typename T>
     concept EventCallback = std::invocable<F, T> && std::same_as<std::invoke_result_t<F, T>, void>; // concept slop
     // ^ got this from chatGPT. I wanted to use std::function, but it doesn't work well with templates :(
-    //using EventCallbackVoid = std::function<void()>; // TODO: should I use this??
 
-    // TODO: ByteBuffer type
     using ByteBuffer = std::vector<uint8_t>;
 }

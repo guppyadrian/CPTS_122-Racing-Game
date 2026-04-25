@@ -78,10 +78,10 @@ namespace gp::network
     {
         const ByteBuffer bytes = Packet(type, eventName, data).toBytes();
 
-        asio::post(_socket.get_executor(), [this, bytes]()
+        asio::post(_socket.get_executor(), [this, bytes = std::move(bytes)]() mutable
         {
             const bool writeInProgress = !_writeBuffer.empty();
-            _writeBuffer.push_back(bytes); // TODO: std::move?
+            _writeBuffer.push_back(std::move(bytes)); // TODO: std::move?
             if (!writeInProgress) doWrite();
         });
     }
