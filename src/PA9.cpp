@@ -26,7 +26,6 @@
 
 int main()
 {
-
 	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
 
 	window.setFramerateLimit(240);
@@ -34,6 +33,8 @@ int main()
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
+
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 600.f);
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
