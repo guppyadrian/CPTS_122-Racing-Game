@@ -28,26 +28,26 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int length, float
 	// Note: You can have multiple collision shapes on a single body!
 	b2BodyId bodyId = rbComponent->getBodyId();
 	b2Body_SetType(bodyId, b2_staticBody); // static body
-	b2ShapeDef shapeDef = b2DefaultShapeDef();
-	shapeDef.density = 0.1f;
-	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.f;
+	b2SurfaceMaterial mat[1];
+	mat[0] = b2DefaultSurfaceMaterial();
+	mat[0].friction = 0.f;
+	mat[0].restitution = 0.f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = gameObject.getComponent<flow::SpriteRenderer>()->getSprite();
 	// --- local bounds = actual texture size in pixels ---
 	sf::FloatRect local = sprite.getLocalBounds();
 
-	// --- apply the GameObject transform scale ---
-	sf::Vector2f scale = gameObject.mTransform.getScale();
-
 	// --- Box2D box expects half-width and half-height ---
-	sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f, local.size.y * scale.y * 0.5f);
-	std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
-	b2Polygon box = b2MakeBox(halfExtents.x, halfExtents.y);
+	b2ChainDef chain = b2DefaultChainDef();
+	b2Vec2 verts[4] = { {0,0}, {0,0}, {local.size.x,0}, {local.size.x,0} };
+	chain.points = verts;
+	chain.count = 4;
+	chain.materials = mat;
+	chain.materialCount = 1;
 
 	// Attach it to the existing bodyId
-	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
+	b2ChainId shapeId = b2CreateChain(bodyId, &chain);
 
 	gameObject.addComponent(std::move(rbComponent)); // move the component into the object
 	gameObject.mTransform.setRotationDeg(angle);
