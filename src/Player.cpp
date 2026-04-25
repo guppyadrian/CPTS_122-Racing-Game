@@ -53,7 +53,7 @@ void PlayerController::fixedUpdate()
 
 	//Raycast thrust
 	b2Vec2 thrustForce = { 0.0f,0.0f };
-	b2Vec2 ray = { 0.0f, 50.0f };
+	b2Vec2 ray = { 0.0f, 20.0f };
 	ray = b2RotateVector(rot, ray);
 	auto r = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray, b2DefaultQueryFilter());
 
@@ -72,7 +72,7 @@ void PlayerController::fixedUpdate()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 	{
-		worldForce = b2MulSV(30, worldForce);
+		worldForce = b2MulSV(500, worldForce);
 	}
 	//End of remove
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);

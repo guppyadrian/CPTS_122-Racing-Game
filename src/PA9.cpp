@@ -23,7 +23,6 @@
 #include "WallGenerator.hpp"
 #include "Player.hpp"
 
-
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
@@ -44,21 +43,33 @@ int main()
 	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg.png"));
 	newScene->AddGameObject(std::move(bg));
 
-
 	//walls and stuff
 
 	//flow::GameObject straightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
 	//newScene->AddGameObject(std::move(straightWall));
 
 	// example when you dont need to use std::move
-	//newScene->AddGameObject(WallGenerator::GenerateWall({350, 150}, 150, B2_PI/2, -B2_PI, 128, sf::Color::Red));
-	//newScene->AddGameObject(WallGenerator::GenerateWall({ 50, 150 }, 150, -B2_PI/2, -B2_PI, 128, sf::Color::Red));
 
-	//newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 1024, sf::Color::Blue));
-	//newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 1024, sf::Color::Blue));
+	//Capsule Tester
+	newScene->AddGameObject(WallGenerator::GenerateWall({150, 0}, 150, B2_PI/2, -B2_PI, 128, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 0 }, 150, -B2_PI/2, -B2_PI, 128, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,-150 }, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
 
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 200,0 }, 300, 0, sf::Color::White));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 200,300 }, 300, 180, sf::Color::White));
+
+	//Circle Tester
+	/*
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 1024, sf::Color::Blue));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 1024, sf::Color::Blue));
+	*/
+
+	//Box tester
+	/*
+	newScene->AddGameObject(WallGenerator::GenerateWall({0,-150}, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 150,0 }, 300, 90, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150,0 }, 300, 270, sf::Color::White));
+	*/
 
 
 	flow::GameObject player = flow::GameObject();
@@ -78,7 +89,7 @@ int main()
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.4f;
+	shapeDef.material.restitution = 0.25f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();

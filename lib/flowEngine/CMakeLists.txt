@@ -11,7 +11,7 @@ target_sources(flowEngine PRIVATE
         src/SpriteRenderer.cpp
         src/Transform.cpp src/Camera.cpp)
 
-target_include_directories(flowEngine PUBLIC include)
+target_is(flowEngine PUBLIC include)
 
 
 add_subdirectory(external/SFML)
