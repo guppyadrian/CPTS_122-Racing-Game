@@ -29,9 +29,8 @@ namespace flow
         }
 
         brightPass.setSmooth(true);
-        blurPing.setSmooth(true);
-        blurPong.setSmooth(true);
-        chromaticAberration.setSmooth(true);
+        ping.setSmooth(true);
+        pong.setSmooth(true);
     }
 
     void Renderer::addSpriteRenderer(SpriteRenderer* sprite)
@@ -53,9 +52,8 @@ namespace flow
 
         mainScene.clear();
         brightPass.clear();
-        blurPing.clear();
-        blurPong.clear();
-        chromaticAberration.clear();
+        ping.clear();
+        pong.clear();
 
         // draw all SpriteRenderers
         for (auto& sprite : mActiveSprites)
@@ -73,7 +71,7 @@ namespace flow
 
         // setup the blur pass
         sf::RenderTexture* input = &brightPass;
-        sf::RenderTexture* output = &blurPing;
+        sf::RenderTexture* output = &ping;
 
         bool pingPong = true;
         int iterations = 8; // (H+V) * 4
@@ -93,8 +91,8 @@ namespace flow
 
             // SWAP: Current output becomes the next input
             if (i == 0) {
-                input = &blurPing;
-                output = &blurPong;
+                input = &ping;
+                output = &pong;
             }
             else {
                 std::swap(input, output);
@@ -103,40 +101,48 @@ namespace flow
             pingPong = !pingPong;
         }
 
+        output->draw(sf::Sprite(mainScene.getTexture()));
+        output->display();
+
         // Composite in the bloom
         sf::RenderStates states;
         states.blendMode = sf::BlendAdd; // Add the glow to the scene
-        mainScene.draw(sf::Sprite(input->getTexture()), states);
-        mainScene.display();
+        output->draw(sf::Sprite(input->getTexture()), states);
+        output->display();
+
+        std::swap(input, output);
 
         // composite chromatic abberation over the mainScene
         cromeAbShader.setUniform("texture", mainScene.getTexture());
         cromeAbShader.setUniform("samples", (mCromeAbOffset.lengthSquared() == 0.f) ? 2.f : 20.f);
         cromeAbShader.setUniform("offset", mCromeAbOffset);
-        chromaticAberration.draw(sf::Sprite(input->getTexture()), &cromeAbShader);
-        chromaticAberration.display();
+        output->draw(sf::Sprite(mainScene.getTexture()), &cromeAbShader);
+        output->display();
+
+        std::swap(input, output);
 
         //mWindowRef->draw(sf::Sprite(chromaticAberration.getTexture()));
 
         //draw the scan lines
-        scanLines.setUniform("texture", chromaticAberration.getTexture());
-        scanLines.setUniform("spacing",  2.f / chromaticAberration.getSize().y );
-        mainScene.clear();
-        mainScene.draw(sf::Sprite(chromaticAberration.getTexture()), &scanLines);
-        mainScene.display();
+        scanLines.setUniform("texture", input->getTexture());
+        scanLines.setUniform("spacing",  2.f / input->getSize().y );
+        output->draw(sf::Sprite(input->getTexture()), &scanLines);
+        output->display();
+
+        std::swap(input, output);
 
         // distort the screen
-        crtDistortion.setUniform("texture", mainScene.getTexture());
-        chromaticAberration.clear();
-        chromaticAberration.draw(sf::Sprite(mainScene.getTexture()), &crtDistortion);
-        chromaticAberration.display();
+        crtDistortion.setUniform("texture", input->getTexture());
+        crtDistortion.setUniform("distortion", 1.2f);
+        output->draw(sf::Sprite(input->getTexture()), &crtDistortion);
+        output->display();
 
-        mWindowRef->draw(sf::Sprite(chromaticAberration.getTexture())); // Output the final composite
+        mWindowRef->draw(sf::Sprite(output->getTexture())); // Output the final composite
 
     }
 
     void Renderer::setView(const sf::View& view)
     {
-        mWindowRef->setView(view);
+        mainScene.setView(view);
     }
 }

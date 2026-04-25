@@ -78,10 +78,11 @@ namespace flow
 			"}"
 			;
 
+		//AI Generated
 		inline const char* crtDistortionShaderSource = ""
 			"// Uniforms (Adjust these values to tweak the effect)\n"
 			"uniform sampler2D texture;\n"
-			"uniform float distortion = 0.4; // Amount of curvature\n"
+			"uniform float distortion = 0.6; // Amount of curvature\n"
 			"vec2 curve(vec2 uv) {\n"
 			"// Map UVs from [0, 1] to [-1, 1]\n"
 			"uv = uv * 2.0 - 1.0;\n"

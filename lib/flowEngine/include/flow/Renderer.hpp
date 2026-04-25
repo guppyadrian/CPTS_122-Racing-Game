@@ -13,9 +13,8 @@ namespace flow
 
 		sf::RenderTexture mainScene;
 		sf::RenderTexture brightPass;
-		sf::RenderTexture blurPing;
-		sf::RenderTexture blurPong;
-		sf::RenderTexture chromaticAberration;
+		sf::RenderTexture ping;
+		sf::RenderTexture pong;
 
 		sf::Shader brightShader;
 		sf::Shader blurShader;
@@ -23,7 +22,7 @@ namespace flow
 		sf::Shader scanLines;
 		sf::Shader crtDistortion;
 
-		sf::Vector2f mCromeAbOffset;
+		sf::Vector2f mCromeAbOffset = {0.01f, 0.001f};
 
 		Renderer();
 
@@ -44,9 +43,8 @@ namespace flow
 			mWindowRef = window;
 			mainScene = sf::RenderTexture(mWindowRef->getSize());
 			brightPass = sf::RenderTexture(mWindowRef->getSize());
-			blurPing = sf::RenderTexture(mWindowRef->getSize());
-			blurPong = sf::RenderTexture(mWindowRef->getSize());
-			chromaticAberration = sf::RenderTexture(mWindowRef->getSize());
+			ping = sf::RenderTexture(mWindowRef->getSize());
+			pong = sf::RenderTexture(mWindowRef->getSize());
 		};
 
 		void addSpriteRenderer(SpriteRenderer* sprite);
