@@ -34,7 +34,7 @@ int main()
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
 
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 600.f);
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 4000.f);
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
@@ -51,16 +51,16 @@ int main()
 	//newScene->AddGameObject(std::move(straightWall));
 
 	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({150, 150}, 150, 1.57f, -3.141f, 600, sf::Color::Red));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 150 }, 150, -1.57f, -3.141f, 600, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({350, 150}, 150, 1.5707963267949f, -3.14159265358979f, 32, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 50, 150 }, 150, -1.5707963267949f, -3.14159265358979f, 32, sf::Color::Red));
 
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,0 }, 300, 0, sf::Color::White));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,300 }, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 200,0 }, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 200,300 }, 300, 180, sf::Color::White));
 
 
 	flow::GameObject player = flow::GameObject();
 
-	player.mTransform.setPosition(sf::Vector2f(120,180));
+	player.mTransform.setPosition(sf::Vector2f(300,180));
 	player.mTransform.setRotationDeg(0);
 	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
 
@@ -75,7 +75,7 @@ int main()
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.3f;
+	shapeDef.material.restitution = 0.0f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
