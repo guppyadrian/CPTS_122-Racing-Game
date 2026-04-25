@@ -24,6 +24,16 @@ void PlayerController::fixedUpdate()
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
 		input += 1.0f;  // Move Right
 	}
+	if (
+		(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) &&
+
+		(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+		)
+	{
+		input = 0.f; //no thrust
+	}
 
 	//forces
 	b2BodyId id = _rb->getBodyId();
