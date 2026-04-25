@@ -27,9 +27,9 @@
 int main()
 {
 
-	sf::RenderWindow window(sf::VideoMode({ 600, 400 }), "Game");
+	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
 
-	//window.setFramerateLimit(60);
+	window.setFramerateLimit(240);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
@@ -37,18 +37,25 @@ int main()
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
-	flow::GameObject straightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
-	newScene->AddGameObject(std::move(straightWall));
+
+	//walls and stuff
+
+	//flow::GameObject straightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
+	//newScene->AddGameObject(std::move(straightWall));
 
 	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({100, 100}, 200, 3.141f, -3.141f, 32, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({150, 150}, 150, 1.57f, -3.141f, 120, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 150 }, 150, -1.57f, -3.141f, 120, sf::Color::Red));
+
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,0 }, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,300 }, 300, 0, sf::Color::White));
 
 
 	flow::GameObject player = flow::GameObject();
 
 	player.mTransform.setPosition(sf::Vector2f(120,180));
-	player.mTransform.setRotationDeg(180);
-	player.mTransform.setScale(sf::Vector2f(0.03f, 0.03f));
+	player.mTransform.setRotationDeg(0);
+	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
 
 	player.addComponent<flow::SpriteRenderer>(std::string("assets/jonah.png"));
 
