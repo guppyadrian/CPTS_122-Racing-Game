@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <utility>
 #include "Transform.hpp"
 #include "Component.hpp"
 
@@ -21,12 +22,14 @@ namespace flow
 		// get the first component of type T
 		template<class T>
 		T* getComponent();
-		void addComponent(std::unique_ptr<Component> c)
+
+		template <DerivedComponent T, typename... Args>
+		T& addComponent(Args&&... args)
 		{
-           // set the parent pointer on the component and store it
-			c->mGameObject = this;
-			mComponents.push_back(std::move(c));
-		};
+			mComponents.emplace_back<T>(std::forward<Args>(args)...);
+			mComponents.back()->mGameObject = this;
+			return dynamic_cast<T>(*mComponents.back());
+		}
 
 		void init(); // init all components
 		void update(float dt); // update all components

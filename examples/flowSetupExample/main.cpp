@@ -44,15 +44,14 @@ int main()
 		gameObject.mTransform.setScale(sf::Vector2f(0.08f, 0.08f));
 
 		// -- Create a sprite renderer component ---
-		auto srComponent = std::make_unique<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
-		gameObject.addComponent(std::move(srComponent)); // move the component into the object
+		auto srComponent = gameObject.addComponent<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
 
 		// Create a rigidbody component ---
-		auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
+		auto rbComponent = gameObject.addComponent<flow::Rigidbody>(); // create a rigidbody
 
 		// --- Configure the rigidBody's parameters ---
 		// Note: You can have multiple collision shapes on a single body!
-		b2BodyId bodyId = rbComponent->getBodyId();
+		b2BodyId bodyId = rbComponent.getBodyId();
 		b2Body_SetType(bodyId, b2_dynamicBody); // Make the body dynamic (it moves)
 		b2ShapeDef shapeDef = b2DefaultShapeDef();
 		shapeDef.density = 0.1f;
@@ -74,8 +73,6 @@ int main()
 
 		// Attach it to the existing bodyId
 		b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
-
-		gameObject.addComponent(std::move(rbComponent)); // move the component into the object
 
 		//Note: make sure you set up components before you move them into the class
 		// or get a new reference after you move it because the old ptr will be null

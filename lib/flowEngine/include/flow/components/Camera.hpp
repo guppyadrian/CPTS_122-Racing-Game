@@ -20,7 +20,7 @@ namespace flow
 
 		sf::Vector2f getViewSize()
 		{
-			mView.getSize();
+			return mView.getSize();
 		}
 
 		void update(float dt) override;

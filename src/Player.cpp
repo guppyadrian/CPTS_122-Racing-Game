@@ -5,6 +5,11 @@ PlayerController::PlayerController() : _rb(nullptr), input(0){}
 void PlayerController::init()
 {
 	_rb = mGameObject->getComponent<flow::Rigidbody>();
+	if (_rb == nullptr)
+	{
+		int i = 0;
+		i++;
+	}
 }
 
 void PlayerController::fixedUpdate()
