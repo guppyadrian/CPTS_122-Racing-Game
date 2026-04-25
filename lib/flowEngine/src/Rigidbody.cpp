@@ -22,7 +22,7 @@ namespace flow
 		float rot = mGameObject->mTransform.getRotationRad();
 
 		b2Body_SetTransform(mBodyId, { pos.x, pos.y }, b2MakeRot(rot));
-		std::cout << "initialized rb " << mBodyId.index1 << std::endl;
+		std::cout << "initialized rb transform" << mBodyId.index1 << std::endl;
 	}
 
 	void Rigidbody::update(float dt)

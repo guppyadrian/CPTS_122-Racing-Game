@@ -23,7 +23,7 @@ endif()
 
 
 # Add source to this project's executable.
-add_executable (RacerGame src/PA9.cpp)
+add_executable (RacerGame src/PA9.cpp "src/WallGenerator.cpp")
 
 target_include_directories(RacerGame PRIVATE include)
 

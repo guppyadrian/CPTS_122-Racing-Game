@@ -11,9 +11,11 @@ namespace flow
 	public:
 		LevelScene(const std::string uuid);
 		~LevelScene() = default;
+		void onEnter() override;
 		void initialize();
 		void update(float dt);
-		void AddGameObject(const flow::GameObject& gameObject);
+        // take by value and move into the internal vector to support non-copyable GameObject
+		void AddGameObject(flow::GameObject gameObject);
 		//TODO: Implement RemoveGameObject
 	};
 }

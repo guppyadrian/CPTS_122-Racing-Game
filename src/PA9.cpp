@@ -1,26 +1,25 @@
-﻿// PA9.cpp : Defines the entry point for the application.
-//
+﻿// Logan Rainchild
 
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <utility>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Window.hpp>
 
 #include <flow/Component.hpp>
-#include "flow/GameObject.hpp"
-#include "flow/components/SpriteRenderer.hpp"
-#include "flow/Renderer.hpp"
-#include "flow/components/Rigidbody.hpp"
-#include "flow/PhysicsManager.hpp"
-#include "flow/SceneManager.hpp"
-#include "SFML/Graphics/CircleShape.hpp"
-#include "SFML/Graphics/RenderWindow.hpp"
-#include "SFML/Window/Window.hpp"
-#include "network/NetworkClient.hpp"
-#include "network/NetworkManager.hpp"
+#include <flow/GameObject.hpp>
+#include <flow/components/SpriteRenderer.hpp>
+#include <flow/Renderer.hpp>
+#include <flow/components/Rigidbody.hpp>
+#include <flow/PhysicsManager.hpp>
+#include <flow/SceneManager.hpp>
+#include <flow/LevelScene.hpp>
+#include "WallGenerator.hpp"
 
-using namespace gp::network;
 
 int main()
 {
@@ -33,21 +32,21 @@ int main()
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
 
-	std::vector<std::unique_ptr<flow::GameObject>> gameobjects; // replace with scene management
+	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
 	for (int i = 0; i < 20; i++)
 	{
 		// --- Create a new gameobject ---
-		gameobjects.push_back(std::make_unique<flow::GameObject>()); // make a new GameObject
+		auto gameObject = flow::GameObject(); // make a new GameObject
 
 		// --- initialize the gameobjects transform ---
-		gameobjects.back()->mTransform.setPosition(sf::Vector2f(i * 70, i * 30));
-		gameobjects.back()->mTransform.setRotationDeg(0);
-		gameobjects.back()->mTransform.setScale(sf::Vector2f(0.08f, 0.08f));
+		gameObject.mTransform.setPosition(sf::Vector2f(i * 70, i * 30));
+		gameObject.mTransform.setRotationDeg(0);
+		gameObject.mTransform.setScale(sf::Vector2f(0.08f, 0.08f));
 
 		// -- Create a sprite renderer component ---
 		auto srComponent = std::make_unique<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
-		gameobjects.back()->addComponent(std::move(srComponent)); // move the component into the object
+		gameObject.addComponent(std::move(srComponent)); // move the component into the object
 
 		// Create a rigidbody component ---
 		auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
@@ -62,12 +61,12 @@ int main()
 		shapeDef.material.restitution = 0.f;
 
 		// --- get the sprite (we added the SpriteRenderer just above) ---
-		auto& sprite = gameobjects.back()->getComponent<flow::SpriteRenderer>()->getSprite();
+		auto& sprite = gameObject.getComponent<flow::SpriteRenderer>()->getSprite();
 		// --- local bounds = actual texture size in pixels ---
 		sf::FloatRect local = sprite.getLocalBounds();
 
 		// --- apply the GameObject transform scale ---
-		sf::Vector2f scale = gameobjects.back()->mTransform.getScale();
+		sf::Vector2f scale = gameObject.mTransform.getScale();
 
 		// --- Box2D box expects half-width and half-height ---
 		sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f, local.size.y * scale.y * 0.5f);
@@ -77,18 +76,24 @@ int main()
 		// Attach it to the existing bodyId
 		b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
 
-		gameobjects.back()->addComponent(std::move(rbComponent)); // move the component into the object
+		gameObject.addComponent(std::move(rbComponent)); // move the component into the object
 
 		//Note: make sure you set up components before you move them into the class
 		// or get a new reference after you move it because the old ptr will be null
 
+        newScene->AddGameObject(std::move(gameObject));
+		//SceneManager::getGlobal().
 	}
 
-	// move to scene manager
-	for (int i = 0; i < 20; i++)
-	{
-		gameobjects[i]->init();
-	}
+	flow::GameObject streightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
+	newScene->AddGameObject(std::move(streightWall));
+
+	// example when you dont need to use std::move
+	newScene->AddGameObject(WallGenerator::GenerateWall({100, 100}, 200, 0, 3.141f / 4.f, 32, sf::Color::Red));
+
+	// load the scene
+	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
+	flow::SceneManager::getGlobal().switchScene("my scene");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
@@ -114,12 +119,9 @@ int main()
 				window.close();
 		}
 
-		// move to scene manager
-		for (int i = 0; i < 20; i++)
-		{
-			gameobjects[i]->update(dt); // needs to recieve the real deltatime between frames
-		}
-		flow::PhysicsManager::getGlobal().tick(dt); // yes, this MUST recieve deltatime. It handles the fixed time steps using it
+		flow::SceneManager::getGlobal().update(dt);
+
+		flow::PhysicsManager::getGlobal().tick(dt);
 
 		// simple fps logging
 		float fps = 1.f / dt;

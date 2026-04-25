@@ -9,6 +9,11 @@ namespace flow
 		// Scene base constructed with uuid
 	}
 
+	void LevelScene::onEnter()
+	{
+		initialize();
+	}
+
 	void LevelScene::initialize()
 	{
 		for (int i = 0; i < _gameObjects.size(); i++)
@@ -25,8 +30,8 @@ namespace flow
 		}
 	}
 
-	void LevelScene::AddGameObject(const flow::GameObject& gameObject)
+    void LevelScene::AddGameObject(flow::GameObject gameObject)
 	{
-		_gameObjects.push_back(gameObject);
+		_gameObjects.push_back(std::move(gameObject));
 	}
 }
