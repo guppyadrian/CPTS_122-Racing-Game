@@ -25,3 +25,8 @@ Very cool game..
 
 ###
 Google Doc link: https://docs.google.com/document/d/1PMxtutjPkZs_tRWwkJyVKzRexCkkPaQXIVrrOJQFEFE/edit?usp=sharing
+
+#### Lanes (menu guys) notes
+I used ai to help initilize all the new object locations of the menu to save
+time on tedious tasks, and a little with bug fixing (i dont get my own folder
+so it goes here)
