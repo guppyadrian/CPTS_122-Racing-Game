@@ -1,4 +1,4 @@
-#include "flow/SpriteRenderer.hpp"
+#include "flow/components/SpriteRenderer.hpp"
 #include "flow/Renderer.hpp"
 
 namespace flow
@@ -9,6 +9,16 @@ namespace flow
 			// Handle error (texture failed to load)
 		}
 
+		mSprite.setTexture(mTexture, true);
+
+		sf::FloatRect local = mSprite.getLocalBounds();
+		mSprite.setOrigin(local.size * 0.5f);
+
+		Renderer::getGlobalRenderer().addSpriteRenderer(this);
+	}
+
+	SpriteRenderer::SpriteRenderer(const sf::Texture& texture) : mTexture(texture), mSprite(mTexture)
+	{
 		mSprite.setTexture(mTexture, true);
 
 		sf::FloatRect local = mSprite.getLocalBounds();

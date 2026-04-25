@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GameObject.hpp"
+#include "flow/Component.hpp"
+#include "flow/GameObject.hpp"
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <string>
@@ -13,6 +14,7 @@ namespace flow
 		sf::Sprite mSprite;
 	public:
 		SpriteRenderer(std::string textureSrc);
+		SpriteRenderer(const sf::Texture& texture);
 		~SpriteRenderer();
 
 		sf::Sprite& getSprite();

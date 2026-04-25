@@ -2,3 +2,4 @@
 
 add_subdirectory(networkExample)
 add_subdirectory(networkServer)
+add_subdirectory(FlowSetupExample)

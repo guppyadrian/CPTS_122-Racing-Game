@@ -6,20 +6,31 @@
 #include <iostream>
 #include "Scene.hpp"
 
-
-class SceneManager
+namespace flow
 {
-private:
-	Scene* _curScene;
-	std::vector<std::unique_ptr<Scene>> _sceneList;
 
-public:
-	SceneManager();
-	~SceneManager();
-	void update(float dt);
-	bool switchScene(const std::string uuid);
-	bool loadScene(std::unique_ptr<Scene> newScene);
-	bool loadScene(std::string uuid);
-	bool removeScene(const std::string uuid);
-};
-	
+	class SceneManager
+	{
+	private:
+		Scene* _curScene;
+		std::vector<std::unique_ptr<Scene>> _sceneList;
+
+		SceneManager();
+		~SceneManager();
+	public:
+
+		SceneManager(const SceneManager&) = delete;
+		SceneManager& operator=(const SceneManager&) = delete;
+		static SceneManager& getGlobal() {
+			static SceneManager Instance;
+			return Instance;
+		}
+
+		void update(float dt);
+		bool switchScene(const std::string uuid);
+		bool loadScene(std::unique_ptr<Scene> newScene);
+		bool loadScene(std::string uuid);
+		bool removeScene(const std::string uuid);
+		//Scene getCurrentScene() // TODO: Implement get scene
+	};
+}

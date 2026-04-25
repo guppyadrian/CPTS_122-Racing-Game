@@ -1,4 +1,4 @@
-#include "flow/Rigidbody.hpp"
+#include "flow/components/Rigidbody.hpp"
 #include "flow/PhysicsManager.hpp"
 #include <iostream>
 
@@ -7,13 +7,13 @@ namespace flow
 	Rigidbody::Rigidbody()
 	{
 		b2BodyDef def = b2DefaultBodyDef();
-		mBodyId = PhysicsManager::get().addRigidbody(this, &def);
+		mBodyId = PhysicsManager::getGlobal().addRigidbody(this, &def);
 	}
 
 	Rigidbody::~Rigidbody()
 	{
-		PhysicsManager::get().removeRigidbody(this);
-		PhysicsManager::get().destroyBody(mBodyId);
+		PhysicsManager::getGlobal().removeRigidbody(this);
+		PhysicsManager::getGlobal().destroyBody(mBodyId);
 	}
 
 	void Rigidbody::init()
@@ -22,7 +22,7 @@ namespace flow
 		float rot = mGameObject->mTransform.getRotationRad();
 
 		b2Body_SetTransform(mBodyId, { pos.x, pos.y }, b2MakeRot(rot));
-		std::cout << "initialized rb " << mBodyId.index1 << std::endl;
+		std::cout << "initialized rb transform" << mBodyId.index1 << std::endl;
 	}
 
 	void Rigidbody::update(float dt)

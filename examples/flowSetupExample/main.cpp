@@ -1,4 +1,4 @@
-﻿// Logan Rainchild
+// Logan Rainchild
 
 #include <iostream>
 #include <memory>
@@ -18,7 +18,6 @@
 #include <flow/PhysicsManager.hpp>
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
-#include "WallGenerator.hpp"
 
 
 int main()
@@ -85,12 +84,6 @@ int main()
 		//SceneManager::getGlobal().
 	}
 
-	flow::GameObject streightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
-	newScene->AddGameObject(std::move(streightWall));
-
-	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({100, 100}, 200, 0, 3.141f / 4.f, 32, sf::Color::Red));
-
 	// load the scene
 	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
 	flow::SceneManager::getGlobal().switchScene("my scene");
@@ -121,7 +114,7 @@ int main()
 
 		flow::SceneManager::getGlobal().update(dt);
 
-		flow::PhysicsManager::getGlobal().tick(dt);
+		flow::PhysicsManager::getGlobal().tick(dt); // yes, this MUST recieve deltatime. It handles the fixed time steps using it
 
 		// simple fps logging
 		float fps = 1.f / dt;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rigidbody.hpp"
+#include "components/Rigidbody.hpp"
 #include <box2d/box2d.h>
 
 namespace flow
@@ -32,7 +32,7 @@ namespace flow
 
 		PhysicsManager(const PhysicsManager&) = delete;
 		PhysicsManager& operator=(const PhysicsManager&) = delete;
-		static PhysicsManager& get() {
+		static PhysicsManager& getGlobal() {
 			static PhysicsManager Instance;
 			return Instance;
 		}
