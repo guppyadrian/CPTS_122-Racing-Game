@@ -38,6 +38,12 @@ int main()
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
 
+	//BG
+	flow::GameObject bg = flow::GameObject();
+	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg.png"));
+	newScene->AddGameObject(std::move(bg));
+
+
 	//walls and stuff
 
 	//flow::GameObject straightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
