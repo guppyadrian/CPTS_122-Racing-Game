@@ -19,6 +19,7 @@
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
 #include "WallGenerator.hpp"
+#include "player.hpp"
 
 
 int main()
