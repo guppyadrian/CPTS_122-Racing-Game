@@ -23,9 +23,9 @@ endif()
 
 
 # Add source to this project's executable.
-add_executable (PA9 src/PA9.cpp "src/WallGenerator.cpp")
+add_executable (RacerGame src/PA9.cpp "src/WallGenerator.cpp")
 
-target_include_directories(PA9 PRIVATE include)
+target_include_directories(RacerGame PRIVATE include)
 
 add_subdirectory(lib/guppyNet)
 add_subdirectory(lib/flowEngine)
@@ -48,6 +48,6 @@ set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
 
 # add libs
 
-target_link_libraries(PA9 flowEngine guppyNet)
+target_link_libraries(RacerGame flowEngine guppyNet)
 
-install(TARGETS PA9 DESTINATION .)
+install(TARGETS RacerGame DESTINATION .)
