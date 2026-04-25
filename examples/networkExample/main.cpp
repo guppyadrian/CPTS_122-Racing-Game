@@ -20,7 +20,6 @@ int main()
     client.on("connection", [&client]()
     {
         std::cout << "connected" << std::endl;
-
         
         client.emit("exampleEvent", "test");
     });

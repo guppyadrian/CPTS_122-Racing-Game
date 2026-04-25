@@ -24,9 +24,9 @@ namespace gp::network
         tcp::socket _socket;
 
         ReadBuffer _readBuffer;
-        std::deque<std::vector<uint8_t>> _writeBuffer;
+        std::deque<ByteBuffer> _writeBuffer;
 
-        std::unordered_map<std::string, std::function<void(const std::vector<uint8_t>&)>> _listeners;
+        std::unordered_map<std::string, std::function<void(const ByteBuffer&)>> _listeners;
     public:
         NetworkClient() : _io(NetworkManager::io()), _resolver(_io), _socket(_io) {}
         explicit NetworkClient(asio::io_context& io) : _io(io), _resolver(_io), _socket(_io) {} // alternative constructor if you want to manually pass the io
@@ -43,31 +43,32 @@ namespace gp::network
         [[nodiscard]] bool connected() const { return _socket.is_open(); }
 
     private:
-        void send(std::string_view eventName, const std::vector<uint8_t>& data);
-        void _onConnect();
-        void _onWrite();
+        void _emit(uint8_t type, std::string_view eventName, const ByteBuffer& data);
+        
+        void onConnect();
+        void onReceive(const Packet& packet);
 
-        void _onReceive(const std::string& eventName, const std::vector<uint8_t>& data);
-
+        // this do stuff is ran async
+        void doWrite();
         void doReadHeader();
         void doReadBody(); // TODO: start renaming stuff to Body instead of Data
     };
 
     template <NetworkData T>
-    void NetworkClient::emit(std::string_view eventName, const T& data)
+    void NetworkClient::emit(const std::string_view eventName, const T& data)
     {
         if constexpr (!Serializable<T>) // means that this is already a byte vector  TODO: maybe be more verbose about this?
         {
             send(eventName, data);
             return;
         }
-        send(eventName, Serialize(data));
+        _emit(2u, eventName, Serialize(data)); // TODO: have a SerializeType() thing to find which type this is or something
     }
 
     template<Serializable T, EventCallback<T> F>
     void NetworkClient::on(const std::string &eventName, const F callback)
     {
-        _listeners[eventName] = [callback](const std::vector<uint8_t>& data)
+        _listeners[eventName] = [callback](const ByteBuffer& data)
         {
             callback(Deserialize<T>(data));
         };

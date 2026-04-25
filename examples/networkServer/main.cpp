@@ -14,10 +14,16 @@ int main()
 
     NetworkServer server(3000);
 
-    server.on("connection", []()
+    server.onConnection = [](std::shared_ptr<ServerConnection> socket)
     {
-        std::cout << "hi" << std::endl;
-    });
+        socket->on<std::string>("exampleEvent", [socket](const std::string &data)
+        {
+            std::cout << "got an event: " << data << std::endl;
+            socket->emit("exampleEvent", data);
+        });
+        
+        socket->emit("exampleEvent", "Isn't this cool?");
+    };
 
     server.listen();
 

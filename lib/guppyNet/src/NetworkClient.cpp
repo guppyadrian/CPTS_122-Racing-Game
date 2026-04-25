@@ -9,6 +9,7 @@
 #include <asio/read.hpp>
 #include <asio/write.hpp>
 
+#include "network/Packet.hpp"
 
 
 namespace gp::network
@@ -32,34 +33,36 @@ namespace gp::network
                             std::cerr << "Failed to connect: " << ec2.message() << std::endl;
                             return;
                         }
-                        _onConnect();
+                        onConnect();
                     });
             }
         );
     }
 
-    void NetworkClient::on(const std::string &eventName, const std::function<void()>& callback)
+    void NetworkClient::on(const std::string& eventName, const std::function<void()>& callback)
     {
         _listeners[eventName] = [callback](const std::any&){ callback(); };
     }
 
-    void NetworkClient::send(const std::string_view eventName, const std::vector<uint8_t>& data)
+    void NetworkClient::_emit(const uint8_t type, const std::string_view eventName, const ByteBuffer& data)
     {
-        const auto packet = CreatePacket(eventName, data);
+        //const auto packet = CreatePacket(eventName, data);
 
-        asio::post(_io, [this, packet]()
+        const ByteBuffer bytes = Packet(type, eventName, data).toBytes(); // TODO: technically tiny overhead to create a packet then run toBytes.
+
+        asio::post(_io, [this, bytes]()
         {
             const bool writeInProgress = !_writeBuffer.empty();
-            _writeBuffer.push_back(packet);
-            if (!writeInProgress) _onWrite();
+            _writeBuffer.push_back(bytes);
+            if (!writeInProgress) doWrite();
         });
     }
 
-    void NetworkClient::_onConnect()
+    void NetworkClient::onConnect()
     {
         if (_listeners.contains("connection"))
         {
-            std::vector<uint8_t> vec; // TODO: this is ugly
+            constexpr ByteBuffer vec; // TODO: this is ugly
             _listeners["connection"](vec);
         }
         doReadHeader();
@@ -94,17 +97,16 @@ namespace gp::network
                 return;
             }
 
-            const NetworkPacket packet = _readBuffer.collectPacket();
+            const Packet packet = _readBuffer.collectPacket();
             
-            _onReceive(packet.eventName, packet.data); // TODO: take in data type? lowk just take in packet
+            onReceive(packet); // TODO: take in data type? lowk just take in packet
 
             doReadHeader();
         });
     }
 
-    void NetworkClient::_onWrite() // TODO: maybe call this doWrite also while ur at it also change _onConnect to a better name
+    void NetworkClient::doWrite()
     {
-        const auto t = _writeBuffer.front();
         asio::async_write(_socket, asio::buffer(_writeBuffer.front().data(), _writeBuffer.front().size()), [this](std::error_code ec, std::size_t bytes)
         {
             if (ec)
@@ -114,18 +116,20 @@ namespace gp::network
                 return;
             }
             _writeBuffer.pop_front();
-            if (!_writeBuffer.empty()) _onWrite();
+            if (!_writeBuffer.empty()) doWrite();
         });
     }
 
-    void NetworkClient::_onReceive(const std::string& eventName, const std::vector<uint8_t>& data)
+    void NetworkClient::onReceive(const Packet& packet)
     {
-        if (!_listeners.contains(eventName.data()))
+        const auto& eventName = packet.getEventName();
+        
+        if (!_listeners.contains(eventName))
         {
             std::cerr << "gp::network::NetworkClient got unhandled event type: " << eventName << std::endl;
             return;
         }
 
-        _listeners[eventName](data);
+        _listeners[eventName](packet.getData());
     }
 } // gp

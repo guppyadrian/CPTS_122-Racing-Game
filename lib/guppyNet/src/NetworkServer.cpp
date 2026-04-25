@@ -20,11 +20,6 @@ namespace gp::network
         doAccept();
     }
 
-    void NetworkServer::on(const std::string &eventName, const std::function<void()> &callback)
-    { // TODO: error checking... also in the other on() overload
-        _listeners[eventName] = [callback](const std::vector<uint8_t>&) { callback(); };
-    }
-
     void NetworkServer::doAccept()
     {
         _acceptor.async_accept([this](const std::error_code ec, tcp::socket socket)
@@ -38,12 +33,13 @@ namespace gp::network
 
             std::cout << "new connection: " << socket.remote_endpoint() << std::endl;
 
-            ServerConnection conn(std::move(socket)); // TODO: need std::move?
+            const auto conn = std::make_shared<ServerConnection>(std::move(socket));
 
-            constexpr std::vector<uint8_t> nothing; // TODO: how can I not do this
-            if (_listeners.contains("connection")) _listeners["connection"](nothing);
+            if (onConnection) onConnection(conn); // TODO: somewhere in the code there is a ByteBuffer vec{}, make is use ByteBuffer{} in one line
 
-            _connections.push_back(std::move(conn));
+            _connections.push_back(conn);
+
+            conn->start();
             
             doAccept();
         });
