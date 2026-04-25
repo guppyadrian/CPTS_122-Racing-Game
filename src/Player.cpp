@@ -18,11 +18,11 @@ void PlayerController::fixedUpdate()
 	input = 0.f;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-		input = -1.0f; // Move Left
+		input += -1.0f; // Move Left
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-		input = 1.0f;  // Move Right
+		input += 1.0f;  // Move Right
 	}
 
 	//forces
