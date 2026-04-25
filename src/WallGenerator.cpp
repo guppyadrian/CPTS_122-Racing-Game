@@ -39,7 +39,7 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int length, float
 
 	// --- Box2D box expects half-width and half-height ---
 	b2ChainDef chain = b2DefaultChainDef();
-	b2Vec2 verts[4] = { {0,0}, {0,0}, {local.size.x,0}, {local.size.x,0} };
+	b2Vec2 verts[4] = { {local.size.x + 1,0}, {local.size.x,0}, {0,0}, {-1,0} };
 	chain.points = verts;
 	chain.count = 4;
 	chain.materials = mat;
@@ -92,7 +92,7 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 		points.emplace_back(x, y);
 		verts.push_back({ x, y });
 		if(i == 0 || i == count - 1)
-			verts.push_back({ x, y });
+			verts.push_back({ x, y }); // TODO: move end points off each other but linear from the point they are connected to
 	}
 
 	for (int i = 0; i < (int)points.size() - 1; ++i)
