@@ -44,8 +44,8 @@ int main()
 	//newScene->AddGameObject(std::move(straightWall));
 
 	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({150, 150}, 150, 1.57f, -3.141f, 120, sf::Color::Red));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 150 }, 150, -1.57f, -3.141f, 120, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({150, 150}, 150, 1.57f, -3.141f, 600, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 150 }, 150, -1.57f, -3.141f, 600, sf::Color::Red));
 
 	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,0 }, 300, 0, sf::Color::White));
 	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,300 }, 300, 0, sf::Color::White));
@@ -57,7 +57,7 @@ int main()
 	player.mTransform.setRotationDeg(0);
 	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
 
-	player.addComponent<flow::SpriteRenderer>(std::string("assets/jonah.png"));
+	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
 
 	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 
@@ -68,7 +68,7 @@ int main()
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.f;
+	shapeDef.material.restitution = 0.3f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
