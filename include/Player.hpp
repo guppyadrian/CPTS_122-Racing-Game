@@ -10,8 +10,8 @@ private:
 	flow::Rigidbody* _rb;
 public:
 	float input; //left is negative, right is positive
-	const float accel = 3;
-	const float nearObjAccel = 3;
+	const float accel = 300;
+	const float nearObjAccel = 300;
 	const float rotSpeed = 1.f;
 	void init();
 	void update(float dt) {};

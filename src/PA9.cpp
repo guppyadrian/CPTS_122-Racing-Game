@@ -35,8 +35,8 @@ int main()
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
-	flow::GameObject streightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
-	newScene->AddGameObject(std::move(streightWall));
+	flow::GameObject straightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
+	newScene->AddGameObject(std::move(straightWall));
 
 	// example when you dont need to use std::move
 	newScene->AddGameObject(WallGenerator::GenerateWall({100, 100}, 200, 0, 3.141f / 4.f, 32, sf::Color::Red));
@@ -44,7 +44,7 @@ int main()
 
 	flow::GameObject player = flow::GameObject();
 
-	player.mTransform.setPosition(sf::Vector2f(180,180));
+	player.mTransform.setPosition(sf::Vector2f(120,180));
 	player.mTransform.setRotationDeg(0);
 	player.mTransform.setScale(sf::Vector2f(0.03f, 0.03f));
 

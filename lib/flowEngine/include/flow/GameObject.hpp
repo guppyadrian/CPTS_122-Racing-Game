@@ -15,7 +15,34 @@ namespace flow
 	private:
 		std::vector<std::unique_ptr<Component>> mComponents;
 	public:
-		GameObject() : mTransform() {};
+     GameObject() : mTransform() {};
+
+		// AI Generated
+		// Move constructor - ensure components' mGameObject pointers are updated
+		GameObject(GameObject&& other) noexcept
+			: mTransform(std::move(other.mTransform)), mComponents(std::move(other.mComponents))
+		{
+			for (auto& comp : mComponents)
+			{
+				comp->mGameObject = this;
+			}
+		}
+
+		// AI Generated
+		// Move assignment - ensure components' mGameObject pointers are updated
+		GameObject& operator=(GameObject&& other) noexcept
+		{
+			if (this != &other)
+			{
+				mTransform = std::move(other.mTransform);
+				mComponents = std::move(other.mComponents);
+				for (auto& comp : mComponents)
+				{
+					comp->mGameObject = this;
+				}
+			}
+			return *this;
+		}
 
 		flow::Transform mTransform;
 		

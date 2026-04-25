@@ -18,7 +18,7 @@ void PlayerController::fixedUpdate()
 	b2BodyId id = _rb->getBodyId();
 	auto rot = b2Body_GetRotation(id);
 	auto origin = b2Body_GetPosition(id);
-	b2Vec2 localForce = { 0.0f, accel };
+	b2Vec2 localForce = { 0.0f, -accel };
 	auto worldForce = b2RotateVector(rot, localForce);
 
 
@@ -33,7 +33,7 @@ void PlayerController::fixedUpdate()
 	if (r.hit)
 	{
 		float rayDist = 1 - r.fraction;
-		thrustForce = b2MulSV(rayDist, {0.f, nearObjAccel}); // scale force by distance
+		thrustForce = b2MulSV(rayDist, {0.f, -nearObjAccel}); // scale force by distance
 	}
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
 }
