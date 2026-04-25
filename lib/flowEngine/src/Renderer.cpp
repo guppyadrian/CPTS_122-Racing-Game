@@ -137,6 +137,11 @@ namespace flow
         output->draw(sf::Sprite(input->getTexture()), &crtDistortion);
         output->display();
 
+        // flip the output fiew for the shader pass
+        sf::View view = mWindowRef->getView();
+        view.setSize({ view.getSize().x, -fabs(view.getSize().y) });
+        mWindowRef->setView(view);
+
         mWindowRef->draw(sf::Sprite(output->getTexture())); // Output the final composite
 
     }
