@@ -20,6 +20,7 @@ namespace flow
 
 		float mStartLifetime;
 		sf::Vector2f mStartVelocity;
+		sf::Vector2f mAcceleration;
 		float mDrag;
 		float mStartSize;
 		float mEndSize;
@@ -34,5 +35,30 @@ namespace flow
 		void init() override;
 		void update(float dt) override;
 		void fixedUpdate() override {};
+
+		// Getters and setters
+		float getStartLifetime() const { return mStartLifetime; }
+		void setStartLifetime(float v) { mStartLifetime = v; }
+
+		sf::Vector2f getStartVelocity() const { return mStartVelocity; }
+		void setStartVelocity(const sf::Vector2f& v) { mStartVelocity = v; }
+
+		sf::Vector2f getAcceleration() const { return mAcceleration; }
+		void setAcceleration(const sf::Vector2f& v) { mAcceleration = v; }
+
+		float getDrag() const { return mDrag; }
+		void setDrag(float v) { mDrag = v; }
+
+		float getStartSize() const { return mStartSize; }
+		void setStartSize(float v) { mStartSize = v; }
+
+		float getEndSize() const { return mEndSize; }
+		void setEndSize(float v) { mEndSize = v; }
+
+		sf::Color getStartColor() const { return mStartColor; }
+		void setStartColor(const sf::Color& c) { mStartColor = c; }
+
+		sf::Color getEndColor() const { return mEndColor; }
+		void setEndColor(const sf::Color& c) { mEndColor = c; }
 	};
 }
