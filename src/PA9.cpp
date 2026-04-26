@@ -173,5 +173,5 @@ int main()
 		window.display();
 	}
 
-
+	gp::network::NetworkManager::Stop();
 }
