@@ -9,7 +9,9 @@ target_sources(flowEngine PRIVATE
         src/Scene.cpp
         src/SceneManager.cpp
         src/SpriteRenderer.cpp
-        src/Transform.cpp src/Camera.cpp)
+        src/Transform.cpp 
+        src/Camera.cpp
+        src/ParticleSystem.cpp)
 
 target_include_directories(flowEngine PUBLIC include)
 
