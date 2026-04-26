@@ -63,9 +63,9 @@ int main()
 				window.close();
 		}
 
-		flow::SceneManager::getGlobal().update(dt);
-
 		flow::PhysicsManager::getGlobal().tick(dt);
+
+		flow::SceneManager::getGlobal().update(dt);
 
 		// simple fps logging
 		float fps = 1.f / dt;

@@ -2,6 +2,7 @@
 
 #include "components/Rigidbody.hpp"
 #include <box2d/box2d.h>
+#include <SFML/System.hpp>
 
 namespace flow
 {
