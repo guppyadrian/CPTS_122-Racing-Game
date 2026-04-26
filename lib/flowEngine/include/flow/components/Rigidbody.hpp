@@ -8,6 +8,8 @@ namespace flow
 {
 	class Rigidbody : public Component
 	{
+		sf::Vector2f mLastPos;
+		float mLastRot;
 		b2BodyId mBodyId;
 
 	public:
@@ -20,6 +22,33 @@ namespace flow
 		{
 			return mBodyId;
 		};
+
+		sf::Vector2f getLastPosition()
+		{
+			return mLastPos;
+		}
+
+		float getLastRotation()
+		{
+			 return mLastRot;
+		}
+
+		void setLastPosition(sf::Vector2f pos)
+		{
+			mLastPos = pos;
+		};
+		void setLastRotation(float rot)
+		{
+			mLastRot = rot;
+		};
+
+		void resetInterpolation()
+		{
+			auto pos = b2Body_GetPosition(mBodyId);
+			mLastPos = { pos.x, pos.y };
+			auto rot = b2Body_GetRotation(mBodyId);
+			mLastRot = b2Rot_GetAngle(rot);
+		}
 
 		void init() override;
 		void update(float dt) override;

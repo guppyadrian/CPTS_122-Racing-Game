@@ -23,6 +23,8 @@ namespace flow
 
 		b2Body_SetTransform(mBodyId, { pos.x, pos.y }, b2MakeRot(rot));
 		std::cout << "initialized rb transform" << mBodyId.index1 << std::endl;
+
+		resetInterpolation();
 	}
 
 	void Rigidbody::update(float dt)
