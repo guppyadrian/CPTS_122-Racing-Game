@@ -22,6 +22,10 @@
 
 #include "WallGenerator.hpp"
 #include "Player.hpp"
+#include "flow/NetworkManager.hpp"
+#include "flow/components/NetworkEmitter.hpp"
+#include "flow/components/NetworkGhostManager.hpp"
+#include "network/NetworkManager.hpp"
 
 int main()
 {
@@ -37,6 +41,9 @@ int main()
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
+	// NETWORK
+	gp::network::NetworkManager::Start();
+	flow::NetworkManager::getGlobal().getClient().connect("localhost", 25550);
 
 	//BG
 	flow::GameObject bg = flow::GameObject();
@@ -80,6 +87,10 @@ int main()
 	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
 
 	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
+
+	player.addComponent<flow::NetworkEmitter>("playerUpdate");
+
+	player.addComponent<flow::NetworkGhostManager>("playerUpdate");
 
 	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 

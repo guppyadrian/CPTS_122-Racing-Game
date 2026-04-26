@@ -31,6 +31,6 @@ namespace flow
 		bool loadScene(std::unique_ptr<Scene> newScene);
 		bool loadScene(std::string uuid);
 		bool removeScene(const std::string uuid);
-		//Scene getCurrentScene() // TODO: Implement get scene
+		Scene& getCurrentScene() { return *_curScene; }
 	};
 }

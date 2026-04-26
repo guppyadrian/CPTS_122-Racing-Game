@@ -31,6 +31,7 @@ namespace gp::network
         void on(const std::string& eventName, const std::function<void()>& callback);
         template <Serializable T>
         void emit(std::string_view eventName, const T& data);
+        void emit(std::string_view eventName, const ByteBuffer& data);
         void close() { _onClose(); }
     private:
         void doReadHeader();

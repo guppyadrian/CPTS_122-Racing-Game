@@ -16,7 +16,7 @@ namespace flow
     {
     private:
         network::NetworkClient _client{};
-        network::NetworkServer _server{25550};
+        network::NetworkServer _server{};
     public:
         NetworkManager(const NetworkManager&) = delete;
         NetworkManager& operator=(const NetworkManager&) = delete;

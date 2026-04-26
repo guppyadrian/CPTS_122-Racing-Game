@@ -100,4 +100,9 @@ namespace gp::network
     {
         _listeners[eventName] = [callback](const ByteBuffer&){ callback(); };
     }
+
+    void ServerConnection::emit(const std::string_view eventName, const ByteBuffer &data)
+    {
+        _emit(0u, eventName, data);
+    }
 }

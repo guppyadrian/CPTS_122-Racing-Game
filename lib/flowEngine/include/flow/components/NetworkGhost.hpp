@@ -9,7 +9,7 @@
 
 namespace flow
 {
-    class NetworkGhost final : Component
+    class NetworkGhost final : public Component
     {
     private:
         std::string _eventName;

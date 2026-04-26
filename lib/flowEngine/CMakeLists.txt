@@ -1,4 +1,5 @@
-add_library(flowEngine)
+add_library(flowEngine
+        src/network/NetworkGhostManager.cpp)
 
 target_sources(flowEngine PRIVATE 
         src/GameObject.cpp
@@ -11,11 +12,8 @@ target_sources(flowEngine PRIVATE
         src/SpriteRenderer.cpp
         src/Transform.cpp
         src/Camera.cpp
-        include/flow/NetworkManager.hpp
-        include/flow/components/NetworkEmitter.hpp
         src/network/NetworkEmitter.cpp
         src/network/NetworkManager.cpp
-        include/flow/components/NetworkGhost.hpp
         src/network/NetworkGhost.cpp)
 
 target_include_directories(flowEngine PUBLIC include)
