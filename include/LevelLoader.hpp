@@ -24,6 +24,7 @@
 
 #include "WallGenerator.hpp"
 #include "Player.hpp"
+#include "EndGoal.hpp"
 
 class LevelLoader
 {
