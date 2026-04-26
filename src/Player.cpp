@@ -74,16 +74,16 @@ void PlayerController::fixedUpdate()
 
 	//Raycast thrust
 	b2Vec2 thrustForce = { 0.0f,0.0f };
-	b2Vec2 ray = { 0.0f, 20.0f };
+	b2Vec2 ray = { 0.0f, 50.0f };
 	ray = b2RotateVector(rot, ray);
 	auto r = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray, b2DefaultQueryFilter());
 
 	if (r.hit)
 	{
-		float rayDist = 1 - r.fraction;
+		float rayDist = (1 - r.fraction)* (1 - r.fraction);
 		thrustForce = b2MulSV(rayDist, { 0.f, -nearObjAccel }); // scale force by distance
 		thrustForce = b2RotateVector(rot, thrustForce);
 	}
-
+	std::cerr << thrustForce.x << ',' << thrustForce.y << std::endl;
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
 }

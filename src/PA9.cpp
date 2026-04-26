@@ -21,6 +21,7 @@
 
 #include "Player.hpp"
 #include "LevelLoader.hpp"
+#include "EndGoal.hpp"
 
 int main()
 {
@@ -33,7 +34,7 @@ int main()
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 600.f);
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 200.f);
 	
 	LevelLoader load;
 	load.readFile("Test");
@@ -56,6 +57,8 @@ int main()
 	sf::Text fpsText(font);
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
+
+	EndGoal& endGoal = EndGoal::getInstance();
 
 	while (window.isOpen())
 	{

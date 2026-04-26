@@ -1,4 +1,5 @@
 #include "LevelLoader.hpp"
+
 void LevelLoader::readFile(std::string fileUUID)
 {
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
@@ -55,6 +56,8 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	bg.addComponent<flow::SpriteRenderer>(std::string("assets/" + bgFile));
 	newScene->AddGameObject(std::move(bg));
 
+	flow::Rigidbody* pEndGoalObject = nullptr;
+
 	//Object stuff
 	std::string shapeLine;
 	while (std::getline(_ss, shapeLine)) {
@@ -97,14 +100,35 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 			float length = std::stof(lengthStr);
 			float angle = std::stof(angleStr);
 
-			newScene->AddGameObject(WallGenerator::GenerateWall(
-				{ x, y },
-				length,
-				angle,
-				color
-			));
+			sf::Color c;
+			if (_ss.eof())
+			{
+				c = { 255,255,0,255 };
+			}
+			else
+			{
+				c = color;
+			}		
+
+
+			flow::GameObject lastWall = WallGenerator::GenerateWall({ x, y }, length, angle, c);
+			// Tag its Box2D body as the end goal trigger
+			pEndGoalObject = lastWall.getComponent<flow::Rigidbody>();
+			if (pEndGoalObject){
+				b2Body_SetUserData(pEndGoalObject->getBodyId(), &EndGoal::getInstance());
+			}
+
+			newScene->AddGameObject(std::move(lastWall));
 		}
 	}
+
+	//Endgoal
+	EndGoal& goal = EndGoal::getInstance();
+	goal.setEndGoal(pEndGoalObject->getBodyId());
+
+
+
+
 
 	//Player stuff
 	flow::GameObject player = flow::GameObject();
@@ -124,7 +148,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.3f;
+	shapeDef.material.restitution = 0.1f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
@@ -135,11 +159,10 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	sf::Vector2f scale = player.mTransform.getScale();
 
 	// --- Box2D box expects half-width and half-height ---
-	float radius = std::min(local.size.x * scale.x, local.size.y * scale.y) * 0.3f; // corner radius
-	sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f - radius, local.size.y * scale.y * 0.5f - radius);
-	std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
-	b2Polygon box = b2MakeRoundedBox(halfExtents.x, halfExtents.y, radius);
-	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
+	float radius = std::min(local.size.x * scale.x, local.size.y * scale.y) * 0.5f;
+	std::cout << "Radius: " << radius << std::endl;
+	b2Circle circle = { {0.0f, 0.0f}, radius };
+	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
 
 	//test for bullet?
 	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);

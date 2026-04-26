@@ -138,7 +138,7 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 
 	b2SurfaceMaterial mat[1];
 	mat[0] = b2DefaultSurfaceMaterial();
-	mat[0].friction = 0.0f;
+	mat[0].friction = 0.f;
 	mat[0].restitution = 0.0f;
 
 	// Ghost vertices: extend linearly beyond each endpoint so Box2D
