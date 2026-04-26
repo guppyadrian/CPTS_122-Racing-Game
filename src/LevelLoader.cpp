@@ -31,9 +31,6 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::string bgFile;
 	std::getline(_ss, bgFile);
 
-	int subdivisions;
-	std::getline(_ss, line); subdivisions = std::stoi(line);
-
 	sf::Vector2f playerPos;
 	float playerRot;
 	std::getline(_ss, line);
@@ -45,5 +42,5 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	_init(gravity, uuid, bgFile, playerPos, playerRot);
+	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor);
 }

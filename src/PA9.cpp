@@ -26,14 +26,15 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
+	window.setVerticalSyncEnabled(true);
 
-	window.setFramerateLimit(240);
+	window.setFramerateLimit(480);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 4000.f);
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 600.f);
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
@@ -60,8 +61,8 @@ int main()
 	
 	//Circle Tester
 	
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	//newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	//newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
 	
 
 	//Box tester
@@ -101,11 +102,10 @@ int main()
 	sf::Vector2f scale = player.mTransform.getScale();
 
 	// --- Box2D box expects half-width and half-height ---
-	sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f, local.size.y * scale.y * 0.5f);
+	float radius = std::min(local.size.x * scale.x, local.size.y * scale.y) * 0.15f; // corner radius
+	sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f - radius, local.size.y * scale.y * 0.5f - radius);
 	std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
-	b2Polygon box = b2MakeBox(halfExtents.x, halfExtents.y);
-
-	// Attach it to the existing bodyId
+	b2Polygon box = b2MakeRoundedBox(halfExtents.x, halfExtents.y, radius);
 	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
 
 	//test for bullet?
