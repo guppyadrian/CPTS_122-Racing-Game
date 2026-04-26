@@ -2,6 +2,7 @@
 
 #include "components/Rigidbody.hpp"
 #include <box2d/box2d.h>
+#include <SFML/System.hpp>
 
 namespace flow
 {
@@ -37,6 +38,10 @@ namespace flow
 			return Instance;
 		}
 
+		b2WorldId getWorldId()
+		{
+			return mWorldId;
+		}
 		void setGravity(sf::Vector2f gravity) {
 			b2World_SetGravity(mWorldId, { gravity.x, gravity.y });
 		};

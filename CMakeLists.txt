@@ -13,6 +13,15 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/assets") # TODO: hey while this is nice... remember that copying a lot of assets may be slow
+function(copy_assets target_name)
+  add_custom_command(TARGET ${target_name} POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy_directory
+          "${CMAKE_SOURCE_DIR}/assets"
+          "$<TARGET_FILE_DIR:${target_name}>/assets"
+  )
+endfunction()
+
 project ("PA9")
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -23,7 +32,7 @@ endif()
 
 
 # Add source to this project's executable.
-add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp)
+add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp src/Player.cpp src/LevelLoader.cpp src/EndGoal.cpp)
 
 target_include_directories(RacerGame PRIVATE include)
 
@@ -34,13 +43,7 @@ add_subdirectory(lib/flowEngine)
 add_subdirectory(examples)
 
 # Add assets folder
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/assets") # TODO: hey while this is nice... remember that copying a lot of assets may be slow
-add_custom_command(                          #       you could swap back to cmake style folder copying, but remember to regenerate CMAKE!!!
-        OUTPUT "${CMAKE_BINARY_DIR}"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${SOURCE_DIR}" "${CMAKE_BINARY_DIR}/assets"
-        DEPENDS "${SOURCE_DIR}"
-)
-add_custom_target(copy_mydata ALL DEPENDS "${CMAKE_BINARY_DIR}")
+copy_assets(RacerGame)
 
 # I heard this is supposed to help with SFML fetching from github all the time
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE BOOL "" FORCE)

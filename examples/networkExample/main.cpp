@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include <network/NetworkClient.hpp>
-#include <network/NetworkManager.hpp>
 
 using namespace gp::network;
 
@@ -20,14 +19,23 @@ int main()
     client.on("connection", [&client]()
     {
         std::cout << "connected" << std::endl;
-        client.emit("exampleEvent", std::string_view("blah"));
+        
+        client.emit("exampleEvent", "Hello Client!");
+    });
+
+    client.on<std::string>("exampleEvent", [](const std::string& event)
+    {
+        std::cout << "got: " << event << std::endl;
     });
     
     std::cout << "Hello World!" << std::endl;
 
     while (true)
     {
-        
+        std::string msg;
+        std::cin >> msg;
+
+        client.emit("exampleEvent", msg);
     }
     
     NetworkManager::Stop();

@@ -8,11 +8,23 @@ namespace flow
 {
 	class Renderer
 	{
-		sf::RenderWindow* windowRef;
+		sf::RenderWindow* mWindowRef;
 		std::vector<SpriteRenderer*> mActiveSprites;
 
-		Renderer() {};
+		sf::RenderTexture mainScene;
+		sf::RenderTexture brightPass;
+		sf::RenderTexture ping;
+		sf::RenderTexture pong;
 
+		sf::Shader brightShader;
+		sf::Shader blurShader;
+		sf::Shader cromeAbShader;
+		sf::Shader scanLines;
+		sf::Shader crtDistortion;
+
+		sf::Vector2f mCromeAbOffset = {0.01f, 0.001f};
+
+		Renderer();
 
 	public:
 
@@ -28,12 +40,21 @@ namespace flow
 	
 		void attachWindow(sf::RenderWindow* window)
 		{
-			windowRef = window;
+			mWindowRef = window;
+			mainScene = sf::RenderTexture(mWindowRef->getSize());
+			brightPass = sf::RenderTexture(mWindowRef->getSize());
+			ping = sf::RenderTexture(mWindowRef->getSize());
+			pong = sf::RenderTexture(mWindowRef->getSize());
 		};
+
 		void addSpriteRenderer(SpriteRenderer* sprite);
 		void removeSpriteRenderer(SpriteRenderer* sprite);
 		void drawAll();
 		void setView(const sf::View& view);
+		void setChromaticAberration(sf::Vector2f offset)
+		{
+			mCromeAbOffset = offset;
+		}
 
 	};
 }

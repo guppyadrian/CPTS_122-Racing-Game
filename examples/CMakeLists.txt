@@ -1,4 +1,5 @@
 # TODO: make this
 
 add_subdirectory(networkExample)
-add_subdirectory(FlowSetupExample)
+add_subdirectory(networkServer)
+add_subdirectory(flowSetupExample)

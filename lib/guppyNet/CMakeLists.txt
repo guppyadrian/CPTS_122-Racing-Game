@@ -1,4 +1,9 @@
-add_library(guppyNet)
+add_library(guppyNet
+        include/network/ServerConnection.hpp
+        src/ServerConnection.cpp
+        include/network/Shared.hpp
+        include/network/Packet.hpp
+        src/Packet.cpp)
 
 target_sources(guppyNet PRIVATE "src/NetworkClient.cpp"
         "src/NetworkManager.cpp"

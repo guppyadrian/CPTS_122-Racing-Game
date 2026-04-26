@@ -1,0 +1,12 @@
+Ex 1 #level name
+1 #level num
+255,255,255,255 #color (r,g,b,a)
+bg.png #background asset?
+0,0,0 #player start pos (x,y,rot)
+0 #gravity const (55 is ~equal to thrust; forces wall riding to get elevation)
+
+curve;150,0;0.5;-1 #curve ex (type;x,y;radius;angle [pi]; arcLength [i])
+curve;-150,0;-0.5;-1
+line;0,-150;300;0 #curve ex (type;x,y;length;angle [deg])
+line;0,-150;300;0
+line;100,100;300;90 #last line is always end line

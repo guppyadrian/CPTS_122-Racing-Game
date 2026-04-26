@@ -3,23 +3,29 @@
 //
 
 #pragma once
-#include "asio/io_context.hpp"
+#include "ServerConnection.hpp"
 #include "asio/ip/tcp.hpp"
+#include "network/Serialize.hpp"
+#include "network/NetworkManager.hpp" // pls dont delete! this is for forwarding manager
 
 using asio::ip::tcp;
 
 namespace gp::network
 {
+    // Shared pointer to a ServerConnection
+    using Socket = std::shared_ptr<ServerConnection>;
+    
     class NetworkServer
     {
     private:
         asio::io_context& _io;
         tcp::acceptor _acceptor;
-        std::unordered_map<std::string, tcp::socket> _connections; // TODO: is this right??
+        std::vector<Socket> _connections;
     public:
-        NetworkServer();
+        explicit NetworkServer(uint16_t port);
+        void listen();
 
-        void listen(uint16_t port);
+        std::function<void(Socket)> onConnection;
 
     private:
         void doAccept();

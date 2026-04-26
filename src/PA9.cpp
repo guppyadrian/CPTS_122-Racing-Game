@@ -1,5 +1,4 @@
 ﻿// Logan Rainchild
-
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -18,96 +17,48 @@
 #include <flow/PhysicsManager.hpp>
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
-#include "WallGenerator.hpp"
+#include <flow/components/Camera.hpp>
 
+#include "Player.hpp"
+#include "LevelLoader.hpp"
+#include "EndGoal.hpp"
 
 int main()
 {
+	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
+	window.setVerticalSyncEnabled(true);
 
-	sf::RenderWindow window(sf::VideoMode({ 600, 400 }), "Game");
-
-	//window.setFramerateLimit(60);
+	window.setFramerateLimit(480);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
-	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
-
+	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-
-	//auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
-
-	for (int i = 0; i < 20; i++)
-	{
-		// --- Create a new gameobject ---
-		auto gameObject = flow::GameObject(); // make a new GameObject
-
-		// --- initialize the gameobjects transform ---
-		gameObject.mTransform.setPosition(sf::Vector2f(i * 70, i * 30));
-		gameObject.mTransform.setRotationDeg(0);
-		gameObject.mTransform.setScale(sf::Vector2f(0.08f, 0.08f));
-
-		// -- Create a sprite renderer component ---
-		auto srComponent = std::make_unique<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
-		gameObject.addComponent(std::move(srComponent)); // move the component into the object
-
-		// Create a rigidbody component ---
-		auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
-
-		// --- Configure the rigidBody's parameters ---
-		// Note: You can have multiple collision shapes on a single body!
-		b2BodyId bodyId = rbComponent->getBodyId();
-		b2Body_SetType(bodyId, b2_dynamicBody); // Make the body dynamic (it moves)
-		b2ShapeDef shapeDef = b2DefaultShapeDef();
-		shapeDef.density = 0.1f;
-		shapeDef.material.friction = 0.f;
-		shapeDef.material.restitution = 0.f;
-
-		// --- get the sprite (we added the SpriteRenderer just above) ---
-		auto& sprite = gameObject.getComponent<flow::SpriteRenderer>()->getSprite();
-		// --- local bounds = actual texture size in pixels ---
-		sf::FloatRect local = sprite.getLocalBounds();
-
-		// --- apply the GameObject transform scale ---
-		sf::Vector2f scale = gameObject.mTransform.getScale();
-
-		// --- Box2D box expects half-width and half-height ---
-		sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f, local.size.y * scale.y * 0.5f);
-		std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
-		b2Polygon box = b2MakeBox(halfExtents.x, halfExtents.y);
-
-		// Attach it to the existing bodyId
-		b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
-
-		gameObject.addComponent(std::move(rbComponent)); // move the component into the object
-
-		//Note: make sure you set up components before you move them into the class
-		// or get a new reference after you move it because the old ptr will be null
-
-        newScene->AddGameObject(std::move(gameObject));
-		//SceneManager::getGlobal().
-	}
-
-	flow::GameObject streightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
-	newScene->AddGameObject(std::move(streightWall));
-
-	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({100, 100}, 200, 0, 3.141f / 4.f, 32, sf::Color::Red));
-
-	// load the scene
-	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
-	flow::SceneManager::getGlobal().switchScene("my scene");
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 200.f);
+	
+	LevelLoader load;
+	load.readFile("Test");
+	
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
 		return -1; // Handle error
 	}
 
+	
+	sf::Clock trackClock;
+	sf::Text trackText(font);
+	trackText.setCharacterSize(60);
+	trackText.setFillColor(sf::Color::White);
+	trackText.setPosition({ window.getSize().x - 300.f, 0 });
+
 	sf::Clock dtClock;
 	float dt;
-
 	sf::Text fpsText(font);
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
+
+	EndGoal& endGoal = EndGoal::getInstance();
 
 	while (window.isOpen())
 	{
@@ -121,17 +72,27 @@ int main()
 				window.close();
 		}
 
-		flow::SceneManager::getGlobal().update(dt);
-
 		flow::PhysicsManager::getGlobal().tick(dt);
+
+		flow::SceneManager::getGlobal().update(dt);
 
 		// simple fps logging
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+		{
+			trackClock.restart();
+		}
+		int tSec = trackClock.getElapsedTime().asMilliseconds() / 1000;
+		int tMs = trackClock.getElapsedTime().asMilliseconds() % 1000;
+		trackText.setString(std::to_string(tSec) + ":" + std::to_string(tMs));
+
 		window.clear();
 		flow::Renderer::getGlobalRenderer().drawAll();
+		window.setView(window.getDefaultView());
 		window.draw(fpsText);
+		window.draw(trackText);
 		window.display();
 	}
 

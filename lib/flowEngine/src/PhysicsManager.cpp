@@ -1,9 +1,25 @@
 #include <algorithm>
 
 #include "flow/PhysicsManager.hpp"
+#include <SFML/System/Vector2.hpp>
 
 namespace flow
 {
+
+	static sf::Vector2f lerp(const sf::Vector2f& start, const sf::Vector2f& end, float t)
+	{
+		return start * (1.0f - t) + end * t;
+	}
+
+	static float slerp(const float start, const float end, float t)
+	{
+		float d = end - start;
+		const float PI = 3.14159265358979323846f;
+		while (d > PI)  d -= 2.0f * PI;
+		while (d < -PI) d += 2.0f * PI;
+		return start + d * t;
+	}
+
 	void PhysicsManager::tick(float dt)
 	{
 		mAccum += std::min(dt, 0.5f); // clamp to (0.5 seconds max)
@@ -12,6 +28,15 @@ namespace flow
 		// if the framerate is poor and physics needs to update at a higher frequency call multiple steps per frame
 		while (mAccum >= fixedTimestep)
 		{
+			// set the last position of active rigidbodies
+			for (auto* rb : mActiveRigidbodies)
+			{
+				auto pos = b2Body_GetPosition(rb->getBodyId());
+				rb->setLastPosition(sf::Vector2f(pos.x, pos.y));
+				auto rot = b2Body_GetRotation(rb->getBodyId());
+				rb->setLastRotation(b2Rot_GetAngle(rot));
+			}
+
 			for (auto* rb : mActiveRigidbodies)
 			{
 				
@@ -22,16 +47,24 @@ namespace flow
 			}
 			b2World_Step(mWorldId, fixedTimestep, mQuality);
 
-			// the rigidbody simulation is authoritative over the gameobject's transforms
-			for (auto* rb : mActiveRigidbodies)
-			{
-				auto pos = b2Body_GetPosition(rb->getBodyId());
-				rb->mGameObject->mTransform.setPosition(sf::Vector2f(pos.x, pos.y));
-				auto rot = b2Body_GetRotation(rb->getBodyId());
-				rb->mGameObject->mTransform.setRotationRad(b2Rot_GetAngle(rot));
-			}
-
 			mAccum -= fixedTimestep;
+		}
+
+		// interpolate rigidbody position
+
+		float t = (mAccum / fixedTimestep);
+		t = std::clamp(t, 0.0f, 1.0f);
+
+		for (auto* rb : mActiveRigidbodies)
+		{
+			b2Vec2 pos = b2Body_GetPosition(rb->getBodyId());
+			float rot = b2Rot_GetAngle(b2Body_GetRotation(rb->getBodyId()));
+
+			sf::Vector2f iPosition = lerp(rb->getLastPosition(), sf::Vector2f(pos.x, pos.y), t);
+			float iRotation = slerp(rb->getLastRotation(), rot, t);
+
+			rb->mGameObject->mTransform.setPosition(iPosition);
+			rb->mGameObject->mTransform.setRotationRad(iRotation);
 		}
 	}
 
