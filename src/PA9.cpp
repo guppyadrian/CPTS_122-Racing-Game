@@ -43,7 +43,7 @@ int main()
 
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("localhost", 25550);
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
 
 	//BG
 	flow::GameObject bg = flow::GameObject();
