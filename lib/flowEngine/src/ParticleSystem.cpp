@@ -2,12 +2,30 @@
 
 #include "flow/components/ParticleSystem.hpp"
 #include "flow/Interpolation.hpp"
+#include "flow/Renderer.hpp"
 
 namespace flow
 {
 	ParticleSystem::ParticleSystem()
+	: mParticleCount(0)
+	, mActiveParticles(0)
+	, mStartLifetime(1.0f)
+	, mStartVelocity(0.f, 0.f)
+	, mAcceleration(0.f, 0.f)
+	, mDrag(0.f)
+	, mStartSize(1.f)
+	, mEndSize(1.f)
+	, mStartColor(sf::Color::White)
+	, mEndColor(sf::Color::Transparent)
 	{
 		mVertexArray.setPrimitiveType(sf::PrimitiveType::Triangles);
+
+		Renderer::getGlobalRenderer().addRenderable(this);
+	}
+
+	ParticleSystem::~ParticleSystem()
+	{
+		Renderer::getGlobalRenderer().removeRenderable(this);
 	}
 
 	void ParticleSystem::init()
@@ -30,23 +48,46 @@ namespace flow
 		}
 	}
 
+	void ParticleSystem::resetParticle(int i)
+	{
+		mLifetimes[i] = mStartLifetime;
+		mPositions[i] = { 0,0 };
+		mVelocities[i] = mStartVelocity;
+		mSizes[i] = mStartSize;
+		mColors[i] = mStartColor;
+	}
+
 	void ParticleSystem::update(float dt)
 	{
+		static float accumulator;
+		accumulator += dt;
+		// emit
+		if (mActiveParticles < mParticleCount && accumulator > (mStartLifetime / mParticleCount))
+		{
+			mActiveParticles++;
+			accumulator -= (mStartLifetime / mParticleCount);
+		}
+
 		// nothing to do if there are no particles
-		if (mParticleCount <= 0)
+		if (mActiveParticles <= 0)
 			return;
 
 		// ensure vertex array has space for 6 vertices (2 triangles) per particle
-		if (mVertexArray.getVertexCount() != mParticleCount * 6)
+		if (mVertexArray.getVertexCount() != mActiveParticles * 6)
 		{
 			mVertexArray.clear();
-			mVertexArray.resize(mParticleCount * 6);
+			mVertexArray.resize(mActiveParticles * 6);
 		}
 
-		for (int i = 0; i < mParticleCount; ++i)
+		for (int i = 0; i < mActiveParticles; ++i)
 		{
 			// update lifetime
 			mLifetimes[i] = std::max(0.0f, mLifetimes[i] - dt);
+
+			if (mLifetimes[i] == 0.0f)
+			{
+				resetParticle(i);
+			}
 
 			// update velocity
 			mVelocities[i] += mAcceleration * dt;

@@ -37,7 +37,6 @@ int main()
 	
 	LevelLoader load;
 	load.readFile("Level 1");
-	
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font

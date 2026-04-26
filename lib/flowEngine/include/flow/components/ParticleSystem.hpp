@@ -12,6 +12,8 @@ namespace flow
 		sf::VertexArray mVertexArray;
 
 		int mParticleCount;
+		int mActiveParticles;
+
 		std::vector<float> mLifetimes;
 		std::vector<sf::Vector2f> mPositions;
 		std::vector<sf::Vector2f> mVelocities;
@@ -26,9 +28,13 @@ namespace flow
 		float mEndSize;
 		sf::Color mStartColor;
 		sf::Color mEndColor;
+
+		void resetParticle(int i);
+
 	public:
 
 		ParticleSystem();
+		~ParticleSystem();
 
 		const sf::Drawable& getDrawable() override;
 
@@ -37,6 +43,9 @@ namespace flow
 		void fixedUpdate() override {};
 
 		// Getters and setters
+		float getParticleCount() const { return mParticleCount; }
+		void setParticleCount(float v) { mParticleCount = v; }
+
 		float getStartLifetime() const { return mStartLifetime; }
 		void setStartLifetime(float v) { mStartLifetime = v; }
 
