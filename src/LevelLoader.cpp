@@ -135,7 +135,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	sf::Vector2f scale = player.mTransform.getScale();
 
 	// --- Box2D box expects half-width and half-height ---
-	float radius = std::min(local.size.x * scale.x, local.size.y * scale.y) * 0.15f; // corner radius
+	float radius = std::min(local.size.x * scale.x, local.size.y * scale.y) * 0.3f; // corner radius
 	sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f - radius, local.size.y * scale.y * 0.5f - radius);
 	std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
 	b2Polygon box = b2MakeRoundedBox(halfExtents.x, halfExtents.y, radius);
@@ -145,6 +145,8 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
 
 	player.addComponent<PlayerController>();
+	player.getComponent<PlayerController>()->playerStartPos = playerPos;
+	player.getComponent<PlayerController>()->playerStartRot = playerRot;
 
 	sf::View view = sf::View({ 0,0 }, { 400, 300 });
 	player.addComponent<flow::Camera>(view);

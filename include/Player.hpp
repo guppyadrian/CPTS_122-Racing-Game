@@ -14,6 +14,8 @@ public:
 	const float nearObjAccel = 2000.f; //2000
 	const float rotSpeed = 8000.0f; //8k
 	const float rotBrakingPower = 2000.0f; //2k
+	sf::Vector2f playerStartPos;
+	float playerStartRot;
 	void init();
 	void update(float dt) {};
 	void fixedUpdate();
