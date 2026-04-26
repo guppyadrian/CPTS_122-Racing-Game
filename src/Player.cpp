@@ -64,16 +64,5 @@ void PlayerController::fixedUpdate()
 		thrustForce = b2RotateVector(rot, thrustForce);
 	}
 
-
-
-	//Please remove this for final build
-	std::cerr << b2Length(b2Body_GetLinearVelocity(id)) << std::endl;
-
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-	{
-		worldForce = b2MulSV(3, worldForce);
-	}
-	//End of remove
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
 }

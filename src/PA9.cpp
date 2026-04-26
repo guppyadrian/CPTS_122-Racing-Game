@@ -1,5 +1,4 @@
 ﻿// Logan Rainchild
-
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -20,108 +19,25 @@
 #include <flow/LevelScene.hpp>
 #include <flow/components/Camera.hpp>
 
-#include "WallGenerator.hpp"
 #include "Player.hpp"
+#include "LevelLoader.hpp"
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
+	window.setVerticalSyncEnabled(true);
 
-	window.setFramerateLimit(240);
+	window.setFramerateLimit(480);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 4000.f);
-
-	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
-
-
-	//BG
-	flow::GameObject bg = flow::GameObject();
-	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg.png"));
-	newScene->AddGameObject(std::move(bg));
-
-	//walls and stuff
-
-	//flow::GameObject straightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
-	//newScene->AddGameObject(std::move(straightWall));
-
-	// example when you dont need to use std::move
-
-	//Capsule Tester
-	/*
-	newScene->AddGameObject(WallGenerator::GenerateWall({150, 0}, 150, B2_PI/2, -B2_PI, 128, sf::Color::Red));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 0 }, 150, -B2_PI/2, -B2_PI, 128, sf::Color::Red));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,-150 }, 300, 0, sf::Color::White));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
-	*/
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 600.f);
 	
-	//Circle Tester
+	LevelLoader load;
+	load.readFile("Level 1");
 	
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
-	
-
-	//Box tester
-	/*
-	newScene->AddGameObject(WallGenerator::GenerateWall({0,-150}, 300, 0, sf::Color::White));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 150,0 }, 300, 90, sf::Color::White));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ -150,0 }, 300, 270, sf::Color::White));
-	*/
-
-
-	flow::GameObject player = flow::GameObject();
-
-	player.mTransform.setPosition(sf::Vector2f(0,0));
-	player.mTransform.setRotationDeg(0);
-	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
-
-	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
-
-	auto& rbComponent = player.addComponent<flow::Rigidbody>();
-
-	// --- Configure the rigidBody's parameters ---
-	// Note: You can have multiple collision shapes on a single body!
-	b2BodyId bodyId = rbComponent.getBodyId();
-	b2Body_SetType(bodyId, b2_dynamicBody); // Make the body dynamic (it moves)
-	b2ShapeDef shapeDef = b2DefaultShapeDef();
-	shapeDef.density = 0.1f;
-	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.2f;
-
-	// --- get the sprite (we added the SpriteRenderer just above) ---
-	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
-	// --- local bounds = actual texture size in pixels ---
-	sf::FloatRect local = sprite.getLocalBounds();
-
-	// --- apply the GameObject transform scale ---
-	sf::Vector2f scale = player.mTransform.getScale();
-
-	// --- Box2D box expects half-width and half-height ---
-	sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f, local.size.y * scale.y * 0.5f);
-	std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
-	b2Polygon box = b2MakeBox(halfExtents.x, halfExtents.y);
-
-	// Attach it to the existing bodyId
-	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
-
-	//test for bullet?
-	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
-
-	player.addComponent<PlayerController>();
-
-	sf::View view = sf::View({ 0,0 }, { 400, 300 });
-	player.addComponent<flow::Camera>(view);
-
-	newScene->AddGameObject(std::move(player));
-
-
-	// load the scene
-	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
-	flow::SceneManager::getGlobal().switchScene("my scene");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
@@ -147,9 +63,9 @@ int main()
 				window.close();
 		}
 
-		flow::SceneManager::getGlobal().update(dt);
-
 		flow::PhysicsManager::getGlobal().tick(dt);
+
+		flow::SceneManager::getGlobal().update(dt);
 
 		// simple fps logging
 		float fps = 1.f / dt;
