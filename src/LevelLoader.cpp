@@ -124,7 +124,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.2f;
+	shapeDef.material.restitution = 0.3f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
