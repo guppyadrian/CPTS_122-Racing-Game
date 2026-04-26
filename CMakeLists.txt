@@ -54,3 +54,6 @@ set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
 target_link_libraries(RacerGame flowEngine guppyNet)
 
 install(TARGETS RacerGame DESTINATION .)
+
+#target_compile_options(RacerGame PRIVATE -fsanitize=thread)
+#target_link_options(RacerGame PRIVATE -fsanitize=thread)

@@ -15,7 +15,7 @@ namespace flow
 		void initialize();
 		void update(float dt);
         // take by value and move into the internal vector to support non-copyable GameObject
-		void AddGameObject(flow::GameObject gameObject);
+		GameObject& AddGameObject(flow::GameObject gameObject);
 		//TODO: Implement RemoveGameObject
 	};
 }

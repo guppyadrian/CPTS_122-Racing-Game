@@ -15,9 +15,4 @@ namespace gp::network
     {
         return ByteBuffer(string.begin(), string.end());
     }
-
-    ByteBuffer Serialize(const json& json)
-    {
-        return Serialize(json.dump());
-    }
 }

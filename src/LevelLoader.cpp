@@ -24,9 +24,9 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::getline(_ss, line); lvNum = std::stoi(line);
 
 	sf::Color mainColor;
-	int r, g, b, a;
+	int r = 0, g = 0, b = 0, a = 255;
 	std::getline(_ss, line);
-	sscanf(line.c_str(), "%d%d%d%d", &r, &g, &b, &a);
+	sscanf(line.c_str(), "%d,%d,%d,%d", &r, &g, &b, &a);
 	mainColor = sf::Color(r, g, b, a);
 
 	std::string bgFile;

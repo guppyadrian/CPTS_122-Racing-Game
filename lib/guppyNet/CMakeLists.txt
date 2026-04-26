@@ -3,7 +3,8 @@ add_library(guppyNet
         src/ServerConnection.cpp
         include/network/Shared.hpp
         include/network/Packet.hpp
-        src/Packet.cpp)
+        src/Packet.cpp
+        include/network/BufferParser.hpp)
 
 target_sources(guppyNet PRIVATE "src/NetworkClient.cpp"
         "src/NetworkManager.cpp"
