@@ -91,8 +91,13 @@ namespace gp::network
         doReadHeader();
     }
 
+    void ServerConnection::on(const std::string &eventName, const std::function<void(const ByteBuffer &)> &callback)
+    {
+        _listeners[eventName] = [callback](const ByteBuffer& data){ callback(data); };
+    }
+
     void ServerConnection::on(const std::string& eventName, const std::function<void()>& callback)
     {
-        _listeners[eventName] = [callback](std::vector<uint8_t>){ callback(); };
+        _listeners[eventName] = [callback](const ByteBuffer&){ callback(); };
     }
 }

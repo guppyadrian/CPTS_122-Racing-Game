@@ -25,6 +25,7 @@ namespace gp::network
         // Starts listening :)... TODO: wait shouldn't this be called in constructor? so user can't call start()!
         void start();
 
+        void on(const std::string& eventName, const std::function<void(const ByteBuffer&)>& callback);
         template <Serializable T, EventCallback<T> F>
         void on(const std::string& eventName, const F& callback);
         void on(const std::string& eventName, const std::function<void()>& callback);
