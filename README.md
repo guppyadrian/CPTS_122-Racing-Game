@@ -23,5 +23,8 @@ Very cool game..
 - Give functions descriptive names
 - Sources files are `.cpp`, headers are `.hpp`
 
-###
-Google Doc link: https://docs.google.com/document/d/1PMxtutjPkZs_tRWwkJyVKzRexCkkPaQXIVrrOJQFEFE/edit?usp=sharing
+### Students
+Logan Donner Lab6
+Adrian Nelson Lab6
+Johnathan Emanuelli Lab7
+Lane Evanger Lab7

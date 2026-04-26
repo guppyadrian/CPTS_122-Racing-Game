@@ -36,7 +36,7 @@ int main()
 	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 600.f);
 	
 	LevelLoader load;
-	load.readFile("ai");
+	load.readFile("Level 1");
 	
 
 	sf::Font font;
