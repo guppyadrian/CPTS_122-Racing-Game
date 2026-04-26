@@ -23,20 +23,25 @@
 #include "WallGenerator.hpp"
 #include "Player.hpp"
 
-
 int main()
 {
-
 	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
 
 	window.setFramerateLimit(240);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
-	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
+	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
+	
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 4000.f);
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
+
+	//BG
+	flow::GameObject bg = flow::GameObject();
+	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg.png"));
+	newScene->AddGameObject(std::move(bg));
 
 	//walls and stuff
 
@@ -44,20 +49,37 @@ int main()
 	//newScene->AddGameObject(std::move(straightWall));
 
 	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({150, 150}, 150, 1.57f, -3.141f, 120, sf::Color::Red));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 150 }, 150, -1.57f, -3.141f, 120, sf::Color::Red));
 
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,0 }, 300, 0, sf::Color::White));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,300 }, 300, 0, sf::Color::White));
+	//Capsule Tester
+	/*
+	newScene->AddGameObject(WallGenerator::GenerateWall({150, 0}, 150, B2_PI/2, -B2_PI, 128, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 0 }, 150, -B2_PI/2, -B2_PI, 128, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,-150 }, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
+	*/
+	
+	//Circle Tester
+	
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	
+
+	//Box tester
+	/*
+	newScene->AddGameObject(WallGenerator::GenerateWall({0,-150}, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 150,0 }, 300, 90, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150,0 }, 300, 270, sf::Color::White));
+	*/
 
 
 	flow::GameObject player = flow::GameObject();
 
-	player.mTransform.setPosition(sf::Vector2f(120,180));
+	player.mTransform.setPosition(sf::Vector2f(0,0));
 	player.mTransform.setRotationDeg(0);
 	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
 
-	player.addComponent<flow::SpriteRenderer>(std::string("assets/jonah.png"));
+	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
 
 	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 
@@ -68,7 +90,7 @@ int main()
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.f;
+	shapeDef.material.restitution = 0.2f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
@@ -86,9 +108,12 @@ int main()
 	// Attach it to the existing bodyId
 	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
 
+	//test for bullet?
+	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
+
 	player.addComponent<PlayerController>();
 
-	sf::View view = sf::View({ 0,0 }, { 600, 400 });
+	sf::View view = sf::View({ 0,0 }, { 400, 300 });
 	player.addComponent<flow::Camera>(view);
 
 	newScene->AddGameObject(std::move(player));

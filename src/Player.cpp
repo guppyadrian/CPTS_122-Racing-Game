@@ -1,7 +1,8 @@
 #include "Player.hpp"
 #include <SFML/Window/Keyboard.hpp>
+#include <iostream>
 
-PlayerController::PlayerController() : _rb(nullptr), input(0){}
+PlayerController::PlayerController() : _rb(nullptr), input(0) {}
 
 void PlayerController::init()
 {
@@ -18,21 +19,11 @@ void PlayerController::fixedUpdate()
 	input = 0.f;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-		input += -1.0f; // Move Left
+		input = -1.f; // Move Left
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-		input += 1.0f;  // Move Right
-	}
-	if (
-		(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) &&
-
-		(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-		)
-	{
-		input = 0.f; //no thrust
+		input = 1.f;  // Move Right
 	}
 
 	//forces
@@ -41,7 +32,6 @@ void PlayerController::fixedUpdate()
 	auto origin = b2Body_GetPosition(id);
 	b2Vec2 localForce = { 0.0f, -accel };
 	auto worldForce = b2RotateVector(rot, localForce);
-
 
 	// 1. Handle Rotation & Braking
 	if (input != 0.f)
@@ -60,15 +50,30 @@ void PlayerController::fixedUpdate()
 		b2Body_ApplyTorque(id, stopTorque, true);
 	}
 
+
 	//Raycast thrust
-	b2Vec2 ray = { 0.0f,-1.0f };
+	b2Vec2 thrustForce = { 0.0f,0.0f };
+	b2Vec2 ray = { 0.0f, 20.0f };
 	ray = b2RotateVector(rot, ray);
 	auto r = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray, b2DefaultQueryFilter());
-	b2Vec2 thrustForce = { 0.0f,0.0f };
+
 	if (r.hit)
 	{
 		float rayDist = 1 - r.fraction;
-		thrustForce = b2MulSV(rayDist, {0.f, -nearObjAccel}); // scale force by distance
+		thrustForce = b2MulSV(rayDist, { 0.f, -nearObjAccel }); // scale force by distance
+		thrustForce = b2RotateVector(rot, thrustForce);
 	}
+
+
+
+	//Please remove this for final build
+	std::cerr << b2Length(b2Body_GetLinearVelocity(id)) << std::endl;
+
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+	{
+		worldForce = b2MulSV(3, worldForce);
+	}
+	//End of remove
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
 }
