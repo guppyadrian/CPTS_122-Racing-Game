@@ -2,7 +2,6 @@ Ex 1 #level name
 1 #level num
 255,255,255,255 #color (r,g,b,a)
 bg.png #background asset?
-128 #curve subdivisions
 0,0,0 #player start pos (x,y,rot)
 0 #gravity const (55 is ~equal to thrust; forces wall riding to get elevation)
 
