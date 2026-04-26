@@ -17,8 +17,15 @@ namespace flow
     NetworkGhostManager::NetworkGhostManager(const std::string& eventName)
     : _eventName(eventName)
     {
+        NetworkManager::getGlobal().getClient().on<int>("handshakePlayerID", [this](const int id)
+        {
+            std::cout << "GOT NEW ID: " << id << std::endl;
+            _id = id;
+        });
+        
         NetworkManager::getGlobal().getClient().on(eventName, [this](const network::ByteBuffer& buffer)
         {
+            std::cout << "MY ID: " << _id << std::endl;
             auto& curScene = dynamic_cast<LevelScene&>(SceneManager::getGlobal().getCurrentScene());
             network::BufferParser parser(buffer);
             
@@ -31,13 +38,15 @@ namespace flow
                     parser.read<float>()
                 };
 
+                if (id == _id) continue;
+
                 if (!_ghosts.contains(id))
                 {
                     GameObject ghost; // such bad practice to hard code this in, but too bad!
                     ghost.mTransform.setScale({0.02f, 0.02f});
 
                     ghost.addComponent<SpriteRenderer>("assets/player.png");
-                    _ghosts[id] = &ghost.addComponent<NetworkGhost>("playerUpdate");
+                    _ghosts[id] = &ghost.addComponent<NetworkGhost>(id);
                     
                     curScene.AddGameObject(std::move(ghost));
                 }
@@ -46,5 +55,7 @@ namespace flow
                 _ghosts[id]->mGameObject->mTransform.setRotationRad(transform[2]);
             }
         });
+
+        NetworkManager::getGlobal().getClient().emit("handshakePlayerReady", '\0');
     }
 }

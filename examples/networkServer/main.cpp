@@ -7,14 +7,21 @@
 
 using namespace gp::network;
 
+
+
 int main()
 {
     NetworkManager::Start();
 
     NetworkServer server;
 
-    server.onConnection = [&server](Socket socket)
+    int idAcc = 0;
+
+    server.onConnection = [&server, &idAcc](Socket socket) mutable
     {
+
+        const int32_t id = idAcc++;
+        
         socket->on<std::string>("exampleEvent", [socket](const std::string &data)
         {
             std::cout << "got an event: " << data << std::endl;
@@ -23,12 +30,17 @@ int main()
         
         //socket->emit("exampleEvent", "Isn't this cool?");
 
-        socket->on<std::array<float, 3>>("playerUpdate", [&](std::array<float, 3> data)
+        socket->on("handshakePlayerReady", [socket, id]()
         {
-            std::cout << "got pos: (" << data[0] << ", " << data[1] << ", " << data[2] << ")" << std::endl;
+            socket->emit("handshakePlayerID", id);
+            std::cout << "player with id: " << id << " joined" << std::endl;
+        });
+
+        socket->on<std::array<float, 3>>("playerUpdate", [&server, id](std::array<float, 3> data)
+        {
+            //std::cout << "got pos: " << id << " (" << data[0] << ", " << data[1] << ", " << data[2] << ")" << std::endl;
             ByteBuffer buffer;
             
-            constexpr int32_t id = 1;
             const auto idBytes = reinterpret_cast<const uint8_t*>(&id);
             buffer.insert(buffer.end(), idBytes, idBytes + sizeof(id));
 

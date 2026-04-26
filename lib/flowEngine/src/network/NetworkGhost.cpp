@@ -10,7 +10,4 @@
 
 namespace flow
 {
-    NetworkGhost::NetworkGhost(const std::string& eventName) : _eventName(eventName)
-    {
-    }
 }

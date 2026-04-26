@@ -12,9 +12,9 @@ namespace flow
     class NetworkGhost final : public Component
     {
     private:
-        std::string _eventName;
+        int _id;
     public:
-        explicit NetworkGhost(const std::string& eventName);
+        explicit NetworkGhost(const int id) : _id(id) {}
         
         // implement Component interface
         void init() override {};

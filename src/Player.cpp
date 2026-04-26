@@ -67,7 +67,7 @@ void PlayerController::fixedUpdate()
 
 
 	//Please remove this for final build
-	std::cerr << b2Length(b2Body_GetLinearVelocity(id)) << std::endl;
+	//std::cerr << b2Length(b2Body_GetLinearVelocity(id)) << std::endl;
 
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
