@@ -72,7 +72,7 @@ void PlayerController::fixedUpdate()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 	{
-		worldForce = b2MulSV(500, worldForce);
+		worldForce = b2MulSV(3, worldForce);
 	}
 	//End of remove
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);

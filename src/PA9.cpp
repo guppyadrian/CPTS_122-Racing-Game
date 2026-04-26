@@ -31,9 +31,9 @@ int main()
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
-	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
+	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 2000.f);
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 4000.f);
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
@@ -51,17 +51,18 @@ int main()
 	// example when you dont need to use std::move
 
 	//Capsule Tester
+	/*
 	newScene->AddGameObject(WallGenerator::GenerateWall({150, 0}, 150, B2_PI/2, -B2_PI, 128, sf::Color::Red));
 	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 0 }, 150, -B2_PI/2, -B2_PI, 128, sf::Color::Red));
 	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,-150 }, 300, 0, sf::Color::White));
 	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
-
-
-	//Circle Tester
-	/*
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 1024, sf::Color::Blue));
-	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 1024, sf::Color::Blue));
 	*/
+	
+	//Circle Tester
+	
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	
 
 	//Box tester
 	/*
@@ -89,7 +90,7 @@ int main()
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.25f;
+	shapeDef.material.restitution = 0.2f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
@@ -108,11 +109,11 @@ int main()
 	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
 
 	//test for bullet?
-	//b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
+	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
 
 	player.addComponent<PlayerController>();
 
-	sf::View view = sf::View({ 0,0 }, { 600, 400 });
+	sf::View view = sf::View({ 0,0 }, { 400, 300 });
 	player.addComponent<flow::Camera>(view);
 
 	newScene->AddGameObject(std::move(player));

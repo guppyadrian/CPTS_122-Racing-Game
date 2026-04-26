@@ -39,8 +39,7 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int length, float
 
 	// --- Box2D box expects half-width and half-height ---
 	b2ChainDef chain = b2DefaultChainDef();
-	b2Vec2 verts[4] = { {-local.size.x*0.5,-local.size.y * 0.5}, {local.size.x * 0.5,-local.size.y * 0.5}, 
-						{local.size.x * 0.5,local.size.y * 0.5}, {-local.size.x * 0.5,local.size.y * 0.5}};
+	b2Vec2 verts[4] = { {-local.size.x/2,0}, {local.size.x/2,0}, {0,0}, {0,0} };
 	chain.points = verts;
 	chain.count = 4;
 	chain.isLoop = true;
