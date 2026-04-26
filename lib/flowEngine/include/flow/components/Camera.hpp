@@ -9,8 +9,8 @@ namespace flow
 	class Camera : public Component
 	{
 		sf::View mView;
-
-		Camera();
+	public:
+		//Camera();
 		Camera(const sf::View &view) : mView(view) {};
 
 		void setViewSize(sf::Vector2f size)
@@ -20,9 +20,11 @@ namespace flow
 
 		sf::Vector2f getViewSize()
 		{
-			mView.getSize();
+			return mView.getSize();
 		}
 
+		void init() override {};
 		void update(float dt) override;
+		void fixedUpdate() override {};
 	};
 }

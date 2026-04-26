@@ -1,8 +1,4 @@
-add_library(flowEngine
-        src/network/NetworkEmitter.cpp
-        src/network/NetworkManager.cpp
-        include/flow/components/NetworkGhost.hpp
-        src/network/NetworkGhost.cpp)
+add_library(flowEngine)
 
 target_sources(flowEngine PRIVATE 
         src/GameObject.cpp
@@ -13,11 +9,17 @@ target_sources(flowEngine PRIVATE
         src/Scene.cpp
         src/SceneManager.cpp
         src/SpriteRenderer.cpp
-        src/Transform.cpp "src/Camera.cpp"
+        src/Transform.cpp
+        src/Camera.cpp
         include/flow/NetworkManager.hpp
-        include/flow/components/NetworkEmitter.hpp)
+        include/flow/components/NetworkEmitter.hpp
+        src/network/NetworkEmitter.cpp
+        src/network/NetworkManager.cpp
+        include/flow/components/NetworkGhost.hpp
+        src/network/NetworkGhost.cpp)
 
 target_include_directories(flowEngine PUBLIC include)
+
 
 add_subdirectory(external/SFML)
 add_subdirectory(external/box2d)

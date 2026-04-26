@@ -18,15 +18,14 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int length, float
 		std::cerr << "Failed to load texture from image\n";
 	}
 
-	auto srComponent = std::make_unique<flow::SpriteRenderer>(texture); // create a sprite renderer component
-	gameObject.addComponent(std::move(srComponent)); // move the component into the object
+	auto& sr = gameObject.addComponent<flow::SpriteRenderer>(texture);
 
 	// Create a rigidbody component ---
-	auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
+	auto& rbComponent = gameObject.addComponent<flow::Rigidbody>(); // create a rigidbody
 
 	// --- Configure the rigidBody's parameters ---
 	// Note: You can have multiple collision shapes on a single body!
-	b2BodyId bodyId = rbComponent->getBodyId();
+	b2BodyId bodyId = rbComponent.getBodyId();
 	b2Body_SetType(bodyId, b2_staticBody); // static body
 	b2SurfaceMaterial mat[1];
 	mat[0] = b2DefaultSurfaceMaterial();
@@ -40,16 +39,16 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int length, float
 
 	// --- Box2D box expects half-width and half-height ---
 	b2ChainDef chain = b2DefaultChainDef();
-	b2Vec2 verts[4] = { {0,0}, {0,0}, {local.size.x,0}, {local.size.x,0} };
+	b2Vec2 verts[4] = { {-local.size.x/2,0}, {local.size.x/2,0}, {0,0}, {0,0} };
 	chain.points = verts;
 	chain.count = 4;
+	chain.isLoop = true;
 	chain.materials = mat;
 	chain.materialCount = 1;
 
 	// Attach it to the existing bodyId
 	b2ChainId shapeId = b2CreateChain(bodyId, &chain);
 
-	gameObject.addComponent(std::move(rbComponent)); // move the component into the object
 	gameObject.mTransform.setRotationDeg(angle);
 	gameObject.mTransform.setPosition(pos);
 
@@ -94,7 +93,7 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 		points.emplace_back(x, y);
 		verts.push_back({ x, y });
 		if(i == 0 || i == count - 1)
-			verts.push_back({ x, y });
+			verts.push_back({ x, y }); // TODO: move end points off each other but linear from the point they are connected to
 	}
 
 	for (int i = 0; i < (int)points.size() - 1; ++i)
@@ -127,15 +126,15 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 		std::cerr << "Failed to load texture from image\n";
 	}
 
-	auto srComponent = std::make_unique<flow::SpriteRenderer>(texture); // create a sprite renderer component
-	gameObject.addComponent(std::move(srComponent)); // move the component into the object
+	auto& sr = gameObject.addComponent<flow::SpriteRenderer>(texture);
+
 
 	// Create a rigidbody component ---
-	auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
+	auto& rbComponent = gameObject.addComponent<flow::Rigidbody>();
 
 	// --- Configure the rigidBody's parameters ---
 	// A wall should be static
-	b2BodyId bodyId = rbComponent->getBodyId();
+	b2BodyId bodyId = rbComponent.getBodyId();
 	b2Body_SetType(bodyId, b2_staticBody);
 
 	b2SurfaceMaterial mat[1]; 
@@ -151,7 +150,6 @@ flow::GameObject WallGenerator::GenerateWall(sf::Vector2f pos, int radius, float
 	chain.materials = mat;
 	b2ChainId shapeId = b2CreateChain(bodyId, &chain);
 
-	gameObject.addComponent(std::move(rbComponent)); // move the component into the object
 	gameObject.mTransform.setPosition(pos);
 
 	return gameObject;

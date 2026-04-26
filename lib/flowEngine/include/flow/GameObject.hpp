@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <utility>
 #include "Transform.hpp"
 #include "Component.hpp"
 
@@ -14,19 +15,48 @@ namespace flow
 	private:
 		std::vector<std::unique_ptr<Component>> mComponents;
 	public:
-		GameObject() : mTransform() {};
+     GameObject() : mTransform() {};
+
+		// AI Generated
+		// Move constructor - ensure components' mGameObject pointers are updated
+		GameObject(GameObject&& other) noexcept
+			: mTransform(std::move(other.mTransform)), mComponents(std::move(other.mComponents))
+		{
+			for (auto& comp : mComponents)
+			{
+				comp->mGameObject = this;
+			}
+		}
+
+		// AI Generated
+		// Move assignment - ensure components' mGameObject pointers are updated
+		GameObject& operator=(GameObject&& other) noexcept
+		{
+			if (this != &other)
+			{
+				mTransform = std::move(other.mTransform);
+				mComponents = std::move(other.mComponents);
+				for (auto& comp : mComponents)
+				{
+					comp->mGameObject = this;
+				}
+			}
+			return *this;
+		}
 
 		flow::Transform mTransform;
 		
 		// get the first component of type T
 		template<class T>
 		T* getComponent();
-		void addComponent(std::unique_ptr<Component> c)
+
+		template <DerivedComponent T, typename... Args>
+		T& addComponent(Args&&... args)
 		{
-           // set the parent pointer on the component and store it
-			c->mGameObject = this;
-			mComponents.push_back(std::move(c));
-		};
+			mComponents.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+			mComponents.back()->mGameObject = this;
+			return *dynamic_cast<T*>(mComponents.back().get());
+		}
 
 		void init(); // init all components
 		void update(float dt); // update all components

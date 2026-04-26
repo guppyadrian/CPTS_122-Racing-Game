@@ -18,78 +18,106 @@
 #include <flow/PhysicsManager.hpp>
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
-#include "WallGenerator.hpp"
+#include <flow/components/Camera.hpp>
 
+#include "WallGenerator.hpp"
+#include "Player.hpp"
 
 int main()
 {
+	sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Game");
 
-	sf::RenderWindow window(sf::VideoMode({ 600, 400 }), "Game");
-
-	//window.setFramerateLimit(60);
+	window.setFramerateLimit(240);
 
 	flow::Renderer::getGlobalRenderer().attachWindow(&window);
 
-	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
+	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
+	
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 4000.f);
 
 	auto newScene = make_unique<flow::LevelScene>(std::string("my scene"));
 
-	for (int i = 0; i < 20; i++)
-	{
-		// --- Create a new gameobject ---
-		auto gameObject = flow::GameObject(); // make a new GameObject
 
-		// --- initialize the gameobjects transform ---
-		gameObject.mTransform.setPosition(sf::Vector2f(i * 70, i * 30));
-		gameObject.mTransform.setRotationDeg(0);
-		gameObject.mTransform.setScale(sf::Vector2f(0.08f, 0.08f));
+	//BG
+	flow::GameObject bg = flow::GameObject();
+	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg.png"));
+	newScene->AddGameObject(std::move(bg));
 
-		// -- Create a sprite renderer component ---
-		auto srComponent = std::make_unique<flow::SpriteRenderer>(std::string("assets/jonah.png")); // create a sprite renderer component
-		gameObject.addComponent(std::move(srComponent)); // move the component into the object
+	//walls and stuff
 
-		// Create a rigidbody component ---
-		auto rbComponent = std::make_unique<flow::Rigidbody>(); // create a rigidbody
-
-		// --- Configure the rigidBody's parameters ---
-		// Note: You can have multiple collision shapes on a single body!
-		b2BodyId bodyId = rbComponent->getBodyId();
-		b2Body_SetType(bodyId, b2_dynamicBody); // Make the body dynamic (it moves)
-		b2ShapeDef shapeDef = b2DefaultShapeDef();
-		shapeDef.density = 0.1f;
-		shapeDef.material.friction = 0.f;
-		shapeDef.material.restitution = 0.f;
-
-		// --- get the sprite (we added the SpriteRenderer just above) ---
-		auto& sprite = gameObject.getComponent<flow::SpriteRenderer>()->getSprite();
-		// --- local bounds = actual texture size in pixels ---
-		sf::FloatRect local = sprite.getLocalBounds();
-
-		// --- apply the GameObject transform scale ---
-		sf::Vector2f scale = gameObject.mTransform.getScale();
-
-		// --- Box2D box expects half-width and half-height ---
-		sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f, local.size.y * scale.y * 0.5f);
-		std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
-		b2Polygon box = b2MakeBox(halfExtents.x, halfExtents.y);
-
-		// Attach it to the existing bodyId
-		b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
-
-		gameObject.addComponent(std::move(rbComponent)); // move the component into the object
-
-		//Note: make sure you set up components before you move them into the class
-		// or get a new reference after you move it because the old ptr will be null
-
-        newScene->AddGameObject(std::move(gameObject));
-		//SceneManager::getGlobal().
-	}
-
-	flow::GameObject streightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
-	newScene->AddGameObject(std::move(streightWall));
+	//flow::GameObject straightWall = WallGenerator::GenerateWall({100,100}, 100, 0, sf::Color::Red);
+	//newScene->AddGameObject(std::move(straightWall));
 
 	// example when you dont need to use std::move
-	newScene->AddGameObject(WallGenerator::GenerateWall({100, 100}, 200, 0, 3.141f / 4.f, 32, sf::Color::Red));
+
+	//Capsule Tester
+	/*
+	newScene->AddGameObject(WallGenerator::GenerateWall({150, 0}, 150, B2_PI/2, -B2_PI, 128, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150, 0 }, 150, -B2_PI/2, -B2_PI, 128, sf::Color::Red));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,-150 }, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
+	*/
+	
+	//Circle Tester
+	
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0, 0 }, 200, -B2_PI / 2, -B2_PI, 32, sf::Color::Blue));
+	
+
+	//Box tester
+	/*
+	newScene->AddGameObject(WallGenerator::GenerateWall({0,-150}, 300, 0, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 150,0 }, 300, 90, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ 0,150 }, 300, 180, sf::Color::White));
+	newScene->AddGameObject(WallGenerator::GenerateWall({ -150,0 }, 300, 270, sf::Color::White));
+	*/
+
+
+	flow::GameObject player = flow::GameObject();
+
+	player.mTransform.setPosition(sf::Vector2f(0,0));
+	player.mTransform.setRotationDeg(0);
+	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
+
+	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
+
+	auto& rbComponent = player.addComponent<flow::Rigidbody>();
+
+	// --- Configure the rigidBody's parameters ---
+	// Note: You can have multiple collision shapes on a single body!
+	b2BodyId bodyId = rbComponent.getBodyId();
+	b2Body_SetType(bodyId, b2_dynamicBody); // Make the body dynamic (it moves)
+	b2ShapeDef shapeDef = b2DefaultShapeDef();
+	shapeDef.density = 0.1f;
+	shapeDef.material.friction = 0.f;
+	shapeDef.material.restitution = 0.2f;
+
+	// --- get the sprite (we added the SpriteRenderer just above) ---
+	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
+	// --- local bounds = actual texture size in pixels ---
+	sf::FloatRect local = sprite.getLocalBounds();
+
+	// --- apply the GameObject transform scale ---
+	sf::Vector2f scale = player.mTransform.getScale();
+
+	// --- Box2D box expects half-width and half-height ---
+	sf::Vector2f halfExtents(local.size.x * scale.x * 0.5f, local.size.y * scale.y * 0.5f);
+	std::cout << "Half extents: " << halfExtents.x << ", " << halfExtents.y << std::endl;
+	b2Polygon box = b2MakeBox(halfExtents.x, halfExtents.y);
+
+	// Attach it to the existing bodyId
+	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
+
+	//test for bullet?
+	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
+
+	player.addComponent<PlayerController>();
+
+	sf::View view = sf::View({ 0,0 }, { 400, 300 });
+	player.addComponent<flow::Camera>(view);
+
+	newScene->AddGameObject(std::move(player));
+
 
 	// load the scene
 	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
@@ -129,6 +157,7 @@ int main()
 
 		window.clear();
 		flow::Renderer::getGlobalRenderer().drawAll();
+		window.setView(window.getDefaultView());
 		window.draw(fpsText);
 		window.display();
 	}
