@@ -33,7 +33,7 @@ namespace flow
 		return false;
 	}
 
-	bool SceneManager::loadScene(std::unique_ptr<Scene>&& newScene)
+	bool SceneManager::loadScene(std::unique_ptr<Scene> newScene)
 	{
 		_sceneList.push_back(std::move(newScene));
 		return true;
