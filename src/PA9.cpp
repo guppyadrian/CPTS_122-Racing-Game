@@ -43,7 +43,7 @@ int main()
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
+	flow::NetworkManager::getGlobal().getClient().connect("10.58.253.121", 25550);
 	
 	LevelLoader load;
 	load.readFile("Test");
