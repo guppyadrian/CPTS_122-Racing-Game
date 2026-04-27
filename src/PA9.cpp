@@ -27,6 +27,7 @@
 #include "flow/components/NetworkEmitter.hpp"
 #include "flow/components/NetworkGhostManager.hpp"
 #include "network/NetworkManager.hpp"
+#include "UI/MenuScene.hpp"
 
 int main()
 {
@@ -45,8 +46,11 @@ int main()
 	gp::network::NetworkManager::Start();
 	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
 	
-	LevelLoader load;
-	load.readFile("Test");
+	// LevelLoader load;
+	// load.readFile("Test");
+	
+	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
+	flow::SceneManager::getGlobal().switchScene("menu");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
