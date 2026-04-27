@@ -6,7 +6,6 @@ MainMenu::MainMenu()
       _curMenuPosition(0)
 {
     mGameObject = new flow::GameObject();
-    flow::Renderer::getGlobalRenderer().addRenderable(this);
 }
 
 void MainMenu::initialize()
@@ -58,26 +57,40 @@ void MainMenu::initialize()
     _exitText->setOrigin(sf::Vector2f(exitBounds.size.x / 2.f, exitBounds.size.y / 2.f));
     _exitText->setPosition(sf::Vector2f(400.f, 397.f));
 
-    // --- Register draw
-    _menuDrawable = std::make_unique<MenuDrawable>();
-    _menuDrawable->add([this]() -> const sf::Drawable* { return &_playButton; });
-    _menuDrawable->add([this]() -> const sf::Drawable* { return &_exitButton; });
-    _menuDrawable->add([this]() -> const sf::Drawable* { return _headerText.get(); });
-    _menuDrawable->add([this]() -> const sf::Drawable* { return _playText.get(); });
-    _menuDrawable->add([this]() -> const sf::Drawable* { return _exitText.get(); });
-
+    // --- Register draw (still created here for cases where initialize is called before onEnter) ---
+    if (!_menuDrawable)
+    {
+        _menuDrawable = std::make_unique<MenuDrawable>();
+        _menuDrawable->add([this]() -> const sf::Drawable* { return &_playButton; });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return &_exitButton; });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return _headerText.get(); });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return _playText.get(); });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return _exitText.get(); });
+    }
 }
 
 void MainMenu::onEnter()
 {
     _curMenuPosition = 0;
+
+    // Ensure the drawable is created before registering with the renderer
+    if (!_menuDrawable)
+    {
+        _menuDrawable = std::make_unique<MenuDrawable>();
+        _menuDrawable->add([this]() -> const sf::Drawable* { return &_playButton; });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return &_exitButton; });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return _headerText.get(); });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return _playText.get(); });
+        _menuDrawable->add([this]() -> const sf::Drawable* { return _exitText.get(); });
+    }
+
+    flow::Renderer::getGlobalRenderer().addRenderable(this);
 }
 
 void MainMenu::onExit()
 {
     flow::Renderer::getGlobalRenderer().removeRenderable(this);
 }
-
 
 void MainMenu::update(float dt)
 {

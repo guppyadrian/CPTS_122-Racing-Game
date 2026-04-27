@@ -1,7 +1,6 @@
-add_executable(MenuExample main.cpp MainMenu.cpp MainMenu.hpp
-        LevelMenu.cpp
-        LevelMenu.hpp
-        MainMenu.cpp
+add_executable(MenuExample 
+        main.cpp 
+        MainMenu.cpp 
         MainMenu.hpp
         MenuDrawable.cpp
         MenuDrawable.hpp)
