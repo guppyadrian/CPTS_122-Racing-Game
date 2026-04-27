@@ -60,7 +60,6 @@ void PlayerController::fixedUpdate()
 		b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
 		b2Body_SetAngularVelocity(id, 0.f);
 		b2Body_SetLinearVelocity(id, { 0.f,0.f });
-		EndGoal::getInstance().setCollide(false);
 	}
 
 	// 1. Handle Rotation & Braking
