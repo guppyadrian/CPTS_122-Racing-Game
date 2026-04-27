@@ -8,19 +8,28 @@
 
 namespace gp::network
 {
-    NetworkServer::NetworkServer(const uint16_t port) : _io(NetworkManager::io()), _acceptor(_io, tcp::endpoint(tcp::v4(), port))
+    NetworkServer::NetworkServer() : _io(NetworkManager::io())
     {
     }
 
-    void NetworkServer::listen()
+    void NetworkServer::listen(const uint16_t port)
     {
+        _acceptor.emplace(_io, tcp::endpoint(tcp::v4(), port));
         // TODO???
         doAccept();
     }
 
+    void NetworkServer::emit(const std::string &eventName, const ByteBuffer &data)
+    {
+        for (const auto& connection : _connections)
+        {
+            connection->emit(eventName, data);
+        }
+    }
+
     void NetworkServer::doAccept()
     {
-        _acceptor.async_accept([this](const std::error_code ec, tcp::socket socket)
+        _acceptor.value().async_accept([this](const std::error_code ec, tcp::socket socket)
         {
             if (ec)
             {

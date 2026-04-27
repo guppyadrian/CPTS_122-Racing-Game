@@ -44,9 +44,20 @@ namespace gp::network
         _emit(0u, eventName, data);
     }
 
+    void NetworkClient::on(const std::string &eventName, const std::function<void(const ByteBuffer &)> &callback)
+    {
+        _listeners[eventName] = [callback](const ByteBuffer& data){ callback(data); };
+    }
+
     void NetworkClient::on(const std::string& eventName, const std::function<void()>& callback)
     {
+        if (_listeners.contains(eventName)) std::cout << "WARNING: gp::network::NetworkClient::on() " + eventName + " has their listener replaced, this may be unintentional!" << std::endl;
         _listeners[eventName] = [callback](const std::any&){ callback(); };
+    }
+
+    void NetworkClient::off(const std::string &eventName)
+    {
+        _listeners.erase(eventName);
     }
 
     void NetworkClient::_emit(const uint8_t type, const std::string_view eventName, const ByteBuffer& data)

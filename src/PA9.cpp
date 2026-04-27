@@ -1,4 +1,5 @@
 ﻿// Logan Rainchild
+
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -21,6 +22,11 @@
 
 #include "Player.hpp"
 #include "LevelLoader.hpp"
+#include "EndGoal.hpp"
+#include "flow/NetworkManager.hpp"
+#include "flow/components/NetworkEmitter.hpp"
+#include "flow/components/NetworkGhostManager.hpp"
+#include "network/NetworkManager.hpp"
 
 int main()
 {
@@ -33,22 +39,34 @@ int main()
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 600.f);
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 200.f);
 	
 	LevelLoader load;
-	load.readFile("Level 1");
+	load.readFile("Test");
+	
+	// NETWORK
+	gp::network::NetworkManager::Start();
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
 		return -1; // Handle error
 	}
 
+	
+	sf::Clock trackClock;
+	sf::Text trackText(font);
+	trackText.setCharacterSize(60);
+	trackText.setFillColor(sf::Color::White);
+	trackText.setPosition({ window.getSize().x - 300.f, 0 });
+
 	sf::Clock dtClock;
 	float dt;
-
 	sf::Text fpsText(font);
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
+
+	EndGoal& endGoal = EndGoal::getInstance();
 
 	while (window.isOpen())
 	{
@@ -70,12 +88,21 @@ int main()
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+		{
+			trackClock.restart();
+		}
+		int tSec = trackClock.getElapsedTime().asMilliseconds() / 1000;
+		int tMs = trackClock.getElapsedTime().asMilliseconds() % 1000;
+		trackText.setString(std::to_string(tSec) + ":" + std::to_string(tMs));
+
 		window.clear();
 		flow::Renderer::getGlobalRenderer().drawAll();
 		window.setView(window.getDefaultView());
 		window.draw(fpsText);
+		window.draw(trackText);
 		window.display();
 	}
 
-
+	gp::network::NetworkManager::Stop();
 }

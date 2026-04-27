@@ -32,7 +32,7 @@ endif()
 
 
 # Add source to this project's executable.
-add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp src/Player.cpp src/LevelLoader.cpp)
+add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp src/Player.cpp src/LevelLoader.cpp src/EndGoal.cpp)
 
 target_include_directories(RacerGame PRIVATE include)
 
@@ -54,3 +54,6 @@ set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
 target_link_libraries(RacerGame flowEngine guppyNet)
 
 install(TARGETS RacerGame DESTINATION .)
+
+#target_compile_options(RacerGame PRIVATE -fsanitize=thread)
+#target_link_options(RacerGame PRIVATE -fsanitize=thread)

@@ -19,15 +19,27 @@ namespace gp::network
     {
     private:
         asio::io_context& _io;
-        tcp::acceptor _acceptor;
+        std::optional<tcp::acceptor> _acceptor;
         std::vector<Socket> _connections;
     public:
-        explicit NetworkServer(uint16_t port);
-        void listen();
+        NetworkServer();
+        void listen(uint16_t port);
 
         std::function<void(Socket)> onConnection;
+        template <Serializable T>
+        void emit(const std::string& eventName, const T& data);
+        void emit(const std::string& eventName, const ByteBuffer& data);
 
     private:
         void doAccept();
     };
+
+    template<Serializable T>
+    void NetworkServer::emit(const std::string &eventName, const T &data)
+    {
+        for (auto &connection : _connections)
+        {
+            connection->emit(eventName, data);
+        }
+    }
 }

@@ -41,9 +41,13 @@ namespace gp::network
         // Emits an event to the server, sends raw bytes
         void emit(std::string_view eventName, const ByteBuffer& data);
 
+        void on(const std::string& eventName, const std::function<void(const ByteBuffer&)>& callback);
         template<Serializable T, EventCallback<T> F>
         void on(const std::string& eventName, F callback);
         void on(const std::string& eventName, const std::function<void()>& callback);
+
+        // removes an event listener for a certain eventName
+        void off(const std::string& eventName);
 
         [[nodiscard]] bool connected() const { return _socket.is_open(); }
 

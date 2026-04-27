@@ -27,15 +27,22 @@ namespace gp::network
     template <std::size_t N>
     ByteBuffer Serialize(const char (&string)[N]);
 
-    ByteBuffer Serialize(const json& json);
+    template <typename T>
+    requires std::same_as<std::decay_t<T>, json>
+    ByteBuffer Serialize(const T& json);
+
+    template <typename T>
+    requires std::is_trivially_copyable_v<T>
+    ByteBuffer Serialize(const T& value);
 
     // Emitting should only allow values which have a Serialize() function for them!
     template <typename T>
-    concept Serializable = requires(const T& t) { Serialize(t); };
+    concept Serializable = requires(const T& t) { { Serialize(t) } -> std::same_as<ByteBuffer>; };
 
     template <Serializable T>
-    T Deserialize(const ByteBuffer& data);
-
+    requires (!std::is_trivially_copyable_v<T>) // concept slop getting crazy
+    T Deserialize(const ByteBuffer& data); 
+    
     template <>
     inline std::string Deserialize<std::string>(const ByteBuffer &data)
     {
@@ -44,10 +51,33 @@ namespace gp::network
         return string;
     }
 
+    template <typename T>
+    requires std::is_trivially_copyable_v<T>
+    T Deserialize(const ByteBuffer& data)
+    {
+        T value;
+        std::memcpy(&value, data.data(), sizeof(T));
+        return value;
+    }
+
     template<std::size_t N>
     ByteBuffer Serialize(const char(&string)[N])
     {
         return ByteBuffer(string, string + N - 1);
+    }
+
+    template<typename T> requires std::is_trivially_copyable_v<T>
+    ByteBuffer Serialize(const T& value)
+    {
+        const auto valueBytes = reinterpret_cast<const uint8_t*>(&value);
+        return ByteBuffer(valueBytes, valueBytes + sizeof(value));
+    }
+
+    template <typename T>
+    requires std::same_as<std::decay_t<T>, json>
+    ByteBuffer Serialize(const T& json)
+    {
+        return Serialize(json.dump());
     }
 
     // TODO: maybe deprecated? only used in ReadBuffer but function might be unused

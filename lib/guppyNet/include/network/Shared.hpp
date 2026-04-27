@@ -4,7 +4,7 @@
 
 #pragma once
 #include <concepts>
-
+#include <vector>
 
 namespace gp::network
 {

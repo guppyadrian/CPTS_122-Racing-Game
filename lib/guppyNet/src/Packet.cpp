@@ -6,11 +6,13 @@
 
 #include <array>
 
+#include "network/BufferParser.hpp"
+
 namespace gp::network
 {
     Packet::Packet(const ByteBuffer& data)
     {
-        PacketBuffer buffer(data);
+        BufferParser buffer(data);
         _type = buffer.read<uint8_t>();
         const auto dataLength = buffer.read<uint32_t>();
         const auto eventNameLength = buffer.read<uint16_t>();
@@ -21,12 +23,12 @@ namespace gp::network
 
     Packet::Packet(const std::array<uint8_t, 7> &header, const ByteBuffer &body)
     {
-        PacketBuffer headerBuf(header);
+        BufferParser headerBuf(header);
         _type = headerBuf.read<uint8_t>();
         const auto dataLength = headerBuf.read<uint32_t>();
         const auto eventNameLength = headerBuf.read<uint16_t>();
 
-        PacketBuffer bodyBuf(body);
+        BufferParser bodyBuf(body);
         _eventName = bodyBuf.readString(eventNameLength);
         _data = std::move(bodyBuf.readBytes(dataLength));
     }
