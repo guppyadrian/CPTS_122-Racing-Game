@@ -1,5 +1,9 @@
 #include "LevelLoader.hpp"
 
+#include "flow/components/NetworkEmitter.hpp"
+#include "flow/components/NetworkGhost.hpp"
+#include "flow/components/NetworkGhostManager.hpp"
+
 void LevelLoader::readFile(std::string fileUUID)
 {
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
@@ -138,6 +142,10 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
 
 	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
+
+	// netowrk
+	player.addComponent<flow::NetworkEmitter>("playerUpdate");
+	player.addComponent<flow::NetworkGhostManager>("playerUpdate");
 
 	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 

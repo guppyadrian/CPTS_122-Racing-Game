@@ -19,7 +19,6 @@ namespace flow
     {
         NetworkManager::getGlobal().getClient().on<int>("handshakePlayerID", [this](const int id)
         {
-            std::cout << "GOT NEW ID: " << id << std::endl;
             _id = id;
         });
         

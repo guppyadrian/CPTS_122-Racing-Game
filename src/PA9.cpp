@@ -40,13 +40,13 @@ int main()
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
 	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 200.f);
-	
-	LevelLoader load;
-	load.readFile("Test");
-	
+
 	// NETWORK
 	gp::network::NetworkManager::Start();
 	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
+	
+	LevelLoader load;
+	load.readFile("Test");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
