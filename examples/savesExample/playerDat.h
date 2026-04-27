@@ -9,10 +9,16 @@ class PlayerDat
     public:
     PlayerDat() = default;
     ~PlayerDat() = default;
+
+    //reads save file
     void readSaveData();
+
+    //writes save file (id run this after read ngl just incase so the save doesn't wipe)
     void writeSaveData();
-    //the int can be changed to a string uuid pretty easy
-    void setLevelTime(sf::Clock time, int curLevel);
+
+    //curLevel == uuid
+    //the string uuid can be changed to an int eas
+    void setLevelTime(int time, std::string curLevel);
     private:
     std::vector<double> levelTimes;
     std::vector<std::string> levelNames;
