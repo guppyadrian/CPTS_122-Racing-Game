@@ -11,8 +11,8 @@ private:
 	flow::Rigidbody* _rb;
 public:
 	float input; //left is negative, right is positive
-	const float accel = 1200.f; //1000
-	const float nearObjAccel = 2500.f; //2000
+	const float accel = 600.f; //1000
+	const float nearObjAccel = 600.f; //2000
 	const float rotSpeed = 3000.0f; //8k
 	const float rotBrakingPower = 1000.0f; //2k
 	sf::Vector2f playerStartPos;
