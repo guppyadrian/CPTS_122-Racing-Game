@@ -22,6 +22,7 @@
 #include <flow/components/Camera.hpp>
 #include <flow/components/ParticleSystem.hpp>
 
+#include "EndGoal.hpp"
 #include "WallGenerator.hpp"
 #include "Player.hpp"
 
