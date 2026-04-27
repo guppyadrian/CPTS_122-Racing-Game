@@ -1,5 +1,31 @@
 #include "LevelLoader.hpp"
 
+#include <iostream>
+#include <memory>
+#include <vector>
+#include <utility>
+
+#include <fstream>
+#include <cstdio> //ITS BACK!
+
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Window.hpp>
+
+#include <flow/Component.hpp>
+#include <flow/GameObject.hpp>
+#include <flow/components/SpriteRenderer.hpp>
+#include <flow/Renderer.hpp>
+#include <flow/components/Rigidbody.hpp>
+#include <flow/PhysicsManager.hpp>
+#include <flow/SceneManager.hpp>
+#include <flow/LevelScene.hpp>
+#include <flow/components/Camera.hpp>
+#include <flow/components/ParticleSystem.hpp>
+
+#include "EndGoal.hpp"
+#include "WallGenerator.hpp"
+#include "Player.hpp"
+
 void LevelLoader::readFile(std::string fileUUID)
 {
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
@@ -174,8 +200,16 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	sf::View view = sf::View({ 0,0 }, { 400, 300 });
 	player.addComponent<flow::Camera>(view);
 
-	newScene->AddGameObject(std::move(player));
+	auto& ps = player.addComponent<flow::ParticleSystem>();
 
+	ps.setParticleCount(20);
+	ps.setStartVelocity({ 5.1f,0.1f });
+	ps.setStartColor(sf::Color::White);
+	ps.setEndColor(sf::Color::Blue);
+	ps.setStartSize(500);
+	ps.setStartLifetime(10);
+
+	newScene->AddGameObject(std::move(player));
 
 	// load the scene
 	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
