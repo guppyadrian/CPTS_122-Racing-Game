@@ -68,15 +68,19 @@ namespace flow
 			;
 
 		inline const char* scanLinesShaderSource = ""
-			"uniform float spacing;														\n"
-			"uniform sampler2D texture;													\n"
-			"void main() {																\n"
-			"		vec2 coord = gl_TexCoord[0].xy;										\n"
-			"		vec4 temp = texture2D( texture, coord );							\n"
-			"		gl_FragColor = temp * (mod(coord.y, spacing * 2.0) / spacing);		\n"
-			//"		gl_FragColor = temp;												\n"
-			"}"
-			;
+			"uniform float spacing;                                         \n"
+			"uniform float intensity;										\n"
+			"uniform sampler2D texture;                                     \n"
+			"void main() {                                                  \n"
+			"    vec2 coord = gl_TexCoord[0].xy;                            \n"
+			"    vec4 color = texture2D(texture, coord);                    \n"
+			"                                                               \n"
+			"    float line = sin(coord.y * (6.28318 / spacing));           \n"
+			"                                                               \n"
+			"    float multiplier = 1.0 - (intensity * (line * 0.5 + 0.5)); \n"
+			"                                                               \n"
+			"    gl_FragColor = vec4(color.rgb * multiplier, color.a);      \n"
+			"}";
 
 		//AI Generated
 		inline const char* crtDistortionShaderSource = ""

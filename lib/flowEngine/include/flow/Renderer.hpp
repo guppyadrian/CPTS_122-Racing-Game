@@ -23,7 +23,7 @@ namespace flow
 		sf::Shader scanLines;
 		sf::Shader crtDistortion;
 
-		sf::Vector2f mCromeAbOffset = {0.01f, 0.001f};
+		sf::Vector2f mCromeAbOffset = {0.005f, 0.002f};
 
 		Renderer();
 
