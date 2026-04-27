@@ -159,7 +159,6 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 
 
-
 	//Player stuff
 	flow::GameObject player = flow::GameObject();
 
@@ -222,9 +221,11 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
 	b2Body_SetMassData(bodyId, {11.f,b2Body_GetMassData(bodyId).center,150.f});
 
-
 	//test for bullet?
 	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
+
+	//Add to endGoal
+	goal.setPlayer(bodyId);
 
 	player.addComponent<PlayerController>();
 	player.getComponent<PlayerController>()->playerStartPos = playerPos;

@@ -43,7 +43,7 @@ int main()
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
+	flow::NetworkManager::getGlobal().getClient().connect("10.109.143.11", 25550);
 	
 	LevelLoader load;
 	load.readFile("logan level 3");
@@ -66,12 +66,10 @@ int main()
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
 
-	EndGoal& endGoal = EndGoal::getInstance();
-
 	while (window.isOpen())
 	{
 		dt = dtClock.restart().asSeconds();
-
+		EndGoal::getInstance().update();
 		// SFML in this workspace uses an optional-style pollEvent that returns
 		// std::optional<sf::Event>. Use that form to handle events.
 		while (auto event = window.pollEvent())
@@ -88,8 +86,9 @@ int main()
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().getCollide())
 		{
+			EndGoal::getInstance().setCollide(false);
 			trackClock.restart();
 		}
 		int tSec = trackClock.getElapsedTime().asMilliseconds() / 1000;
@@ -103,6 +102,8 @@ int main()
 		window.draw(trackText);
 		window.display();
 	}
+
+	//run save
 
 	gp::network::NetworkManager::Stop();
 }

@@ -2,6 +2,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Joystick.hpp>
 #include <iostream>
+#include "EndGoal.hpp"
 
 PlayerController::PlayerController() : _rb(nullptr), input(0) {}
 
@@ -18,7 +19,7 @@ void PlayerController::init()
 		std::cerr << "Player failed to get Particle System Component" << std::endl;
 	}
 
-	b2Body_SetLinearDamping(_rb->getBodyId(), 0.4f);
+	b2Body_SetLinearDamping(_rb->getBodyId(), 0.2f);
 	b2Body_SetAngularDamping(_rb->getBodyId(), 0.3f);
 }
 
@@ -26,7 +27,7 @@ void PlayerController::fixedUpdate()
 {
 	input = 0.f;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
 		input += -1.f; // Move Left
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
@@ -49,7 +50,7 @@ void PlayerController::fixedUpdate()
 	b2Vec2 localForce = { 0.0f, -accel };
 	auto worldForce = b2RotateVector(rot, localForce);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3)) //3 is Y button, 9 is esc
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().getCollide()) //3 is Y button, 9 is esc
 	{
 		float radians = playerStartRot * (B2_PI / 180.0f);
 
@@ -59,6 +60,7 @@ void PlayerController::fixedUpdate()
 		b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
 		b2Body_SetAngularVelocity(id, 0.f);
 		b2Body_SetLinearVelocity(id, { 0.f,0.f });
+		EndGoal::getInstance().setCollide(false);
 	}
 
 	// 1. Handle Rotation & Braking
@@ -81,8 +83,8 @@ void PlayerController::fixedUpdate()
 
 	//Raycast thrust
 	b2Vec2 thrustForce = { 0.0f,0.0f };
-	b2Vec2 ray1 = { 5.0f, 15.0f };
-	b2Vec2 ray2 = { -5.0f, 15.0f };
+	b2Vec2 ray1 = { 5.0f, 25.0f };
+	b2Vec2 ray2 = { -5.0f, 25.0f };
 	ray1 = b2RotateVector(rot, ray1);
 	ray2 = b2RotateVector(rot, ray2);
 	auto r1 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray1, b2DefaultQueryFilter());
@@ -90,7 +92,7 @@ void PlayerController::fixedUpdate()
 
 	if (r1.hit || r2.hit)
 	{
-		float rayDist = b2MaxFloat(((1 - r1.fraction)* (1 - r1.fraction)), ((1 - r2.fraction)* (1 - r2.fraction)));
+		float rayDist = b2MaxFloat(((1 - r1.fraction) * (1 - r1.fraction)), ((1 - r2.fraction) * (1 - r2.fraction)));
 
 		thrustForce = b2MulSV(rayDist, { 0.f, -nearObjAccel }); // scale force by distance
 		thrustForce = b2RotateVector(rot, thrustForce);
