@@ -19,7 +19,7 @@ void PlayerController::init()
 		std::cerr << "Player failed to get Particle System Component" << std::endl;
 	}
 
-	b2Body_SetLinearDamping(_rb->getBodyId(), 0.4f);
+	b2Body_SetLinearDamping(_rb->getBodyId(), 0.2f);
 	b2Body_SetAngularDamping(_rb->getBodyId(), 0.3f);
 }
 
