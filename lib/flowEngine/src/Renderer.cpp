@@ -65,7 +65,7 @@ namespace flow
 
         // Draw to the brightness pass
         brightShader.setUniform("texture", mainScene.getTexture());
-        brightShader.setUniform("threshold", 0.4f);
+        brightShader.setUniform("threshold", 0.85f);
         brightPass.draw(sf::Sprite(mainScene.getTexture()), &brightShader);
         brightPass.display();
 
@@ -82,7 +82,7 @@ namespace flow
 
             // Set uniforms
             blurShader.setUniform("texture", input->getTexture());
-            sf::Vector2f direction = pingPong ? sf::Vector2f(1.f / mWindowRef->getSize().x * ((int)(i/2) + 1), 0.f) : sf::Vector2f(0.f, 1.f / mWindowRef->getSize().y * ((int)(i / 2) +1));
+            sf::Vector2f direction = pingPong ? sf::Vector2f(1.f / mWindowRef->getSize().x * ((int)(i/2) + 1), 0.f) : sf::Vector2f(0.f, 1.f / mWindowRef->getSize().y * ((int)(i / 2) + 1));
             blurShader.setUniform("offset", direction);
 
             // Draw input onto output using the shader
@@ -113,10 +113,10 @@ namespace flow
         std::swap(input, output);
 
         // composite chromatic abberation over the mainScene
-        cromeAbShader.setUniform("texture", mainScene.getTexture());
+        cromeAbShader.setUniform("texture", input->getTexture());
         cromeAbShader.setUniform("samples", (mCromeAbOffset.lengthSquared() == 0.f) ? 2.f : 20.f);
         cromeAbShader.setUniform("offset", mCromeAbOffset);
-        output->draw(sf::Sprite(mainScene.getTexture()), &cromeAbShader);
+        output->draw(sf::Sprite(input->getTexture()), &cromeAbShader);
         output->display();
 
         std::swap(input, output);
@@ -125,7 +125,8 @@ namespace flow
 
         //draw the scan lines
         scanLines.setUniform("texture", input->getTexture());
-        scanLines.setUniform("spacing",  2.f / input->getSize().y );
+        scanLines.setUniform("intensity", 0.2f);
+        scanLines.setUniform("spacing",  8.f / input->getSize().y );
         output->draw(sf::Sprite(input->getTexture()), &scanLines);
         output->display();
 
