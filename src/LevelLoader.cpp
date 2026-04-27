@@ -187,8 +187,10 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	// --- Box2D box expects half-width and half-height ---
 	float radius = std::min(local.size.x * scale.x, local.size.y * scale.y) * 0.5f;
 	std::cout << "Radius: " << radius << std::endl;
-	b2Circle circle = { {0.0f, 0.0f}, radius };
+	b2Circle circle = { {0.0f, 0.0f}, radius + 2.f };
 	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
+	b2Body_SetMassData(bodyId, {11.f,b2Body_GetMassData(bodyId).center,150.f});
+
 
 	//test for bullet?
 	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);

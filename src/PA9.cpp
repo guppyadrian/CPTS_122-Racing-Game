@@ -39,10 +39,10 @@ int main()
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 200.f);
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 400.f);
 	
 	LevelLoader load;
-	load.readFile("Test");
+	load.readFile("Grav Test");
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
@@ -88,7 +88,7 @@ int main()
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3))
 		{
 			trackClock.restart();
 		}
