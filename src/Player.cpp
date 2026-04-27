@@ -13,6 +13,8 @@ void PlayerController::init()
 		int i = 0;
 		i++;
 	}
+	b2Body_SetLinearDamping(_rb->getBodyId(), 0.4f);
+	b2Body_SetAngularDamping(_rb->getBodyId(), 0.3f);
 }
 
 void PlayerController::fixedUpdate()
@@ -42,7 +44,7 @@ void PlayerController::fixedUpdate()
 	b2Vec2 localForce = { 0.0f, -accel };
 	auto worldForce = b2RotateVector(rot, localForce);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3)) //3 is Y button, 9 is esc
 	{
 		float radians = playerStartRot * (B2_PI / 180.0f);
 
@@ -74,16 +76,19 @@ void PlayerController::fixedUpdate()
 
 	//Raycast thrust
 	b2Vec2 thrustForce = { 0.0f,0.0f };
-	b2Vec2 ray = { 0.0f, 50.0f };
-	ray = b2RotateVector(rot, ray);
-	auto r = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray, b2DefaultQueryFilter());
+	b2Vec2 ray1 = { 5.0f, 15.0f };
+	b2Vec2 ray2 = { -5.0f, 15.0f };
+	ray1 = b2RotateVector(rot, ray1);
+	ray2 = b2RotateVector(rot, ray2);
+	auto r1 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray1, b2DefaultQueryFilter());
+	auto r2 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray2, b2DefaultQueryFilter());
 
-	if (r.hit)
+	if (r1.hit || r2.hit)
 	{
-		float rayDist = (1 - r.fraction)* (1 - r.fraction);
+		float rayDist = b2MaxFloat(((1 - r1.fraction)* (1 - r1.fraction)), ((1 - r2.fraction)* (1 - r2.fraction)));
+
 		thrustForce = b2MulSV(rayDist, { 0.f, -nearObjAccel }); // scale force by distance
 		thrustForce = b2RotateVector(rot, thrustForce);
 	}
-	std::cerr << thrustForce.x << ',' << thrustForce.y << std::endl;
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
 }

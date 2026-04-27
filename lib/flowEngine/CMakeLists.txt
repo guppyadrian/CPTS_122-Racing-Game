@@ -10,6 +10,7 @@ target_sources(flowEngine PRIVATE
         src/Scene.cpp
         src/SceneManager.cpp
         src/SpriteRenderer.cpp
+        src/ParticleSystem.cpp
         src/Transform.cpp
         src/Camera.cpp
         src/network/NetworkEmitter.cpp

@@ -2,13 +2,15 @@
 
 #include "flow/Component.hpp"
 #include "flow/GameObject.hpp"
+#include "flow/Renderable.hpp"
+
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <string>
 
 namespace flow
 {
-	class SpriteRenderer : public Component
+	class SpriteRenderer : public Renderable
 	{
 		sf::Texture mTexture;
 		sf::Sprite mSprite;
@@ -18,6 +20,8 @@ namespace flow
 		~SpriteRenderer();
 
 		sf::Sprite& getSprite();
+
+		const sf::Drawable& getDrawable() override;
 
 		// implement Component interface
 		void init() override {};
