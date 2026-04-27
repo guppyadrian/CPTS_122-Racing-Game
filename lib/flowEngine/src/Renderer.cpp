@@ -33,14 +33,14 @@ namespace flow
         pong.setSmooth(true);
     }
 
-    void Renderer::addSpriteRenderer(SpriteRenderer* sprite)
+    void Renderer::addRenderable(Renderable* renderable)
     {
-        mActiveSprites.push_back(sprite);
+        mActiveSprites.push_back(renderable);
     }
 
-    void Renderer::removeSpriteRenderer(SpriteRenderer* sprite) 
+    void Renderer::removeRenderable(Renderable* renderable)
     {
-        auto it = std::find(mActiveSprites.begin(), mActiveSprites.end(), sprite);
+        auto it = std::find(mActiveSprites.begin(), mActiveSprites.end(), renderable);
         if (it != mActiveSprites.end()) 
         {
             mActiveSprites.erase(it);
@@ -60,7 +60,7 @@ namespace flow
         {
             sf::Transform tf = sprite->mGameObject->mTransform.getTransform();
             //tf.scale(sf::Vector2f(0.01f, 0.01f));
-            mainScene.draw(sprite->getSprite(), tf);
+            mainScene.draw(sprite->getDrawable(), tf);
         }
 
         // Draw to the brightness pass
@@ -139,7 +139,7 @@ namespace flow
 
         // flip the output fiew for the shader pass
         sf::View view = mWindowRef->getView();
-        view.setSize({ view.getSize().x, -fabs(view.getSize().y) });
+        view.setSize({ view.getSize().x, static_cast<float>(-fabs(view.getSize().y)) });
         mWindowRef->setView(view);
 
         mWindowRef->draw(sf::Sprite(output->getTexture())); // Output the final composite

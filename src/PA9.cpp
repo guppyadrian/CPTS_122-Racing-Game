@@ -1,4 +1,5 @@
 ﻿// Logan Rainchild
+
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -22,6 +23,10 @@
 #include "Player.hpp"
 #include "LevelLoader.hpp"
 #include "EndGoal.hpp"
+#include "flow/NetworkManager.hpp"
+#include "flow/components/NetworkEmitter.hpp"
+#include "flow/components/NetworkGhostManager.hpp"
+#include "network/NetworkManager.hpp"
 
 int main()
 {
@@ -39,6 +44,9 @@ int main()
 	LevelLoader load;
 	load.readFile("Test");
 	
+	// NETWORK
+	gp::network::NetworkManager::Start();
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
@@ -96,5 +104,5 @@ int main()
 		window.display();
 	}
 
-
+	gp::network::NetworkManager::Stop();
 }

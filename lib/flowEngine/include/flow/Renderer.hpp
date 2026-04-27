@@ -3,13 +3,14 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "components/SpriteRenderer.hpp"
+#include "Renderable.hpp"
 
 namespace flow
 {
 	class Renderer
 	{
 		sf::RenderWindow* mWindowRef;
-		std::vector<SpriteRenderer*> mActiveSprites;
+		std::vector<Renderable*> mActiveSprites;
 
 		sf::RenderTexture mainScene;
 		sf::RenderTexture brightPass;
@@ -47,8 +48,8 @@ namespace flow
 			pong = sf::RenderTexture(mWindowRef->getSize());
 		};
 
-		void addSpriteRenderer(SpriteRenderer* sprite);
-		void removeSpriteRenderer(SpriteRenderer* sprite);
+		void addRenderable(Renderable* renderable);
+		void removeRenderable(Renderable* renderable);
 		void drawAll();
 		void setView(const sf::View& view);
 		void setChromaticAberration(sf::Vector2f offset)

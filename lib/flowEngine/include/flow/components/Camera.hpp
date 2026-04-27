@@ -6,19 +6,19 @@
 
 namespace flow
 {
-	class Camera : public Component
+	class Camera final : public Component
 	{
 		sf::View mView;
 	public:
 		//Camera();
-		Camera(const sf::View &view) : mView(view) {};
+		explicit Camera(const sf::View &view) : mView(view) {};
 
-		void setViewSize(sf::Vector2f size)
+		void setViewSize(const sf::Vector2f size)
 		{
 			mView.setSize(size);
 		};
 
-		sf::Vector2f getViewSize()
+		sf::Vector2f getViewSize() const
 		{
 			return mView.getSize();
 		}

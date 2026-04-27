@@ -14,7 +14,7 @@ namespace flow
 		sf::FloatRect local = mSprite.getLocalBounds();
 		mSprite.setOrigin(local.size * 0.5f);
 
-		Renderer::getGlobalRenderer().addSpriteRenderer(this);
+		Renderer::getGlobalRenderer().addRenderable(this);
 	}
 
 	SpriteRenderer::SpriteRenderer(const sf::Texture& texture) : mTexture(texture), mSprite(mTexture)
@@ -24,15 +24,20 @@ namespace flow
 		sf::FloatRect local = mSprite.getLocalBounds();
 		mSprite.setOrigin(local.size * 0.5f);
 
-		Renderer::getGlobalRenderer().addSpriteRenderer(this);
+		Renderer::getGlobalRenderer().addRenderable(this);
 	}
 
 	SpriteRenderer::~SpriteRenderer()
 	{
-		Renderer::getGlobalRenderer().removeSpriteRenderer(this);
+		Renderer::getGlobalRenderer().removeRenderable(this);
 	}
 
 	sf::Sprite& SpriteRenderer::getSprite()
+	{
+		return mSprite;
+	}
+
+	const sf::Drawable& SpriteRenderer::getDrawable()
 	{
 		return mSprite;
 	}
