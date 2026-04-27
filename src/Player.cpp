@@ -50,9 +50,7 @@ void PlayerController::fixedUpdate()
 	b2Vec2 localForce = { 0.0f, -accel };
 	auto worldForce = b2RotateVector(rot, localForce);
 
-	EndGoal& endGoal = EndGoal::getInstance();
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || endGoal.isPlayerReachedEnd()) //3 is Y button, 9 is esc
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().getCollide()) //3 is Y button, 9 is esc
 	{
 		float radians = playerStartRot * (B2_PI / 180.0f);
 
@@ -62,6 +60,7 @@ void PlayerController::fixedUpdate()
 		b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
 		b2Body_SetAngularVelocity(id, 0.f);
 		b2Body_SetLinearVelocity(id, { 0.f,0.f });
+		EndGoal::getInstance().setCollide(false);
 	}
 
 	// 1. Handle Rotation & Braking
@@ -84,8 +83,8 @@ void PlayerController::fixedUpdate()
 
 	//Raycast thrust
 	b2Vec2 thrustForce = { 0.0f,0.0f };
-	b2Vec2 ray1 = { 5.0f, 15.0f };
-	b2Vec2 ray2 = { -5.0f, 15.0f };
+	b2Vec2 ray1 = { 5.0f, 25.0f };
+	b2Vec2 ray2 = { -5.0f, 25.0f };
 	ray1 = b2RotateVector(rot, ray1);
 	ray2 = b2RotateVector(rot, ray2);
 	auto r1 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray1, b2DefaultQueryFilter());
