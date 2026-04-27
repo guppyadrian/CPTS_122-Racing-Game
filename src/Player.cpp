@@ -27,7 +27,7 @@ void PlayerController::fixedUpdate()
 {
 	input = 0.f;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
 		input += -1.f; // Move Left
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
@@ -92,7 +92,7 @@ void PlayerController::fixedUpdate()
 
 	if (r1.hit || r2.hit)
 	{
-		float rayDist = b2MaxFloat(((1 - r1.fraction)* (1 - r1.fraction)), ((1 - r2.fraction)* (1 - r2.fraction)));
+		float rayDist = b2MaxFloat(((1 - r1.fraction) * (1 - r1.fraction)), ((1 - r2.fraction) * (1 - r2.fraction)));
 
 		thrustForce = b2MulSV(rayDist, { 0.f, -nearObjAccel }); // scale force by distance
 		thrustForce = b2RotateVector(rot, thrustForce);
