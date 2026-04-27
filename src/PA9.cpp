@@ -46,7 +46,7 @@ int main()
 	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
 	
 	LevelLoader load;
-	load.readFile("Triangle");
+	load.readFile("Obsticles");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
