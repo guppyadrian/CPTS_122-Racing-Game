@@ -44,7 +44,7 @@ namespace flow
                     GameObject ghost; // such bad practice to hard code this in, but too bad!
                     ghost.mTransform.setScale({0.02f, 0.02f});
 
-                    ghost.addComponent<SpriteRenderer>("assets/ghost" + std::to_string(id) + ".png");
+                    ghost.addComponent<SpriteRenderer>("assets/ghost" + std::to_string(id % 8 + 1) + ".png");
                     _ghosts[id] = &ghost.addComponent<NetworkGhost>(id);
                     
                     curScene.AddGameObject(std::move(ghost));
