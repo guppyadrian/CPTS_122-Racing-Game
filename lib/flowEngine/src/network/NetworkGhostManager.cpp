@@ -24,7 +24,6 @@ namespace flow
         
         NetworkManager::getGlobal().getClient().on(eventName, [this](const network::ByteBuffer& buffer)
         {
-            std::cout << "MY ID: " << _id << std::endl;
             auto& curScene = dynamic_cast<LevelScene&>(SceneManager::getGlobal().getCurrentScene());
             network::BufferParser parser(buffer);
             

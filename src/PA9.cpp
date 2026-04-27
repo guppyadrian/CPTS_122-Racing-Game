@@ -46,7 +46,7 @@ int main()
 	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
 	
 	LevelLoader load;
-	load.readFile("Grav Test");
+	load.readFile("Test");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
