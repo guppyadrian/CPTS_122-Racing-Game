@@ -10,9 +10,14 @@ void PlayerController::init()
 	_rb = mGameObject->getComponent<flow::Rigidbody>();
 	if (_rb == nullptr)
 	{
-		int i = 0;
-		i++;
+		std::cerr << "Player failed to get Rigidbody Component" << std::endl;
 	}
+	_jetFlame = mGameObject->getComponent<flow::ParticleSystem>();
+	if (_jetFlame == nullptr)
+	{
+		std::cerr << "Player failed to get Particle System Component" << std::endl;
+	}
+
 	b2Body_SetLinearDamping(_rb->getBodyId(), 0.4f);
 	b2Body_SetAngularDamping(_rb->getBodyId(), 0.3f);
 }
@@ -89,6 +94,12 @@ void PlayerController::fixedUpdate()
 
 		thrustForce = b2MulSV(rayDist, { 0.f, -nearObjAccel }); // scale force by distance
 		thrustForce = b2RotateVector(rot, thrustForce);
+
+		_jetFlame->startEmit(); // start particle system
+	}
+	else
+	{
+		_jetFlame->stopEmit(); // stop particle system
 	}
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
 }
