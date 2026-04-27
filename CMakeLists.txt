@@ -32,7 +32,10 @@ endif()
 
 
 # Add source to this project's executable.
-add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp src/Player.cpp src/LevelLoader.cpp src/EndGoal.cpp)
+add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp src/Player.cpp src/LevelLoader.cpp src/EndGoal.cpp
+        examples/savesExample/playerDat.cpp
+        examples/savesExample/playerDat.h
+)
 
 target_include_directories(RacerGame PRIVATE include)
 
