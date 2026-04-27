@@ -1,5 +1,14 @@
-add_executable(NetworkExample main.cpp MainMenu.cpp MainMenu.hpp)
+add_executable(MenuExample main.cpp MainMenu.cpp MainMenu.hpp
+        LevelMenu.cpp
+        LevelMenu.hpp
+        LevelMenu.hpp)
 
-target_link_libraries(NetworkExample PRIVATE guppyNet)
+target_link_libraries(MenuExample PRIVATE SFML::Graphics flowEngine)
 
-//target_include_directories({CMAKE_SOURCE_DIR}/include)
+target_include_directories(MenuExample PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+add_custom_command(TARGET MenuExample POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../assets
+        $<TARGET_FILE_DIR:MenuExample>/assets
+)

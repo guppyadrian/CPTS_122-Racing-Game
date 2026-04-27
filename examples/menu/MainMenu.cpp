@@ -1,4 +1,5 @@
-#include "..\include\MainMenu.hpp"
+#include "MainMenu.hpp"
+#include "flow/Renderer.hpp"
 
 MainMenu::MainMenu()
     : flow::Scene("main-menu"),
@@ -43,7 +44,7 @@ void MainMenu::initialize()
     _playText->setString("Play");
     _playText->setCharacterSize(28);
     _playText->setFillColor(sf::Color::White);
-    sf::FloatRect playBounds = _playText->getLocalBounds();
+    //sf::FloatRect playBounds = _playText->getLocalBounds();
     _playText->setOrigin(sf::Vector2f(playBounds.size.x / 2.f, playBounds.size.y / 2.f));
     _playText->setPosition(sf::Vector2f(400.f, 297.f));
 
@@ -75,6 +76,7 @@ void MainMenu::update(float dt)
         _playButton.setOutlineColor(_curMenuPosition == 0 ? sf::Color::Yellow : sf::Color::White);
         _exitButton.setOutlineColor(_curMenuPosition == 1 ? sf::Color::Yellow : sf::Color::White);
     }
+    drawMenu(flow::Renderer::getGlobalRenderer().getWindow());
 }
 
 void MainMenu::drawMenu(sf::RenderWindow& window)

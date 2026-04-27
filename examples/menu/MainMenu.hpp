@@ -4,9 +4,9 @@
 #include <SFML/Window.hpp>
 #include <memory>
 
-#include "..\lib\flowEngine\include\flow\Scene.hpp"
+#include <flow/Scene.hpp>
 
-class MainMenu : flow::Scene
+class MainMenu : public flow::Scene
 {
     public:
     MainMenu();

@@ -3,3 +3,4 @@
 add_subdirectory(networkExample)
 add_subdirectory(networkServer)
 add_subdirectory(flowSetupExample)
+add_subdirectory(menu)
