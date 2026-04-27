@@ -5,22 +5,20 @@
 
 class EndGoal {
 public:
-    static EndGoal& getInstance() {
-        static EndGoal instance;
-        return instance;
-    }
+	static EndGoal& getInstance() {
+		static EndGoal instance;
+		return instance;
+	}
 
-    // Delete copy/move so it can't be duplicated
-    EndGoal(const EndGoal&) = delete;
-    EndGoal& operator=(const EndGoal&) = delete;
+	// Delete copy/move so it can't be duplicated
+	EndGoal(const EndGoal&) = delete;
+	EndGoal& operator=(const EndGoal&) = delete;
 
-    void setEndGoal(b2BodyId endGoalBodyId) {
-        _id = endGoalBodyId;
-    }
+	void setEndGoal(b2BodyId endGoalBodyId) {_endid = endGoalBodyId;}
+	void setPlayer(b2BodyId id) { _playerid = id; }
+
 private:
-    EndGoal(){}
-    b2BodyId _id = b2_nullBodyId;
-    void onPlayerReachedEnd() {
-        // trigger level complete, load next scene, etc.
-    }
+	EndGoal() {}
+	b2BodyId _endid = b2_nullBodyId;
+	b2BodyId _playerid = b2_nullBodyId;
 };

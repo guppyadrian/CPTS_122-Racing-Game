@@ -2,6 +2,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Joystick.hpp>
 #include <iostream>
+#include "EndGoal.hpp"
 
 PlayerController::PlayerController() : _rb(nullptr), input(0) {}
 
@@ -44,7 +45,9 @@ void PlayerController::fixedUpdate()
 	b2Vec2 localForce = { 0.0f, -accel };
 	auto worldForce = b2RotateVector(rot, localForce);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3)) //3 is Y button, 9 is esc
+	EndGoal& endGoal = EndGoal::getInstance();
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || endGoal.isPlayerReachedEnd()) //3 is Y button, 9 is esc
 	{
 		float radians = playerStartRot * (B2_PI / 180.0f);
 
