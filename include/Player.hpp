@@ -3,6 +3,7 @@
 #include <flow/GameObject.hpp>
 #include <flow/components/Rigidbody.hpp>
 #include <flow/PhysicsManager.hpp>
+#include <flow/components/ParticleSystem.hpp>
 
 class PlayerController : public flow::Component
 {
@@ -16,6 +17,9 @@ public:
 	const float rotBrakingPower = 1000.0f; //2k
 	sf::Vector2f playerStartPos;
 	float playerStartRot;
+
+	flow::ParticleSystem* _jetFlame;
+
 	void init();
 	void update(float dt) {};
 	void fixedUpdate();

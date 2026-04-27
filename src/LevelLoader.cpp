@@ -166,6 +166,29 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	player.mTransform.setRotationDeg(playerRot);
 	player.mTransform.setScale(sf::Vector2f(0.02f, 0.02f));
 
+	// narrow beam  particle system
+	auto& ps2 = player.addComponent<flow::ParticleSystem>();
+
+	ps2.setParticleCount(50);
+	ps2.setStartRandomVelocity(2000.f);
+	ps2.setStartVelocity({ 0.f, 15000.f });
+	ps2.setStartColor(sf::Color::Blue);
+	ps2.setEndColor(sf::Color::Yellow);
+	ps2.setStartSize(250);
+	ps2.setStartLifetime(0.1f);
+
+	// wider fire effect particle system
+	auto& ps1 = player.addComponent<flow::ParticleSystem>();
+
+	ps1.setParticleCount(25);
+	ps1.setStartRandomVelocity(1000.f);
+	ps1.setStartVelocity({ 0.f, 2400.f });
+	ps1.setStartColor(sf::Color::Yellow);
+	ps1.setEndColor(sf::Color::Red);
+	ps1.setStartSize(150);
+	ps1.setStartLifetime(0.3f);
+	ps1.startEmit();
+
 	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
 
 	// netowrk
@@ -210,15 +233,6 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	sf::View view = sf::View({ 0,0 }, { 400, 300 });
 	player.addComponent<flow::Camera>(view);
-
-	auto& ps = player.addComponent<flow::ParticleSystem>();
-
-	ps.setParticleCount(20);
-	ps.setStartVelocity({ 5.1f,0.1f });
-	ps.setStartColor(sf::Color::White);
-	ps.setEndColor(sf::Color::Blue);
-	ps.setStartSize(500);
-	ps.setStartLifetime(10);
 
 	newScene->AddGameObject(std::move(player));
 
