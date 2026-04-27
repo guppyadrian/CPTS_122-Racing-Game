@@ -34,7 +34,6 @@ int main()
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0));
 
 	auto mainMenu = std::make_unique<MainMenu>();
-	mainMenu->initialize();
 
 	flow::SceneManager::getGlobal().loadScene(std::move(mainMenu));
 	flow::SceneManager::getGlobal().switchScene("main-menu");

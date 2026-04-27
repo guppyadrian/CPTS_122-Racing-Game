@@ -6,7 +6,7 @@
 
 #include <flow/Scene.hpp>
 
-class LevelMenu : public Scene
+class LevelMenu : public flow::Scene
 {
 
 };

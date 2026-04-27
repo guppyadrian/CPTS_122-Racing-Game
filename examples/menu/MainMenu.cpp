@@ -5,21 +5,17 @@ MainMenu::MainMenu()
     : flow::Scene("main-menu"),
       _curMenuPosition(0)
 {
+    mGameObject = new flow::GameObject();
+    flow::Renderer::getGlobalRenderer().addRenderable(this);
 }
 
 void MainMenu::initialize()
 {
     // --- Fonts ---
-    if (!_headerFont.openFromFile("assets/Pixel-Regular.ttf"))
-    {
-        //maybe like an assert or something idk
-    }
-    if (!_buttonFont.openFromFile("assets/ButtonText.TTF"))
-    {
-        //more error checking
-    }
+    if (!_headerFont.openFromFile("assets/Pixel-Regular.ttf")) { }
+    if (!_buttonFont.openFromFile("assets/ButtonText.TTF")) { }
 
-    // --- Construct texts now that fonts are ready ---
+    // --- Construct texts ---
     _headerText = std::make_unique<sf::Text>(_headerFont);
     _playText   = std::make_unique<sf::Text>(_buttonFont);
     _exitText   = std::make_unique<sf::Text>(_buttonFont);
@@ -37,14 +33,13 @@ void MainMenu::initialize()
     _playButton.setFillColor(sf::Color(50, 150, 50));
     _playButton.setOutlineColor(sf::Color::White);
     _playButton.setOutlineThickness(2.f);
-    sf::FloatRect playBounds = _playText->getLocalBounds();
-    _playText->setOrigin(sf::Vector2f(playBounds.size.x / 2.f, playBounds.size.y / 2.f));
+    _playButton.setOrigin(sf::Vector2f(120.f, 30.f));
     _playButton.setPosition(sf::Vector2f(400.f, 300.f));
 
     _playText->setString("Play");
     _playText->setCharacterSize(28);
     _playText->setFillColor(sf::Color::White);
-    //sf::FloatRect playBounds = _playText->getLocalBounds();
+    sf::FloatRect playBounds = _playText->getLocalBounds();
     _playText->setOrigin(sf::Vector2f(playBounds.size.x / 2.f, playBounds.size.y / 2.f));
     _playText->setPosition(sf::Vector2f(400.f, 297.f));
 
@@ -62,12 +57,27 @@ void MainMenu::initialize()
     sf::FloatRect exitBounds = _exitText->getLocalBounds();
     _exitText->setOrigin(sf::Vector2f(exitBounds.size.x / 2.f, exitBounds.size.y / 2.f));
     _exitText->setPosition(sf::Vector2f(400.f, 397.f));
+
+    // --- Register draw
+    _menuDrawable = std::make_unique<MenuDrawable>();
+    _menuDrawable->add([this]() -> const sf::Drawable* { return &_playButton; });
+    _menuDrawable->add([this]() -> const sf::Drawable* { return &_exitButton; });
+    _menuDrawable->add([this]() -> const sf::Drawable* { return _headerText.get(); });
+    _menuDrawable->add([this]() -> const sf::Drawable* { return _playText.get(); });
+    _menuDrawable->add([this]() -> const sf::Drawable* { return _exitText.get(); });
+
 }
 
 void MainMenu::onEnter()
 {
     _curMenuPosition = 0;
 }
+
+void MainMenu::onExit()
+{
+    flow::Renderer::getGlobalRenderer().removeRenderable(this);
+}
+
 
 void MainMenu::update(float dt)
 {
@@ -76,14 +86,9 @@ void MainMenu::update(float dt)
         _playButton.setOutlineColor(_curMenuPosition == 0 ? sf::Color::Yellow : sf::Color::White);
         _exitButton.setOutlineColor(_curMenuPosition == 1 ? sf::Color::Yellow : sf::Color::White);
     }
-    drawMenu(flow::Renderer::getGlobalRenderer().getWindow());
 }
 
-void MainMenu::drawMenu(sf::RenderWindow& window)
+const sf::Drawable& MainMenu::getDrawable()
 {
-    window.draw(_playButton);
-    window.draw(_exitButton);
-    if (_headerText) window.draw(*_headerText);
-    if (_playText)   window.draw(*_playText);
-    if (_exitText)   window.draw(*_exitText);
+    return *_menuDrawable;
 }

@@ -1,7 +1,11 @@
 add_executable(MenuExample main.cpp MainMenu.cpp MainMenu.hpp
         LevelMenu.cpp
         LevelMenu.hpp
-        LevelMenu.hpp)
+        MainMenu.cpp
+        MainMenu.hpp
+        MenuDrawable.cpp
+        MenuDrawable.hpp)
+
 
 target_link_libraries(MenuExample PRIVATE SFML::Graphics flowEngine)
 

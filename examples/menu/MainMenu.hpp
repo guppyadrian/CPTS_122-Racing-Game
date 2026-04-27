@@ -6,17 +6,27 @@
 
 #include <flow/Scene.hpp>
 
-class MainMenu : public flow::Scene
+#include "flow/Renderable.hpp"
+#include "MenuDrawable.hpp"
+
+class MainMenu : public flow::Scene, flow::Renderable
 {
     public:
     MainMenu();
     void initialize() override;
+    void init() override {}; // Dont use!!
     void update(float dt) override;
+    void fixedUpdate() override {}; // Dont use!!
     void onEnter() override;
-    void drawMenu(sf::RenderWindow& window);
+    void onExit() override;
+    //void drawMenu(sf::RenderWindow& window) {};
+    const sf::Drawable& getDrawable() override;
+
+
     
     private:
     int _curMenuPosition;
+    std::unique_ptr<MenuDrawable> _menuDrawable;
 
     sf::Font _headerFont;
     sf::Font _buttonFont;
