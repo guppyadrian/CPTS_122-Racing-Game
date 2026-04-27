@@ -230,7 +230,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	player.getComponent<PlayerController>()->playerStartPos = playerPos;
 	player.getComponent<PlayerController>()->playerStartRot = playerRot;
 
-	sf::View view = sf::View({ 0,0 }, { 400, 300 });
+	sf::View view = sf::View({ 0,0 }, { 500, 400 });
 	player.addComponent<flow::Camera>(view);
 
 	newScene->AddGameObject(std::move(player));

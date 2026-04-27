@@ -22,6 +22,8 @@ function(copy_assets target_name)
   )
 endfunction()
 
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 project ("PA9")
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
