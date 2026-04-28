@@ -52,7 +52,7 @@ void PlayerController::fixedUpdate()
 	b2Vec2 localForce = { 0.0f, -accel };
 	auto worldForce = b2RotateVector(rot, localForce);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().getCollide()) //3 is Y button, 9 is esc
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished()) //3 is Y button, 9 is esc
 	{
 		float radians = playerStartRot * (B2_PI / 180.0f);
 

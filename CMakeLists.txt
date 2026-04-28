@@ -37,7 +37,7 @@ endif()
 add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp src/Player.cpp src/LevelLoader.cpp src/EndGoal.cpp
         examples/savesExample/playerDat.cpp
         examples/savesExample/playerDat.h
-)
+        src/TrackClock.cpp)
 
 target_include_directories(RacerGame PRIVATE include)
 
