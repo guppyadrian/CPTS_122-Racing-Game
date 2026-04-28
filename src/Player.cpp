@@ -82,8 +82,8 @@ void PlayerController::fixedUpdate()
 
 	//Raycast thrust
 	b2Vec2 thrustForce = { 0.0f,0.0f };
-	b2Vec2 ray1 = { 5.0f, 25.0f };
-	b2Vec2 ray2 = { -5.0f, 25.0f };
+	b2Vec2 ray1 = { 7.0f, 25.0f };
+	b2Vec2 ray2 = { -7.0f, 25.0f };
 	ray1 = b2RotateVector(rot, ray1);
 	ray2 = b2RotateVector(rot, ray2);
 	auto r1 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray1, b2DefaultQueryFilter());
