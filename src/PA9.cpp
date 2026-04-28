@@ -55,8 +55,8 @@ int main()
 	flow::NetworkManager::getGlobal().getClient().connect("10.109.143.11", 25550);
 	
 	LevelLoader load;
-	load.readFile("level");
-
+	load.readFile("gbarr");
+	EndGoal::getInstance().reset();
 	
 
 	sf::Clock dtClock;
@@ -80,9 +80,8 @@ int main()
 
 		flow::SceneManager::getGlobal().update(dt);
 
-		EndGoal::getInstance().update();
-
 		trackClock.update();
+		EndGoal::getInstance().update();
 
 		// simple fps logging
 		float fps = 1.f / dt;
@@ -90,8 +89,8 @@ int main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished())
 		{
-			EndGoal::getInstance().reset();
 			trackClock.reset();
+			EndGoal::getInstance().reset();
 		}
 
 		window.clear();
@@ -99,6 +98,7 @@ int main()
 		window.setView(window.getDefaultView());
 		window.draw(fpsText);
 		window.draw(trackClock.getText());
+		window.draw(trackClock.getFinalText());
 		window.display();
 	}
 

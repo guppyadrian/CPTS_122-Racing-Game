@@ -18,15 +18,12 @@ public:
 	void setEndGoal(b2BodyId endGoalBodyId) { _endid = endGoalBodyId; }
 	void setPlayer(b2BodyId id) { _playerid = id; }
 
-	bool getCollide() { return _collide; }
-	void setCollide(bool t) { _collide = t; }
-
 	int getLaps() { return _lapsLeft; }
 	void setLaps(int laps) { _lapsLeft = laps; _lapsOG = laps; }
 	bool lapComplete()
 	{
+		if (_lapsLeft <= 1) return true;
 		_lapsLeft--;
-		if (_lapsLeft == 0) return true;
 
 		//Player reset
 		float radians = playerStartRot * (B2_PI / 180.0f);
@@ -39,13 +36,17 @@ public:
 
 		//Timer reset
 		trackClockRef->lapDone();
+		_collide = false;
 
 		return false;
 	}
 	bool finished()
 	{
-		if (_lapsLeft == 0)
+		if (_lapsLeft == 1 && _collide)
 		{
+			_lapsLeft = 0;
+			trackClockRef->lapDone();
+
 			float radians = playerStartRot * (B2_PI / 180.0f);
 
 			b2Rot myRotation;
@@ -63,10 +64,7 @@ public:
 
 	void update()
 	{
-		//Clock Update
-		trackClockRef->_lapsLeft = _lapsLeft;
-		trackClockRef->_lapsOG = _lapsOG;
-
+		if (_endTimeout.getElapsedTime().asMilliseconds() < 500) return;
 		//EndGoal Update
 		if (!b2Body_IsValid(_endid) || !b2Body_IsValid(_playerid)) return;
 
@@ -85,6 +83,7 @@ public:
 			{
 				_collide = true;
 				lapComplete();
+				_endTimeout.restart();
 			}
 		}
 	}
@@ -92,7 +91,10 @@ public:
 	void reset()
 	{
 		_lapsLeft = _lapsOG;
-		setCollide(false);
+		_collide = false;
+		//Clock Update
+		trackClockRef->_lapsLeft = _lapsOG;
+		trackClockRef->_lapsOG = _lapsOG;
 	}
 
 	sf::Vector2f playerStartPos = {0.f,0.f};
@@ -104,10 +106,13 @@ private:
 	EndGoal()
 	{
 		playerStartRot = 0;
+		_endTimeout.start();
 	}
 	b2BodyId _endid = b2_nullBodyId;
 	b2BodyId _playerid = b2_nullBodyId;
 	bool _collide = false;
 	int _lapsLeft = 1;
 	int _lapsOG = 1;
+	bool _lCb = false;
+	sf::Clock _endTimeout;
 };
