@@ -6,8 +6,9 @@
 
 namespace flow
 {
-	class Camera final : public Component
+	class Camera : public Component
 	{
+	protected:
 		sf::View mView;
 	public:
 		//Camera();

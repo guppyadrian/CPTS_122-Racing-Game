@@ -13,6 +13,7 @@ target_sources(flowEngine PRIVATE
         src/ParticleSystem.cpp
         src/Transform.cpp
         src/Camera.cpp
+        src/LookAheadCamera.cpp
         src/network/NetworkEmitter.cpp
         src/network/NetworkManager.cpp
         src/network/NetworkGhost.cpp)
