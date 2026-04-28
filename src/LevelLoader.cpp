@@ -168,24 +168,26 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	// narrow beam  particle system
 	auto& ps2 = player.addComponent<flow::ParticleSystem>();
-
+	ps2.setStartPosition({ 0.f, 200.f });
 	ps2.setParticleCount(50);
-	ps2.setStartRandomVelocity(2000.f);
-	ps2.setStartVelocity({ 0.f, 15000.f });
-	ps2.setStartColor(sf::Color::Blue);
-	ps2.setEndColor(sf::Color::Yellow);
-	ps2.setStartSize(250);
-	ps2.setStartLifetime(0.1f);
+	ps2.setStartRandomVelocity(1000.f);
+	ps2.setStartVelocity({ 0.f, 30000.f });
+	ps2.setStartColor(sf::Color(255, 200, 220, 128));
+	ps2.setEndColor(sf::Color(255, 40, 200, 32));
+	ps2.setStartSize(200);
+	ps2.setEndSize(50);
+	ps2.setStartLifetime(0.12f);
 
 	// wider fire effect particle system
 	auto& ps1 = player.addComponent<flow::ParticleSystem>();
-
-	ps1.setParticleCount(25);
-	ps1.setStartRandomVelocity(1000.f);
-	ps1.setStartVelocity({ 0.f, 2400.f });
-	ps1.setStartColor(sf::Color::Yellow);
-	ps1.setEndColor(sf::Color::Red);
-	ps1.setStartSize(150);
+	ps1.setStartPosition({0.f, 300.f});
+	ps1.setParticleCount(500);
+	ps1.setStartRandomVelocity(1500.f);
+	ps1.setStartVelocity({ 0.f, 2000.f });
+	ps1.setStartColor(sf::Color(250, 250, 250, 200));
+	ps1.setEndColor(sf::Color(25,100,250, 150));
+	ps1.setStartSize(50);
+	ps1.setEndSize(25);
 	ps1.setStartLifetime(0.3f);
 	ps1.startEmit();
 

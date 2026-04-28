@@ -12,6 +12,7 @@ namespace flow
     , mActiveParticleCount(0)
 	, mEmitAccumulator(0.f)
     , mEmit(false)
+	, mStartPosition(0.f, 0.f)
 	, mStartRandomVelocity(0.f)
 	, mStartLifetime(1.0f)
 	, mStartVelocity(0.f, 0.f)
@@ -61,7 +62,7 @@ namespace flow
 
 		mActiveParticles[i] = true;
 		mLifetimes[i] = mStartLifetime;
-		mPositions[i] = { 0,0 };
+		mPositions[i] = mStartPosition;
 		mVelocities[i] = mStartVelocity + sf::Vector2f(mStartRandomVelocity, 0.f).rotatedBy(sf::degrees(dist(mRandGen)));
 		mSizes[i] = mStartSize;
 		mColors[i] = mStartColor;
@@ -90,7 +91,7 @@ namespace flow
 	{
 		mEmitAccumulator += dt;
 
-		if (mParticleCount > 0 && mEmitAccumulator > (mStartLifetime / mParticleCount))
+		while (mParticleCount > 0 && mEmitAccumulator > (mStartLifetime / mParticleCount))
 		{
 			if (mEmit)
 				emitOne();
