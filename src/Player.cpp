@@ -4,6 +4,8 @@
 #include <iostream>
 #include "EndGoal.hpp"
 
+#include <flow/components/LookAheadCamera.hpp>
+
 PlayerController::PlayerController() : _rb(nullptr), input(0) {}
 
 void PlayerController::init()
@@ -60,6 +62,7 @@ void PlayerController::fixedUpdate()
 		b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
 		b2Body_SetAngularVelocity(id, 0.f);
 		b2Body_SetLinearVelocity(id, { 0.f,0.f });
+		mGameObject->getComponent<flow::LookAheadCamera>()->reset();
 	}
 
 	// 1. Handle Rotation & Braking
