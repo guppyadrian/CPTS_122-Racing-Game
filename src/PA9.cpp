@@ -27,6 +27,7 @@
 #include "flow/components/NetworkEmitter.hpp"
 #include "flow/components/NetworkGhostManager.hpp"
 #include "network/NetworkManager.hpp"
+#include "TrackClock.hpp"
 
 int main()
 {
@@ -41,24 +42,22 @@ int main()
 	
 	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 500.f);
 	
-	// NETWORK
-	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.109.143.11", 25550);
-	
-	LevelLoader load;
-	load.readFile("gbarr");
-
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
 		return -1; // Handle error
 	}
 
+	TrackClock trackClock(window, font);
+	EndGoal::getInstance().trackClockRef = &trackClock;
+
+	// NETWORK
+	gp::network::NetworkManager::Start();
+	flow::NetworkManager::getGlobal().getClient().connect("10.109.143.11", 25550);
 	
-	sf::Clock trackClock;
-	sf::Text trackText(font);
-	trackText.setCharacterSize(60);
-	trackText.setFillColor(sf::Color::White);
-	trackText.setPosition({ window.getSize().x - 300.f, 0 });
+	LevelLoader load;
+	load.readFile("level");
+
+	
 
 	sf::Clock dtClock;
 	float dt;
@@ -69,7 +68,6 @@ int main()
 	while (window.isOpen())
 	{
 		dt = dtClock.restart().asSeconds();
-		EndGoal::getInstance().update();
 		// SFML in this workspace uses an optional-style pollEvent that returns
 		// std::optional<sf::Event>. Use that form to handle events.
 		while (auto event = window.pollEvent())
@@ -82,24 +80,25 @@ int main()
 
 		flow::SceneManager::getGlobal().update(dt);
 
+		EndGoal::getInstance().update();
+
+		trackClock.update();
+
 		// simple fps logging
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().getCollide())
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished())
 		{
-			EndGoal::getInstance().setCollide(false);
-			trackClock.restart();
+			EndGoal::getInstance().reset();
+			trackClock.reset();
 		}
-		int tSec = trackClock.getElapsedTime().asMilliseconds() / 1000;
-		int tMs = trackClock.getElapsedTime().asMilliseconds() % 1000;
-		trackText.setString(std::to_string(tSec) + ":" + std::to_string(tMs));
 
 		window.clear();
 		flow::Renderer::getGlobalRenderer().drawAll();
 		window.setView(window.getDefaultView());
 		window.draw(fpsText);
-		window.draw(trackText);
+		window.draw(trackClock.getText());
 		window.display();
 	}
 

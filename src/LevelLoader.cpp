@@ -73,17 +73,17 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor);
+	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum);
 }
 
 void LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
-	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color)
+	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum)
 {
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, grav));
 	auto newScene = make_unique<flow::LevelScene>(uuid);
 
 	flow::GameObject bg = flow::GameObject();
-	bg.addComponent<flow::SpriteRenderer>(std::string("assets/" + bgFile));
+	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg/" + bgFile));
 	newScene->AddGameObject(std::move(bg));
 
 	flow::Rigidbody* pEndGoalObject = nullptr;
@@ -155,6 +155,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	//Endgoal
 	EndGoal& goal = EndGoal::getInstance();
 	goal.setEndGoal(pEndGoalObject->getBodyId());
+	goal.setLaps(lvNum);
 
 
 
@@ -228,6 +229,8 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	//Add to endGoal
 	goal.setPlayer(bodyId);
+	goal.playerStartPos = playerPos;
+	goal.playerStartRot = playerRot;
 
 	player.addComponent<PlayerController>();
 	player.getComponent<PlayerController>()->playerStartPos = playerPos;
