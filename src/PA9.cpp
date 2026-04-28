@@ -46,7 +46,7 @@ int main()
 	flow::NetworkManager::getGlobal().getClient().connect("10.109.143.11", 25550);
 	
 	LevelLoader load;
-	load.readFile("rr2");
+	load.readFile("gbarr");
 
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
