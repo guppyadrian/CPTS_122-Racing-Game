@@ -20,6 +20,7 @@
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
 #include <flow/components/Camera.hpp>
+#include <flow/components/LookAheadCamera.hpp>
 #include <flow/components/ParticleSystem.hpp>
 
 #include "EndGoal.hpp"
@@ -234,7 +235,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	player.getComponent<PlayerController>()->playerStartRot = playerRot;
 
 	sf::View view = sf::View({ 0,0 }, { 640, 384 });
-	player.addComponent<flow::Camera>(view);
+	player.addComponent<flow::LookAheadCamera>(view);
 
 	newScene->AddGameObject(std::move(player));
 
