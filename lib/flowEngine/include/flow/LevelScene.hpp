@@ -8,6 +8,7 @@ namespace flow
 	{
 	private:
 		std::vector<flow::GameObject> _gameObjects;
+		bool hasInitialized = false;
 	public:
 		LevelScene(const std::string uuid);
 		~LevelScene() = default;
