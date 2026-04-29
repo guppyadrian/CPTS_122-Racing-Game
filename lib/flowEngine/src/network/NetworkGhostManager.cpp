@@ -11,6 +11,7 @@
 #include "flow/components/SpriteRenderer.hpp"
 #include "flow/components/ParticleSystem.hpp"
 #include "flow/components/AudioSource.hpp"
+#include "flow/components/Rigidbody.hpp"
 #include "network/BufferParser.hpp"
 #include "network/Shared.hpp"
 #include <string>
@@ -49,6 +50,19 @@ namespace flow
                     ghost.addComponent<SpriteRenderer>("assets/Ghost" + std::to_string(id % 8 + 1) + ".png");
                     _ghosts[id] = &ghost.addComponent<NetworkGhost>(id);
 
+                    // narrow beam particle system
+                    auto& ps2 = ghost.addComponent<flow::ParticleSystem>();
+                    ps2.setStartPosition({ 0.f, 200.f });
+                    ps2.setParticleCount(50);
+                    ps2.setStartRandomVelocity(1000.f);
+                    ps2.setStartVelocity({ 0.f, 30000.f });
+                    ps2.setStartColor(sf::Color(255, 200, 220, 128));
+                    ps2.setEndColor(sf::Color(255, 40, 200, 32));
+                    ps2.setStartSize(200);
+                    ps2.setEndSize(50);
+                    ps2.setStartLifetime(0.12f);
+
+                    // wide thrust particle system
                     auto& ps1 = ghost.addComponent<flow::ParticleSystem>();
                     ps1.setStartPosition({ 0.f, 300.f });
                     ps1.setParticleCount(500);
@@ -65,6 +79,8 @@ namespace flow
                     thrustAudio.setVolume(67.f);
                     thrustAudio.loop(true);
                     thrustAudio.play();
+
+                    //ghost.addComponent<flow::Rigidbody>();
                     
                     curScene.AddGameObject(std::move(ghost));
                 }
