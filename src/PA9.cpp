@@ -53,7 +53,7 @@ int main()
 
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.109.143.11", 25550);
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
 	LevelLoader load;
 	load.readFile("gbarr");

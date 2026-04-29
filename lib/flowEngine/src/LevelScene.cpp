@@ -28,6 +28,7 @@ namespace flow
 		{
 			_gameObjects[i].init();
 		}
+		hasInitialized = true;
 	}
 
 	void LevelScene::update(float dt)
@@ -41,6 +42,10 @@ namespace flow
     GameObject& LevelScene::AddGameObject(flow::GameObject gameObject)
 	{
 		_gameObjects.push_back(std::move(gameObject));
+		if (hasInitialized)
+		{
+			_gameObjects.back().init();
+		}
 		return _gameObjects.back();
 	}
 }
