@@ -22,6 +22,7 @@
 #include <flow/components/Camera.hpp>
 #include <flow/components/LookAheadCamera.hpp>
 #include <flow/components/ParticleSystem.hpp>
+#include <flow/MusicManager.hpp>
 
 #include "EndGoal.hpp"
 #include "WallGenerator.hpp"
@@ -88,6 +89,8 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	newScene->AddGameObject(std::move(bg));
 
 	flow::Rigidbody* pEndGoalObject = nullptr;
+
+	flow::audio::MusicManager::getGlobal().load(uuid);
 
 	//Object stuff
 	std::string shapeLine;

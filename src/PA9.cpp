@@ -19,6 +19,7 @@
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
 #include <flow/components/Camera.hpp>
+#include <flow/MusicManager.hpp>
 
 #include "Player.hpp"
 #include "LevelLoader.hpp"
@@ -57,13 +58,14 @@ int main()
 	LevelLoader load;
 	load.readFile("gbarr");
 	EndGoal::getInstance().reset();
-	
 
 	sf::Clock dtClock;
 	float dt;
 	sf::Text fpsText(font);
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
+
+	flow::audio::MusicManager::getGlobal().play();
 
 	while (window.isOpen())
 	{
