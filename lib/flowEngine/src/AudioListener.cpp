@@ -15,7 +15,10 @@ namespace flow::audio
 
 		sf::Listener::setPosition(sf::Vector3f(pos.x, 0, pos.y));
 		sf::Listener::setVelocity(sf::Vector3f(velocity.x, 0, velocity.y));
-		sf::Listener::setDirection(sf::Vector3f(velocity.x, 0, velocity.y).normalized());
+		if (velocity.lengthSquared() > 0)
+		{
+			sf::Listener::setDirection(sf::Vector3f(velocity.x, 0, velocity.y).normalized());
+		}
 
 		lastPos = mGameObject->mTransform.getPosition();
 	}

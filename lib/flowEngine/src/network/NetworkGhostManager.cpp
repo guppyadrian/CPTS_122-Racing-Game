@@ -61,9 +61,10 @@ namespace flow
                     ps1.setStartLifetime(0.3f);
                     ps1.startEmit();
 
-                    auto& thrustAudio = ghost.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
-                    thrustAudio.loop(true);
-                    thrustAudio.play();
+                    // Nukes the game
+                    //auto& thrustAudio = ghost.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
+                    //thrustAudio.loop(true);
+                    //thrustAudio.play();
                     
                     curScene.AddGameObject(std::move(ghost));
                 }
