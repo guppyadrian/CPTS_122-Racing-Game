@@ -57,7 +57,16 @@ public:
 	}
 	void update()
 	{
-		if (_finalClock.isRunning() && _finalClock.getElapsedTime().asMilliseconds() > 5000)
+		int t;
+		if (_lapsLeft == _lapsOG )
+		{
+			t = 15000;
+		}
+		else
+		{
+			t = 5000;
+		}
+		if (_finalClock.isRunning() && _finalClock.getElapsedTime().asMilliseconds() > t)
 		{
 			_finalClock.reset();
 			_finalText.setFillColor({ 255,255,0,0 });
