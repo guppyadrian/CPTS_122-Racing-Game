@@ -92,6 +92,7 @@ namespace flow
             }
             catch (std::bad_cast ec)
             {
+                std::cerr << "bad cast: " << ec.what() << std::endl;
                 return;
             }
             

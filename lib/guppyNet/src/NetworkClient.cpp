@@ -93,8 +93,11 @@ namespace gp::network
             {
                 std::cerr << "Failed to read message header!" << std::endl;
                 std::cerr << ec.message() << std::endl;
-                _socket.close();
-                if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
+                try
+                {
+                    if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});    
+                }
+                catch (std::runtime_error ec) {}
                 return;
             }
 
@@ -111,7 +114,6 @@ namespace gp::network
             {
                 std::cerr << "Failed to read message body!" << std::endl;
                 std::cerr << ec.message() << std::endl;
-                _socket.close();
                 if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
                 return;
             }
@@ -131,7 +133,6 @@ namespace gp::network
             if (ec)
             {
                 std::cerr << "Failed to write: " << ec.message() << std::endl;
-                _socket.close();
                 if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
                 return;
             }

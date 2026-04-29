@@ -17,8 +17,11 @@ namespace gp::network
             {
                 std::cerr << "Failed to read message header!" << std::endl;
                 std::cerr << ec.message() << std::endl;
-                _socket.close();
-                close();
+                if (_socket.is_open())
+                {
+                    _socket.close();
+                    close();
+                }
                 return;
             }
 
@@ -35,8 +38,11 @@ namespace gp::network
             {
                 std::cerr << "Failed to read message body!" << std::endl;
                 std::cerr << ec.message() << std::endl;
-                _socket.close();
-                close();
+                if (_socket.is_open())
+                {
+                    _socket.close();
+                    close();
+                }
                 return;
             }
 
@@ -55,8 +61,11 @@ namespace gp::network
             if (ec)
             {
                 std::cerr << "Failed to write: " << ec.message() << std::endl;
-                _socket.close();
-                close();
+                if (_socket.is_open())
+                {
+                    _socket.close();
+                    close();
+                }
                 return;
             }
             _writeBuffer.pop_front();

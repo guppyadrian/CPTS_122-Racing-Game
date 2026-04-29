@@ -28,6 +28,7 @@ namespace flow
 	//Return: true if success, false if failed
 	bool SceneManager::switchScene(const std::string& uuid, const bool deleteOld)
 	{
+		std::cout << "switchScene(): " << uuid << std::endl;
 		_deleteOld = deleteOld;
 		for (int i = 0; i < _sceneList.size(); i++)
 		{

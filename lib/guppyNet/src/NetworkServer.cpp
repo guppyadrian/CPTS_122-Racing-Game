@@ -56,7 +56,15 @@ namespace gp::network
             
             auto iter = _connections.insert(_connections.end(), conn);
 
-            conn->_onClose = [iter, this](){ _connections.erase(iter); };
+            conn->_onClose = [iter, this]() mutable
+            {
+                if (_connections.empty()) return;
+                if (iter != _connections.end())
+                {
+                    _connections.erase(iter);
+                    iter = _connections.end();
+                }
+            };
             
             conn->start();
             

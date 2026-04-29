@@ -9,8 +9,10 @@
 #include "LevelLoader.hpp"
 #include "Multiplayer.hpp"
 #include "flow/NetworkManager.hpp"
+#include "flow/Renderer.hpp"
 #include "flow/SceneManager.hpp"
 #include "network/NetworkClient.hpp"
+#include "UI/LevelSelectScene.hpp"
 #include "UI/MenuScene.hpp"
 
 LobbyScene::LobbyScene(sf::RenderWindow& window, const State state) : UIScene("multiplayer-lobby", window), _state(state)
@@ -18,7 +20,7 @@ LobbyScene::LobbyScene(sf::RenderWindow& window, const State state) : UIScene("m
     float y = _window.getSize().y / 2.0f;
     _buttons.add("menu/selectmap.png", {  400, y}); // host
     _buttons.add("menu/start.png", {1000, y}); // join
-    _buttons.add("menu/quitButton.png", {1600, y}); // quit
+    _buttons.add("menu/quitButton.png", {1600, y}, {0.5f, 0.5f}); // quit
 }
 
 LobbyScene::~LobbyScene()
@@ -30,6 +32,8 @@ LobbyScene::~LobbyScene()
     }
     auto& client = flow::NetworkManager::getGlobal().getClient();
     client.disconnect();
+    
+    Multiplayer::getInstance().reset();
 }
 
 void LobbyScene::initialize()
@@ -44,6 +48,7 @@ void LobbyScene::initialize()
         server.listen(25550);
         server.onConnection = [this, &server](gp::network::Socket socket) mutable // TODO: handledisconnection
         {
+            _playerCount++;
             int id = _idAccumulator++;
             socket->on("handshakePlayerReady", [id, socket]()
             {
@@ -61,6 +66,7 @@ void LobbyScene::initialize()
                 
                 server.emit("plyr", buffer);
             });
+            socket->on("disconnect", [this]() mutable {_playerCount--;});
         };
     }
     
@@ -84,6 +90,7 @@ void LobbyScene::initialize()
     {
         asio::post(flow::NetworkManager::getGlobal().io(), [levelPath]()
         {
+            std::cout << "level path: " << levelPath << std::endl;
             flow::SceneManager::getGlobal().loadScene(LevelLoader().readFile(levelPath));
             flow::SceneManager::getGlobal().switchScene(levelPath, false);
         });
@@ -95,6 +102,15 @@ void LobbyScene::initialize()
         Multiplayer::getInstance().id = id;
     });
     
+    client.on("end-game", []()
+    {
+        asio::post(flow::NetworkManager::getGlobal().io(), []()
+        {
+            flow::SceneManager::getGlobal().switchScene("multiplayer-lobby");
+        });
+        flow::NetworkManager::getGlobal().io().restart();
+    });
+    
     client.on("connect_error", [&client, this]() mutable
     {
         client.connect(_lastIP, 25550); 
@@ -103,9 +119,10 @@ void LobbyScene::initialize()
     client.on("disconnect", [this]() mutable
     {
         _connected = false;
-        asio::post(flow::NetworkManager::getGlobal().io(), [this]()
+        if (_state == State::Hosting) return;
+        asio::post(flow::NetworkManager::getGlobal().io(), []()
         {
-            flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
+            flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
             flow::SceneManager::getGlobal().switchScene("menu");
         });
         flow::NetworkManager::getGlobal().io().restart();
@@ -170,6 +187,7 @@ void LobbyScene::onEnter()
         initialize();
     }
     Multiplayer::getInstance().inMultiplayer = true;
+    Multiplayer::getInstance().endEmitted = false;
 }
 
 void LobbyScene::onExit()
@@ -188,18 +206,21 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
         switch (_buttons.selected())
         {
             case 0: //select map
+                flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(_window));
+                flow::SceneManager::getGlobal().switchScene("level-select", false);
                 break;
             case 1:
             {
                 auto& server = flow::NetworkManager::getGlobal().getServer();
                 long long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-                server.emit("start-time", now + 3000);
-                server.emit("start-game", "rr");
+                server.emit("start-time", now + 5000);
+                server.emit("start-game", Multiplayer::getInstance().trackSelected);
                 break;
             }
             case 2: // quit
                 flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
                 flow::SceneManager::getGlobal().switchScene("menu");
+                break;
         }
         
     }
@@ -207,7 +228,6 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
     {
         flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
         flow::SceneManager::getGlobal().switchScene("menu");
-        Multiplayer::getInstance().inMultiplayer = false;
     }
     if (inputVector.x > 0) _buttons.next();
     else if (inputVector.x < 0) _buttons.prev();

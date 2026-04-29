@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include "Multiplayer.hpp"
+#include "flow/NetworkManager.hpp"
 #include "UI/MenuScene.hpp"
 
 void PlayerController::init()
@@ -146,8 +147,13 @@ void PlayerController::fixedUpdate()
 	{
 		if (Multiplayer::getInstance().inMultiplayer)
 		{
-			flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
-			flow::SceneManager::getGlobal().switchScene("menu");
+			//flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
+			//flow::SceneManager::getGlobal().switchScene("multiplayer-lobby");
+			if (!Multiplayer::getInstance().endEmitted)
+			{
+				flow::NetworkManager::getGlobal().getServer().emit("end-game", '\0');
+				Multiplayer::getInstance().endEmitted = true;
+			}
 		}
 		else // not in multiplayer
 		{

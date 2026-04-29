@@ -24,6 +24,7 @@ private:
     State _state;
     int _idAccumulator = 0;
     std::string _lastIP;
+    int _playerCount = 0;
 public:
     
     explicit LobbyScene(sf::RenderWindow& window, State state);

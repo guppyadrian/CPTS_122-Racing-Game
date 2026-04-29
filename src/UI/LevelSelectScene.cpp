@@ -9,6 +9,7 @@
 #include "flow/SceneManager.hpp"
 #include <flow/MusicManager.hpp>
 
+#include "Multiplayer.hpp"
 #include "UI/MenuScene.hpp"
 
 void LevelSelectScene::initialize()
@@ -61,8 +62,16 @@ void LevelSelectScene::update(float dt)
     
     if (_queueNextLevel)
     {
-        flow::SceneManager::getGlobal().loadScene(LevelLoader().readFile(_levelPaths[_levelSelected]));
-        flow::SceneManager::getGlobal().switchScene(_levelPaths[_levelSelected], false);
+        if (Multiplayer::getInstance().inMultiplayer)
+        {
+            Multiplayer::getInstance().trackSelected = _levelPaths[_levelSelected];
+            flow::SceneManager::getGlobal().switchScene("multiplayer-lobby", false);
+        }
+        else
+        {
+            flow::SceneManager::getGlobal().loadScene(LevelLoader().readFile(_levelPaths[_levelSelected]));
+            flow::SceneManager::getGlobal().switchScene(_levelPaths[_levelSelected], false);
+        }
     }
     
 }
@@ -82,14 +91,17 @@ void LevelSelectScene::draw()
     _window.draw(_thumbnails[_levelSelected]);
 }
 
-void LevelSelectScene::loadingDraw() const
+void LevelSelectScene::loadingDraw()
 {
     _window.clear();
-    sf::Text text(*_font, "Loading...");
-    text.setCharacterSize(100);
-    text.setOrigin(text.getLocalBounds().getCenter());
-    text.setPosition(sf::Vector2f(_window.getSize()) / 2.0f);
-    _window.draw(text);
+    try
+    {
+        drawText("Loading...");
+    }
+    catch (std::runtime_error ec)
+    {
+        std::cerr << "Failed to draw text: " << ec.what() << std::endl;
+    }
     _window.display();
 }
 
@@ -122,7 +134,16 @@ void LevelSelectScene::handleInput(const sf::Vector2f inputVector)
     }
     else if (inputVector.y < 0)
     {
-        flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
-        flow::SceneManager::getGlobal().switchScene("menu", false);
+        
+        if (Multiplayer::getInstance().inMultiplayer)
+        {
+            flow::SceneManager::getGlobal().switchScene("multiplayer-lobby", false);
+        } 
+        else
+        {
+            flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
+            flow::SceneManager::getGlobal().switchScene("menu", false);
+        }
+        
     }
 }

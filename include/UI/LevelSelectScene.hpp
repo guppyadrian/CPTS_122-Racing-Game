@@ -26,7 +26,7 @@ public:
     void initialize() override;
     void update(float dt) override;
     void draw() override;
-    void loadingDraw() const;
+    void loadingDraw();
     void onEnter() override;
     void onExit() override { _font.reset(); };
 private:
