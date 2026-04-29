@@ -20,6 +20,17 @@ LobbyScene::LobbyScene(sf::RenderWindow& window, const State state) : UIScene("m
     _buttons.add("menu/quitButton.png", {400, 0}); // quit
 }
 
+LobbyScene::~LobbyScene()
+{
+    if (_state == State::Hosting)
+    {
+        auto& server = flow::NetworkManager::getGlobal().getServer();
+        server.stop();
+    }
+    auto& client = flow::NetworkManager::getGlobal().getClient();
+    client.disconnect();
+}
+
 void LobbyScene::initialize()
 {
     _hasInitialized = true;
@@ -68,7 +79,7 @@ void LobbyScene::initialize()
         asio::post(flow::NetworkManager::getGlobal().io(), [levelPath]()
         {
             flow::SceneManager::getGlobal().loadScene(LevelLoader().readFile(levelPath));
-            flow::SceneManager::getGlobal().switchScene(levelPath);
+            flow::SceneManager::getGlobal().switchScene(levelPath, false);
         });
         flow::NetworkManager::getGlobal().io().restart();
     });
@@ -81,6 +92,12 @@ void LobbyScene::initialize()
     client.on("disconnect", [this]() mutable
     {
         _connected = false;
+        asio::post(flow::NetworkManager::getGlobal().io(), [this]()
+        {
+            flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
+            flow::SceneManager::getGlobal().switchScene("menu");
+        });
+        flow::NetworkManager::getGlobal().io().restart();
     });
     
     if (_state == State::Hosting)
@@ -122,7 +139,7 @@ void LobbyScene::draw()
     if (!_connected)
     {
         sf::Text text(*_font, "Connecting... Press ESC to cancel");
-        text.setCharacterSize(100);
+        text.setCharacterSize(70);
         text.setOrigin(text.getLocalBounds().getCenter());
         text.setPosition(sf::Vector2f(_window.getSize()) / 2.0f);
         _window.draw(text);
@@ -136,17 +153,12 @@ void LobbyScene::onEnter()
     {
         initialize();
     }
+    Multiplayer::getInstance().inMultiplayer = true;
 }
 
 void LobbyScene::onExit()
 {
-    if (_state == State::Hosting)
-    {
-        auto& server = flow::NetworkManager::getGlobal().getServer();
-        server.stop();
-    }
-    auto& client = flow::NetworkManager::getGlobal().getClient();
-    client.disconnect();
+    
 }
 
 void LobbyScene::handleInput(const sf::Vector2f inputVector)
@@ -164,6 +176,7 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
     {
         flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
         flow::SceneManager::getGlobal().switchScene("menu");
+        Multiplayer::getInstance().inMultiplayer = false;
     }
     if (inputVector.x > 0) _buttons.next();
     else if (inputVector.x < 0) _buttons.prev();

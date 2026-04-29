@@ -17,14 +17,9 @@
 
 namespace flow
 {
-    NetworkGhostManager::NetworkGhostManager(const std::string& eventName)
-    : _eventName(eventName)
+    NetworkGhostManager::NetworkGhostManager(const std::string& eventName, const int id)
+    : _eventName(eventName), _id(id)
     {
-        NetworkManager::getGlobal().getClient().on<int>("handshakePlayerID", [this](const int id)
-        {
-            _id = id;
-        });
-        
         NetworkManager::getGlobal().getClient().on(eventName, [this](const network::ByteBuffer& buffer)
         {
             auto& curScene = dynamic_cast<LevelScene&>(SceneManager::getGlobal().getCurrentScene());
@@ -73,8 +68,6 @@ namespace flow
                 _ghosts[id]->mGameObject->mTransform.setRotationRad(transform[2]);
             }
         });
-
-        NetworkManager::getGlobal().getClient().emit("handshakePlayerReady", '\0');
     }
 
     NetworkGhostManager::~NetworkGhostManager()

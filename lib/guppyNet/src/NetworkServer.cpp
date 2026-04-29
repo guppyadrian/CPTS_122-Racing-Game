@@ -40,19 +40,24 @@ namespace gp::network
         {
             if (ec)
             {
-                std::cerr << ec.value() << std::endl;
+                std::cerr << "Error accepting: " << ec.message() << std::endl;
                 socket.close(); // TODO: is this even necessary
                 return;
             }
 
             std::cout << "new connection: " << socket.remote_endpoint() << std::endl;
 
-            const auto conn = std::make_shared<ServerConnection>(std::move(socket));
+            const auto conn = std::make_shared<ServerConnection>(std::move(socket), []()
+            {
+                
+            });
 
             if (onConnection) onConnection(conn);
+            
+            auto iter = _connections.insert(_connections.end(), conn);
 
-            _connections.push_back(conn);
-
+            conn->_onClose = [iter, this](){ _connections.erase(iter); };
+            
             conn->start();
             
             doAccept();

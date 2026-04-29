@@ -19,9 +19,9 @@ namespace gp::network
         ReadBuffer _readBuffer;
         std::deque<ByteBuffer> _writeBuffer;
         std::unordered_map<std::string, std::function<void(const ByteBuffer&)>> _listeners;
-        std::function<void()> _onClose;
     public:
-        explicit ServerConnection(tcp::socket socket) : _socket(std::move(socket)) {}
+        std::function<void()> _onClose;
+        explicit ServerConnection(tcp::socket socket, const std::function<void()>& onClose) : _socket(std::move(socket)), _onClose(onClose) {}
         // Starts listening :)... TODO: wait shouldn't this be called in constructor? so user can't call start()!
         void start();
 
@@ -32,7 +32,7 @@ namespace gp::network
         template <Serializable T>
         void emit(std::string_view eventName, const T& data);
         void emit(std::string_view eventName, const ByteBuffer& data);
-        void close() { _onClose(); }
+        void close() { if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{}); _onClose(); }
     private:
         void doReadHeader();
         void doReadBody();

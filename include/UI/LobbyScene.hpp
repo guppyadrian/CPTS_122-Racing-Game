@@ -27,6 +27,8 @@ private:
 public:
     
     explicit LobbyScene(sf::RenderWindow& window, State state);
+    
+    ~LobbyScene() override;
 
     void initialize() override;
 

@@ -27,6 +27,7 @@
 #include <flow/components/AudioSource.hpp>
 
 #include "EndGoal.hpp"
+#include "Multiplayer.hpp"
 #include "WallGenerator.hpp"
 #include "Player.hpp"
 
@@ -231,10 +232,10 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	ps1.startEmit();
 
 	// netowrk
-	if (!preview)
+	if (!preview && Multiplayer::getInstance().inMultiplayer)
 	{
 		player.addComponent<flow::NetworkEmitter>("plyr");
-		player.addComponent<flow::NetworkGhostManager>("plyr");	
+		player.addComponent<flow::NetworkGhostManager>("plyr", Multiplayer::getInstance().id);	
 	}
 
 
