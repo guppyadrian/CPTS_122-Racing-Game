@@ -2,7 +2,7 @@ logan level 6
 6
 187,68,48,255
 bg3.png
-rr.ogg
+06 Silence.mp3
 0,0,90
 0
 

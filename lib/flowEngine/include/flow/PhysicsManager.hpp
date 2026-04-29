@@ -1,3 +1,9 @@
+/**
+ * @file PhysicsManager.hpp
+ * @author Logan Rainchild
+ * @brief Global singleton for managing all box2d physics bodies and fixedUpdate calls
+ */
+
 #pragma once
 
 #include "components/Rigidbody.hpp"
@@ -45,6 +51,11 @@ namespace flow
 		void setGravity(sf::Vector2f gravity) {
 			b2World_SetGravity(mWorldId, { gravity.x, gravity.y });
 		};
+
+		static float getFixedTimestep()
+		{
+			return getGlobal().fixedTimestep;
+		}
 
 		void tick(float dt);
 

@@ -6,8 +6,10 @@
 
 #include <flow/components/LookAheadCamera.hpp>
 
-#include "flow/SceneManager.hpp"
+#include <flow/SceneManager.hpp>
+#include <flow/MusicManager.hpp>
 #include "UI/LevelSelectScene.hpp"
+#include <algorithm>
 
 void PlayerController::init()
 {
@@ -21,9 +23,16 @@ void PlayerController::init()
 	{
 		std::cerr << "Player failed to get Particle System Component" << std::endl;
 	}
+	_boostSFX = mGameObject->getComponent<flow::audio::AudioSource>();
+	if (_boostSFX == nullptr)
+	{
+		std::cerr << "Player failed to get Particle System Component" << std::endl;
+	}
 
 	b2Body_SetLinearDamping(_rb->getBodyId(), 0.2f);
 	b2Body_SetAngularDamping(_rb->getBodyId(), 0.3f);
+
+	_startVolume = _boostSFX->getVolume();
 }
 
 void PlayerController::fixedUpdate()
@@ -93,6 +102,7 @@ void PlayerController::fixedUpdate()
 	auto r1 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray1, b2DefaultQueryFilter());
 	auto r2 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray2, b2DefaultQueryFilter());
 
+
 	if (r1.hit || r2.hit)
 	{
 		float rayDist = b2MaxFloat(((1 - r1.fraction) * (1 - r1.fraction)), ((1 - r2.fraction) * (1 - r2.fraction)));
@@ -101,16 +111,46 @@ void PlayerController::fixedUpdate()
 		thrustForce = b2RotateVector(rot, thrustForce);
 
 		_jetFlame->startEmit(); // start particle system
+
+		// boost sfx enable
+		if (_boostSFX->getStatus() != sf::Music::Status::Playing)
+		{
+			_boostSFX->play();
+			_fadeT = _audioFadeTime;
+			_boostSFX->setVolume(_startVolume);
+		}
+
+		// catch faded audio and bring back too full
+		if (_fadeT < _audioFadeTime)
+		{
+			_boostSFX->setVolume(_startVolume);
+		}
+
+		// don't let catch if half faded
+		if (_fadeT < _audioFadeTime / 2.f)
+		{
+			_boostSFX->stop();
+		}
 	}
 	else
 	{
 		_jetFlame->stopEmit(); // stop particle system
+
+		// fade out audio
+		if (_boostSFX->getStatus() != sf::Music::Status::Stopped && _fadeT <= 0)
+		{
+			_boostSFX->stop();
+		}
+		_fadeT -= flow::PhysicsManager::getFixedTimestep();
+		_boostSFX->setVolume(std::max(_startVolume * (_fadeT / _audioFadeTime), 0.f));
 	}
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
+	
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 	{
 		flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(flow::Renderer::getGlobalRenderer().getWindow()));
 		flow::SceneManager::getGlobal().switchScene("level-select"); // adrian: dude why does this have to be 2 lines???!
+		flow::audio::MusicManager::getGlobal().stop();
 	}
 }

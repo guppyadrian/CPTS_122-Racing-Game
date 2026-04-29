@@ -1,3 +1,9 @@
+/**
+ * @file Component.hpp
+ * @author Logan Rainchild
+ * @brief The base class for all Components. This is the one stop shop to making modular systems.
+ */
+
 #pragma once
 
 #include <concepts>

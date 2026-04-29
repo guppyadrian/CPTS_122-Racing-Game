@@ -1,3 +1,9 @@
+/**
+ * @file Scene.hpp
+ * @author Johnathan Emanuelli
+ * @brief Virtual class for different types of scenes 
+ */
+
 #pragma once
 #include <vector>
 #include <string>

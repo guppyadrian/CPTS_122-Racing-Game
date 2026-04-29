@@ -1,3 +1,10 @@
+/**
+ * @file LookAheadCamera.hpp
+ * @author Logan Rainchild
+ * @brief An extention of the Camera component that provides smooth follow and look ahead features
+ */
+
+
 #pragma once
 
 #include <algorithm>

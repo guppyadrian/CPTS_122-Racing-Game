@@ -2,7 +2,7 @@ F-Zero
 15
 255,255,255,0
 F-Zero.png
-rr.ogg
+05 Fire Field.mp3
 -1600,-1300,90
 0
 

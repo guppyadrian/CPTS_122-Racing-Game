@@ -1,3 +1,9 @@
+/**
+ * @file RigidBOdy.hpp
+ * @author Logan Rainchild
+ * @brief A component that provides box2d rigidbody functions for gameObjects
+ */
+
 #pragma once
 
 #include "flow/Component.hpp"

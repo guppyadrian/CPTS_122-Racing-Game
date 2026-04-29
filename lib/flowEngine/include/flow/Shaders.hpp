@@ -1,3 +1,9 @@
+/**
+ * @file Shaders.hpp
+ * @author Logan Rainchild
+ * @brief a namespace for shaders to be loaded from memory
+ */
+
 #pragma once
 
 #include <string>

@@ -7,6 +7,7 @@
 #include "LevelLoader.hpp"
 #include "flow/Renderer.hpp"
 #include "flow/SceneManager.hpp"
+#include <flow/MusicManager.hpp>
 
 void LevelSelectScene::initialize()
 {
@@ -97,6 +98,9 @@ void LevelSelectScene::onEnter()
     UIScene::onEnter();
     
     _queueNextLevel = false;
+
+    flow::audio::MusicManager::getGlobal().play("01 Opening Theme.mp3");
+    flow::audio::MusicManager::getGlobal().setVolume(40);
 }
 
 void LevelSelectScene::handleInput(const sf::Vector2f inputVector)

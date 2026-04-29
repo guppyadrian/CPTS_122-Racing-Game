@@ -102,7 +102,8 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	if (!preview)
 	{
 		flow::audio::MusicManager::getGlobal().load(audioFile);
-		flow::audio::MusicManager::getGlobal().setVolume(90.f);
+		flow::audio::MusicManager::getGlobal().setVolume(50.f);
+		flow::audio::MusicManager::getGlobal().play();
 	}
 
 	flow::GameObject player;
@@ -270,10 +271,6 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	goal.playerStartPos = playerPos;
 	goal.playerStartRot = playerRot;
 
-	player.addComponent<PlayerController>();
-	player.getComponent<PlayerController>()->playerStartPos = playerPos;
-	player.getComponent<PlayerController>()->playerStartRot = playerRot;
-
 	sf::View view = sf::View({ 0,0 }, { 640, 384 });
 	player.addComponent<flow::LookAheadCamera>(view);
 
@@ -281,10 +278,21 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	{
 		player.addComponent<flow::audio::AudioListener>();
 
+		auto& boostAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/boost.mp3");
+		boostAudio.setVolume(100.f);
+		sf::Time start = sf::seconds(3.f);
+		sf::Time duration = sf::seconds(4.f);
+		boostAudio.setLoopPoints(sf::Music::TimeSpan(start,duration));
+		boostAudio.loop(true);
+
 		auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
+		thrustAudio.setVolume(5.f);
 		thrustAudio.loop(true);
-		thrustAudio.setVolume(67.f);
 		thrustAudio.play();
+
+		player.addComponent<PlayerController>();
+		player.getComponent<PlayerController>()->playerStartPos = playerPos;
+		player.getComponent<PlayerController>()->playerStartRot = playerRot;
 	}
 
 	newScene->AddGameObject(std::move(player));

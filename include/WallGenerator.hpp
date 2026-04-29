@@ -1,3 +1,9 @@
+/**
+ * @file WallGenerator.hpp
+ * @author Logan Rainchild
+ * @brief a class for generating streight walls and ark walls
+ */
+
 
 #include <flow/Component.hpp>
 #include <flow/GameObject.hpp>

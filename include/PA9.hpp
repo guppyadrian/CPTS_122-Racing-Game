@@ -1,8 +1,11 @@
-﻿// PA9.h : Include file for standard system include files,
-// or project specific include files.
+﻿/**
+ * @file PA9.hpp
+ * @author Logan Rainchild
+ * @author Adrian Nelson
+ * @author Johnathan Emanuelli
+ * @brief A 2D Racing Game with a menu, level select, and lan muliplayer
+ */
 
 #pragma once
-
 #include <iostream>
 
-// TODO: Reference additional headers your program requires here.

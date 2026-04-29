@@ -1,5 +1,5 @@
 ﻿// Logan Rainchild
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -70,8 +70,6 @@ int main()
 	sf::Text fpsText(font);
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
-
-	flow::audio::MusicManager::getGlobal().play();
 
 	while (window.isOpen())
 	{

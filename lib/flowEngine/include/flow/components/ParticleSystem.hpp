@@ -1,3 +1,9 @@
+/**
+ * @file ParticleSystem.hpp
+ * @author Logan Rainchild
+ * @brief A Particle system component for VFX
+ */
+
 #pragma once
 
 #include <random>

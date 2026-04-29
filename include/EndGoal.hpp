@@ -1,3 +1,9 @@
+/**
+ * @file EndGoal.hpp
+ * @author Johnathan Emanuelli
+ * @brief Singleton for the level end
+ */
+
 #pragma once
 #include <vector>
 #include <string>

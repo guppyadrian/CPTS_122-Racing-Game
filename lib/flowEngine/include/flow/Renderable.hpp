@@ -1,3 +1,9 @@
+/**
+ * @file Renderable.hpp
+ * @author Logan Rainchild
+ * @brief A virtual for Components that can be rendered
+ */
+
 #pragma once
 
 #include <SFML/Graphics.hpp>

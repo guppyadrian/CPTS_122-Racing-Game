@@ -1,3 +1,9 @@
+/**
+ * @file Interpolation.hpp
+ * @author Logan Rainchild
+ * @brief Helper namespace for linear and rotational interpolation
+ */
+
 #pragma once
 
 #include <SFML/Graphics.hpp>
