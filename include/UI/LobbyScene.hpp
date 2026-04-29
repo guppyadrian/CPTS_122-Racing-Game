@@ -17,6 +17,7 @@ public:
         Joining
     };
 private:
+    
     bool _hasInitialized = false;
     bool _connected{false}; // FIXME: does not update live rn... disconnects are very bad
     ButtonArray _buttons;

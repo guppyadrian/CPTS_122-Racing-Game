@@ -75,6 +75,11 @@ void LobbyScene::initialize()
         client.off("connection");
     });
     
+    client.on<long long>("start-time", [](const long long startTime)
+    {
+        Multiplayer::getInstance().startTime = startTime;
+    });
+    
     client.on<std::string>("start-game", [](const std::string &levelPath)
     {
         asio::post(flow::NetworkManager::getGlobal().io(), [levelPath]()
@@ -187,6 +192,8 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
             case 1:
             {
                 auto& server = flow::NetworkManager::getGlobal().getServer();
+                long long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+                server.emit("start-time", now + 3000);
                 server.emit("start-game", "rr");
             }
         }

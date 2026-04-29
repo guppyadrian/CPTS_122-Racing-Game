@@ -16,4 +16,5 @@ public:
     }
     int id{-1};
     bool inMultiplayer{false};
+    long long startTime{-1};
 };
