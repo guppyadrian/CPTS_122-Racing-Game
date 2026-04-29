@@ -18,18 +18,64 @@ void LevelSelectScene::update(float dt)
         if (event->is<sf::Event::KeyPressed>())
         {
             const auto keyPressed = event->getIf<sf::Event::KeyPressed>()->code;
-            sf::Vector2f inputVector; // TODO: controller support
-            if (keyPressed == sf::Keyboard::Key::D || keyPressed == sf::Keyboard::Key::Right) inputVector.x += 1;
-            if (keyPressed == sf::Keyboard::Key::A || keyPressed == sf::Keyboard::Key::Left) inputVector.x -= 1;
-            if (keyPressed == sf::Keyboard::Key::Space) inputVector.y += 1; // TODO: move to a getInputVector() function
+            // TODO: controller support
             
-            if (inputVector.y > 0)
-            {
-                _nextLevelPath = "Test";
-            }
+            handleInput(getInputVector(keyPressed));
         }
     }
     
     if (!_nextLevelPath.empty())
         LevelLoader().readFile(_nextLevelPath);
+}
+
+void LevelSelectScene::draw()
+{
+    _window.clear();
+    sf::Text text(*_font, _levels[_levelSelected]);
+    text.setPosition({_window.getSize().x / 2.f, _window.getSize().y - 150.f});
+    text.setCharacterSize(100);
+    const sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.getCenter());
+    
+    _window.draw(text);
+    
+    _window.display();
+}
+
+void LevelSelectScene::onEnter()
+{
+    UIScene::onEnter();
+    
+    _font = std::make_unique<sf::Font>();
+    if (!_font->openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
+        throw std::runtime_error("Could not load font: assets/Pixel-Regular.ttf");
+    }
+    
+    // load levels
+    _levels.clear();
+    std::filesystem::path folder = "assets/levels";
+    
+    for (const auto& lvl : std::filesystem::directory_iterator(folder))
+    {
+        if (!lvl.is_regular_file()) continue;
+        _levels.push_back(lvl.path().stem().string());
+    } 
+}
+
+void LevelSelectScene::handleInput(const sf::Vector2f inputVector)
+{
+    if (inputVector.x > 0)
+    {
+        _levelSelected++;
+        if (_levelSelected >= _levels.size()) _levelSelected = 0;
+    }
+    else if (inputVector.x < 0)
+    {
+        _levelSelected--;
+        if (_levelSelected < 0) _levelSelected = _levels.size() - 1;
+    }
+    else if (inputVector.y > 0)
+    {
+        _nextLevelPath = _levels[_levelSelected];
+    }
 }

@@ -49,9 +49,6 @@ int main()
 	gp::network::NetworkManager::Start();
 	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
 	
-	// LevelLoader load;
-	// load.readFile("Test");
-	
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(window));
 	flow::SceneManager::getGlobal().switchScene("menu");
@@ -63,14 +60,10 @@ int main()
 
 	TrackClock trackClock(window, font);
 	EndGoal::getInstance().trackClockRef = &trackClock;
-
-	// NETWORK
-	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
 	LevelLoader load;
-	load.readFile("rr");
-	EndGoal::getInstance().reset();
+	// load.readFile("rr");
+	// EndGoal::getInstance().reset();
 
 	sf::Clock dtClock;
 	float dt;
@@ -123,12 +116,14 @@ int main()
 		}
 
 		flow::SceneManager::getGlobal().draw();
-		window.setView(window.getDefaultView()); // TODO: is this necessary?
-		window.draw(fpsText);
-		window.draw(trackClock.getText());
-		window.draw(trackClock.getFinalText());
-		window.draw(trackText);
-		//window.display();
+		if (auto* scene = dynamic_cast<flow::LevelScene*>(flow::SceneManager::getGlobal().getCurrentSceneptr())) // what am i doing with my life
+		{
+			window.setView(window.getDefaultView());
+			window.draw(fpsText);
+			window.draw(trackClock.getText());
+			window.draw(trackClock.getFinalText());	
+		}
+		window.display();
 	}
 
 	//run save

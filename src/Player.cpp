@@ -6,6 +6,9 @@
 
 #include <flow/components/LookAheadCamera.hpp>
 
+#include "flow/SceneManager.hpp"
+#include "UI/LevelSelectScene.hpp"
+
 void PlayerController::init()
 {
 	_rb = mGameObject->getComponent<flow::Rigidbody>();
@@ -104,4 +107,10 @@ void PlayerController::fixedUpdate()
 		_jetFlame->stopEmit(); // stop particle system
 	}
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+	{
+		flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(flow::Renderer::getGlobalRenderer().getWindow()));
+		flow::SceneManager::getGlobal().switchScene("level-select"); // adrian: dude why does this have to be 2 lines???!
+	}
 }

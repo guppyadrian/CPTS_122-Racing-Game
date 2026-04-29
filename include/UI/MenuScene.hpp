@@ -5,14 +5,14 @@
 #pragma once
 
 #include "ButtonArray.hpp"
+#include "UIScene.hpp"
 #include "flow/Scene.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 
 
-class MenuScene : public flow::Scene
+class MenuScene : public UIScene
 {
 private:
-    sf::RenderWindow& _window;
     ButtonArray _buttons;
     std::string _queueNextScene;
 public:
@@ -20,8 +20,6 @@ public:
 
     void initialize() override {};
     void update(float dt) override;
-    void onEnter() override {}
-    void onExit() override {}
     void draw() override;
 private:
     void handleInput(sf::Vector2f inputVector);

@@ -49,8 +49,6 @@ namespace flow
 		window.clear();
 		
 		Renderer::getGlobalRenderer().drawAll();
-		
-		window.display();
 	}
 
 	GameObject& LevelScene::AddGameObject(flow::GameObject gameObject)

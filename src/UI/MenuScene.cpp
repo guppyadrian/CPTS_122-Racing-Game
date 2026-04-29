@@ -5,9 +5,10 @@
 #include "UI/MenuScene.hpp"
 
 #include "flow/SceneManager.hpp"
+#include "UI/LevelSelectScene.hpp"
 
 MenuScene::MenuScene(sf::RenderWindow &window)
-    : Scene("menu"), _window(window)
+    : UIScene("menu", window)
 {
     const float y = static_cast<float>(_window.getSize().y) / 2 - 200;
     _buttons.add("menu/playButton.png", {100, y}, {0.3f, 0.3f}); // play
@@ -27,17 +28,15 @@ void MenuScene::update(const float dt)
         if (event->is<sf::Event::KeyPressed>())
         {
             const auto keyPressed = event->getIf<sf::Event::KeyPressed>()->code;
-            sf::Vector2f inputVector; // TODO: controller support
-            if (keyPressed == sf::Keyboard::Key::D || keyPressed == sf::Keyboard::Key::Right) inputVector.x += 1;
-            if (keyPressed == sf::Keyboard::Key::A || keyPressed == sf::Keyboard::Key::Left) inputVector.x -= 1;
-            if (keyPressed == sf::Keyboard::Key::Space) inputVector.y += 1; // TODO: move to a getInputVector() function
-            handleInput(inputVector);
+            handleInput(getInputVector(keyPressed));
         }
     }
     
     _buttons.update(dt);
     if (!_queueNextScene.empty())
     {
+        if (_queueNextScene == "level-select")
+            flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(_window));
         flow::SceneManager::getGlobal().switchScene(_queueNextScene);
     }
 }
@@ -46,9 +45,7 @@ void MenuScene::draw()
 {
     _window.clear(sf::Color::Black);
     
-    _buttons.draw(_window);  
-    
-    _window.display();
+    _buttons.draw(_window);
 }
 
 void MenuScene::handleInput(const sf::Vector2f inputVector) // taking in vector for possible controller support in the future
