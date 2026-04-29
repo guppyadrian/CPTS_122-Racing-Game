@@ -20,7 +20,7 @@ public:
 	void update(float dt) override
 	{
 		auto time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		if (mStartTimestamp <= time)
+		if (mStartTimestamp >= time)
 		{
 			mGameObject->getComponent<PlayerController>()->reset();
 			if (TrackClock::instance != nullptr)
