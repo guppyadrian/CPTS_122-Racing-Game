@@ -15,6 +15,7 @@ namespace flow
 		Scene* _curScene;
 		std::vector<std::unique_ptr<Scene>> _sceneList;
 		int _queueNextScene{-1}; // changes scene at the end of an update loop
+		bool _deleteOld{true};
 
 		SceneManager();
 		~SceneManager();
@@ -30,7 +31,7 @@ namespace flow
 
 		void update(float dt);
 		void draw();
-		bool switchScene(const std::string& uuid);
+		bool switchScene(const std::string& uuid, bool deleteOld = true);
 		bool loadScene(std::unique_ptr<Scene> newScene);
 		bool loadScene(const std::string& uuid);
 		bool removeScene(const std::string& uuid);

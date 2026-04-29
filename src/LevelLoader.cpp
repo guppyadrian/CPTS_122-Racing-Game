@@ -35,7 +35,7 @@
 #include "flow/components/NetworkGhostManager.hpp"
 #include "Panels.hpp"
 
-std::unique_ptr<flow::LevelScene> LevelLoader::readFile(const std::string& fileUUID)
+std::unique_ptr<flow::LevelScene> LevelLoader::readFile(const std::string& fileUUID, const bool preview)
 {
 	//flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
 	//if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return std::unique_ptr<flow::LevelScene>(); // TODO: do I need to add this back?
@@ -83,11 +83,11 @@ std::unique_ptr<flow::LevelScene> LevelLoader::readFile(const std::string& fileU
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	return _init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile);
+	return _init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile, preview);
 }
 
 std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
-	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum, const std::string& audioFile)
+	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum, const std::string& audioFile, const bool preview)
 {
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, grav));
 	auto newScene = make_unique<flow::LevelScene>(uuid);
@@ -98,8 +98,11 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 
 	flow::Rigidbody* pEndGoalObject = nullptr;
 
-	flow::audio::MusicManager::getGlobal().load(audioFile);
-	flow::audio::MusicManager::getGlobal().setVolume(90.f);
+	if (!preview)
+	{
+		flow::audio::MusicManager::getGlobal().load(audioFile);
+		flow::audio::MusicManager::getGlobal().setVolume(90.f);
+	}
 
 	flow::GameObject player;
 	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
@@ -228,8 +231,11 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	ps1.startEmit();
 
 	// netowrk
-	player.addComponent<flow::NetworkEmitter>("playerUpdate");
-	player.addComponent<flow::NetworkGhostManager>("playerUpdate");
+	if (!preview)
+	{
+		player.addComponent<flow::NetworkEmitter>("playerUpdate");
+		player.addComponent<flow::NetworkGhostManager>("playerUpdate");	
+	}
 
 
 	// --- Configure the rigidBody's parameters ---
@@ -271,12 +277,15 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	sf::View view = sf::View({ 0,0 }, { 640, 384 });
 	player.addComponent<flow::LookAheadCamera>(view);
 
-	player.addComponent<flow::audio::AudioListener>();
+	if (!preview)
+	{
+		player.addComponent<flow::audio::AudioListener>();
 
-	auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
-	thrustAudio.loop(true);
-	thrustAudio.setVolume(67.f);
-	thrustAudio.play();
+		auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
+		thrustAudio.loop(true);
+		thrustAudio.setVolume(67.f);
+		thrustAudio.play();
+	}
 
 	newScene->AddGameObject(std::move(player));
 
