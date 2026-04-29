@@ -29,7 +29,12 @@ namespace flow
 		{
 			if (_sceneList[i]->get_uuid() == uuid)
 			{
-				if (_curScene) _curScene->onExit();
+				if (_curScene)
+				{
+					_curScene->onExit();
+					removeScene(_curScene->get_uuid());
+					i--;
+				}
 				_curScene = _sceneList[i].get();
 				_curScene->onEnter();
 				return true;

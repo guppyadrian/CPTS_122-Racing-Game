@@ -33,5 +33,6 @@ namespace flow
 		bool loadScene(std::string uuid);
 		bool removeScene(const std::string uuid);
 		Scene& getCurrentScene() { return *_curScene; }
+		Scene* getCurrentSceneptr() { return _curScene; }
 	};
 }

@@ -22,6 +22,8 @@ function(copy_assets target_name)
   )
 endfunction()
 
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 project ("PA9")
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -32,7 +34,13 @@ endif()
 
 
 # Add source to this project's executable.
-add_executable (RacerGame src/PA9.cpp src/WallGenerator.cpp src/Player.cpp src/LevelLoader.cpp src/EndGoal.cpp
+add_executable (RacerGame
+        src/PA9.cpp
+        src/WallGenerator.cpp
+        src/Player.cpp
+        src/LevelLoader.cpp
+        src/EndGoal.cpp
+        src/TrackClock.cpp
         src/UI/MenuScene.cpp
         src/UI/UIButton.cpp
         src/UI/ButtonArray.cpp

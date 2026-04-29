@@ -9,8 +9,10 @@
 #include "flow/NetworkManager.hpp"
 #include "flow/SceneManager.hpp"
 #include "flow/components/SpriteRenderer.hpp"
+#include "flow/components/ParticleSystem.hpp"
 #include "network/BufferParser.hpp"
 #include "network/Shared.hpp"
+#include <string>
 
 namespace flow
 {
@@ -43,8 +45,20 @@ namespace flow
                     GameObject ghost; // such bad practice to hard code this in, but too bad!
                     ghost.mTransform.setScale({0.02f, 0.02f});
 
-                    ghost.addComponent<SpriteRenderer>("assets/player.png");
+                    ghost.addComponent<SpriteRenderer>("assets/Ghost" + std::to_string(id % 8 + 1) + ".png");
                     _ghosts[id] = &ghost.addComponent<NetworkGhost>(id);
+
+                    auto& ps1 = ghost.addComponent<flow::ParticleSystem>();
+                    ps1.setStartPosition({ 0.f, 300.f });
+                    ps1.setParticleCount(500);
+                    ps1.setStartRandomVelocity(1500.f);
+                    ps1.setStartVelocity({ 0.f, 2000.f });
+                    ps1.setStartColor(sf::Color(250, 250, 250, 200));
+                    ps1.setEndColor(sf::Color(25, 100, 250, 150));
+                    ps1.setStartSize(50);
+                    ps1.setEndSize(25);
+                    ps1.setStartLifetime(0.3f);
+                    ps1.startEmit();
                     
                     curScene.AddGameObject(std::move(ghost));
                 }
@@ -55,5 +69,10 @@ namespace flow
         });
 
         NetworkManager::getGlobal().getClient().emit("handshakePlayerReady", '\0');
+    }
+
+    NetworkGhostManager::~NetworkGhostManager()
+    {
+        NetworkManager::getGlobal().getClient().off(_eventName);
     }
 }

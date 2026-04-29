@@ -27,6 +27,7 @@ namespace flow
 		std::vector<sf::Color> mColors;
 		std::vector<bool> mActiveParticles;
 
+		sf::Vector2f mStartPosition;
 		float mStartLifetime;
 		float mStartRandomVelocity;
 		sf::Vector2f mStartVelocity;
@@ -58,6 +59,9 @@ namespace flow
 		// Getters and setters
 		void startEmit() { mEmit = true; }
 		void stopEmit() { mEmit = false; }
+
+		sf::Vector2f getStartPosition() const { return mStartPosition; }
+		void setStartPosition(const sf::Vector2f& v) { mStartPosition = v; }
 
 		float getParticleCount() const { return mParticleCount; }
 		void setParticleCount(float v) { mParticleCount = v; }

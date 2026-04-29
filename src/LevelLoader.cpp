@@ -20,7 +20,9 @@
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
 #include <flow/components/Camera.hpp>
+#include <flow/components/LookAheadCamera.hpp>
 #include <flow/components/ParticleSystem.hpp>
+#include <flow/MusicManager.hpp>
 
 #include "EndGoal.hpp"
 #include "WallGenerator.hpp"
@@ -32,6 +34,8 @@
 
 void LevelLoader::readFile(std::string fileUUID)
 {
+	flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
+	if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return;
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
 	if (!file.is_open())
 	{
@@ -62,31 +66,37 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::string bgFile;
 	std::getline(_ss, bgFile);
 
+	std::string audioFile;
+	std::getline(_ss, audioFile);
+
 	sf::Vector2f playerPos;
 	float playerRot;
 	std::getline(_ss, line);
 	sscanf(line.c_str(), "%f,%f,%f", &playerPos.x, &playerPos.y, &playerRot);
 
 	float gravity;
-	std::getline(_ss, line); gravity = std::stof(line);
+	std::getline(_ss, line);
+	gravity = std::stof(line);
 
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor);
+	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile);
 }
 
 void LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
-	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color)
+	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum, const std::string& audioFile)
 {
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, grav));
 	auto newScene = make_unique<flow::LevelScene>(uuid);
 
 	flow::GameObject bg = flow::GameObject();
-	bg.addComponent<flow::SpriteRenderer>(std::string("assets/" + bgFile));
+	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg/" + bgFile));
 	newScene->AddGameObject(std::move(bg));
 
 	flow::Rigidbody* pEndGoalObject = nullptr;
+
+	flow::audio::MusicManager::getGlobal().load(audioFile);
 
 	//Object stuff
 	std::string shapeLine;
@@ -155,7 +165,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	//Endgoal
 	EndGoal& goal = EndGoal::getInstance();
 	goal.setEndGoal(pEndGoalObject->getBodyId());
-
+	goal.setLaps(lvNum);
 
 
 
@@ -169,24 +179,26 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	// narrow beam  particle system
 	auto& ps2 = player.addComponent<flow::ParticleSystem>();
-
+	ps2.setStartPosition({ 0.f, 200.f });
 	ps2.setParticleCount(50);
-	ps2.setStartRandomVelocity(2000.f);
-	ps2.setStartVelocity({ 0.f, 15000.f });
-	ps2.setStartColor(sf::Color::Blue);
-	ps2.setEndColor(sf::Color::Yellow);
-	ps2.setStartSize(250);
-	ps2.setStartLifetime(0.1f);
+	ps2.setStartRandomVelocity(1000.f);
+	ps2.setStartVelocity({ 0.f, 30000.f });
+	ps2.setStartColor(sf::Color(255, 200, 220, 128));
+	ps2.setEndColor(sf::Color(255, 40, 200, 32));
+	ps2.setStartSize(200);
+	ps2.setEndSize(50);
+	ps2.setStartLifetime(0.12f);
 
 	// wider fire effect particle system
 	auto& ps1 = player.addComponent<flow::ParticleSystem>();
-
-	ps1.setParticleCount(25);
-	ps1.setStartRandomVelocity(1000.f);
-	ps1.setStartVelocity({ 0.f, 2400.f });
-	ps1.setStartColor(sf::Color::Yellow);
-	ps1.setEndColor(sf::Color::Red);
-	ps1.setStartSize(150);
+	ps1.setStartPosition({0.f, 300.f});
+	ps1.setParticleCount(500);
+	ps1.setStartRandomVelocity(1500.f);
+	ps1.setStartVelocity({ 0.f, 2000.f });
+	ps1.setStartColor(sf::Color(250, 250, 250, 200));
+	ps1.setEndColor(sf::Color(25,100,250, 150));
+	ps1.setStartSize(50);
+	ps1.setEndSize(25);
 	ps1.setStartLifetime(0.3f);
 	ps1.startEmit();
 
@@ -205,7 +217,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 0.1f;
 	shapeDef.material.friction = 0.f;
-	shapeDef.material.restitution = 0.1f;
+	shapeDef.material.restitution = 0.15f;
 
 	// --- get the sprite (we added the SpriteRenderer just above) ---
 	auto& sprite = player.getComponent<flow::SpriteRenderer>()->getSprite();
@@ -222,16 +234,20 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
 	b2Body_SetMassData(bodyId, {11.f,b2Body_GetMassData(bodyId).center,150.f});
 
-
 	//test for bullet?
 	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
+
+	//Add to endGoal
+	goal.setPlayer(bodyId);
+	goal.playerStartPos = playerPos;
+	goal.playerStartRot = playerRot;
 
 	player.addComponent<PlayerController>();
 	player.getComponent<PlayerController>()->playerStartPos = playerPos;
 	player.getComponent<PlayerController>()->playerStartRot = playerRot;
 
-	sf::View view = sf::View({ 0,0 }, { 400, 300 });
-	player.addComponent<flow::Camera>(view);
+	sf::View view = sf::View({ 0,0 }, { 640, 384 });
+	player.addComponent<flow::LookAheadCamera>(view);
 
 	newScene->AddGameObject(std::move(player));
 

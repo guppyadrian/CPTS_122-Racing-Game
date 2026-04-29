@@ -13,9 +13,11 @@ target_sources(flowEngine PRIVATE
         src/ParticleSystem.cpp
         src/Transform.cpp
         src/Camera.cpp
+        src/LookAheadCamera.cpp
         src/network/NetworkEmitter.cpp
         src/network/NetworkManager.cpp
-        src/network/NetworkGhost.cpp)
+        src/network/NetworkGhost.cpp
+        src/MusicManager.cpp)
 
 target_include_directories(flowEngine PUBLIC include)
 
@@ -23,4 +25,4 @@ target_include_directories(flowEngine PUBLIC include)
 add_subdirectory(external/SFML)
 add_subdirectory(external/box2d)
 
-target_link_libraries(flowEngine PUBLIC box2d SFML::Graphics guppyNet)
+target_link_libraries(flowEngine PUBLIC box2d SFML::Graphics SFML::Audio guppyNet)

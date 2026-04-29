@@ -19,6 +19,7 @@
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
 #include <flow/components/Camera.hpp>
+#include <flow/MusicManager.hpp>
 
 #include "Player.hpp"
 #include "LevelLoader.hpp"
@@ -27,6 +28,7 @@
 #include "flow/components/NetworkEmitter.hpp"
 #include "flow/components/NetworkGhostManager.hpp"
 #include "network/NetworkManager.hpp"
+#include "TrackClock.hpp"
 #include "UI/LevelSelectScene.hpp"
 #include "UI/MenuScene.hpp"
 
@@ -41,7 +43,7 @@ int main()
 
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, 0.f));
 	
-	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 200.f);
+	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 500.f);
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
@@ -59,12 +61,16 @@ int main()
 		return -1; // Handle error
 	}
 
+	TrackClock trackClock(window, font);
+	EndGoal::getInstance().trackClockRef = &trackClock;
+
+	// NETWORK
+	gp::network::NetworkManager::Start();
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
-	sf::Clock trackClock;
-	sf::Text trackText(font);
-	trackText.setCharacterSize(60);
-	trackText.setFillColor(sf::Color::White);
-	trackText.setPosition({ window.getSize().x - 300.f, 0 });
+	LevelLoader load;
+	load.readFile("rr");
+	EndGoal::getInstance().reset();
 
 	sf::Clock dtClock;
 	float dt;
@@ -72,7 +78,7 @@ int main()
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
 
-	EndGoal& endGoal = EndGoal::getInstance();
+	flow::audio::MusicManager::getGlobal().play();
 
 	while (window.isOpen())
 	{
@@ -82,24 +88,50 @@ int main()
 
 		flow::SceneManager::getGlobal().update(dt);
 
+		trackClock.update();
+		EndGoal::getInstance().update();
+
 		// simple fps logging
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished())
 		{
-			trackClock.restart();
+			trackClock.reset();
+			EndGoal::getInstance().reset();
 		}
-		int tSec = trackClock.getElapsedTime().asMilliseconds() / 1000;
-		int tMs = trackClock.getElapsedTime().asMilliseconds() % 1000;
-		trackText.setString(std::to_string(tSec) + ":" + std::to_string(tMs));
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+		{
+			load.readFile("rr");
+			trackClock.reset();
+			EndGoal::getInstance().reset();
+			flow::audio::MusicManager::getGlobal().play();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+		{
+			load.readFile("F-Zero");
+			trackClock.reset();
+			EndGoal::getInstance().reset();
+			flow::audio::MusicManager::getGlobal().play();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+		{
+			load.readFile("gbarr");
+			trackClock.reset();
+			EndGoal::getInstance().reset();
+			flow::audio::MusicManager::getGlobal().play();
+		}
 
 		flow::SceneManager::getGlobal().draw();
 		window.setView(window.getDefaultView()); // TODO: is this necessary?
 		window.draw(fpsText);
+		window.draw(trackClock.getText());
+		window.draw(trackClock.getFinalText());
 		window.draw(trackText);
 		//window.display();
 	}
+
+	//run save
 
 	gp::network::NetworkManager::Stop();
 }

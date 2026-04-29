@@ -15,7 +15,8 @@ namespace flow
 	private:
 		std::vector<std::unique_ptr<Component>> mComponents;
 	public:
-     GameObject() : mTransform() {};
+     GameObject() = default;
+	 ~GameObject() = default;
 
 		// AI Generated
 		// Move constructor - ensure components' mGameObject pointers are updated
