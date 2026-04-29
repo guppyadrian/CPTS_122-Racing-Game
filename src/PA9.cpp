@@ -1,5 +1,5 @@
 ﻿// Logan Rainchild
-//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include <iostream>
 #include <memory>
 #include <vector>
