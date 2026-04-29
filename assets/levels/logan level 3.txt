@@ -2,6 +2,7 @@ logan level 3
 1
 187,68,48,255
 bg.png
+rr.ogg
 500,-25,270
 0
 
