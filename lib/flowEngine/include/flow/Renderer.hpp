@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "components/SpriteRenderer.hpp"
 #include "Renderable.hpp"
+#include "LevelScene.hpp"
 
 namespace flow
 {
@@ -56,6 +57,8 @@ namespace flow
 		{
 			mCromeAbOffset = offset;
 		}
+
+		sf::Texture generateThumbnail(LevelScene& levelScene);
 
 	};
 }
