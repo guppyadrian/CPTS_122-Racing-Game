@@ -33,6 +33,7 @@
 #include "flow/components/NetworkEmitter.hpp"
 #include "flow/components/NetworkGhost.hpp"
 #include "flow/components/NetworkGhostManager.hpp"
+#include "Panels.hpp"
 
 std::unique_ptr<flow::LevelScene> LevelLoader::readFile(const std::string& fileUUID)
 {
@@ -100,6 +101,10 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	flow::audio::MusicManager::getGlobal().load(audioFile);
 	flow::audio::MusicManager::getGlobal().setVolume(90.f);
 
+	flow::GameObject player;
+	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
+	auto& rbComponent = player.addComponent<flow::Rigidbody>();
+
 	//Object stuff
 	std::string shapeLine;
 	while (std::getline(_ss, shapeLine)) {
@@ -150,17 +155,39 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 			else
 			{
 				c = color;
-			}		
+			}
 
 
 			flow::GameObject lastWall = WallGenerator::GenerateWall({ x, y }, length, angle, c);
 			// Tag its Box2D body as the end goal trigger
 			pEndGoalObject = lastWall.getComponent<flow::Rigidbody>();
-			if (pEndGoalObject){
+			if (pEndGoalObject) {
 				b2Body_SetUserData(pEndGoalObject->getBodyId(), &EndGoal::getInstance());
 			}
 
 			newScene->AddGameObject(std::move(lastWall));
+		}
+		else if (type == "Boost")
+		{
+			std::string posStr, sizeStr, angleStr;
+			std::getline(ss, posStr, ';');
+			std::getline(ss, sizeStr, ';');
+			std::getline(ss, angleStr, ';');
+
+			float x, y;
+			int w, h;
+			sscanf(posStr.c_str(), "%f,%f", &x, &y);
+			sscanf(sizeStr.c_str(), "%d,%d", &w, &h);
+
+			float angle = std::stof(angleStr);
+			flow::GameObject boosterPanel;
+			auto& n = boosterPanel.addComponent<flow::SpriteRenderer>("assets/boost.png", sf::IntRect({ 0,0 }, { w,h }));
+			boosterPanel.addComponent<BoosterPanel>(rbComponent.getBodyId(), *player.getComponent<flow::SpriteRenderer>(), n);
+			boosterPanel.addComponent<flow::Rigidbody>(); //remove if Logan fixes Fixed Update :)
+			boosterPanel.mTransform.setPosition({ x,y });
+			boosterPanel.mTransform.setRotationDeg(angle);
+			
+			newScene->AddGameObject(std::move(boosterPanel));
 		}
 	}
 
@@ -170,10 +197,6 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	goal.setLaps(lvNum);
 
 
-
-
-	//Player stuff
-	flow::GameObject player;
 
 	player.mTransform.setPosition(playerPos);
 	player.mTransform.setRotationDeg(playerRot);
@@ -193,24 +216,21 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 
 	// wider fire effect particle system
 	auto& ps1 = player.addComponent<flow::ParticleSystem>();
-	ps1.setStartPosition({0.f, 300.f});
+	ps1.setStartPosition({ 0.f, 300.f });
 	ps1.setParticleCount(500);
 	ps1.setStartRandomVelocity(1500.f);
 	ps1.setStartVelocity({ 0.f, 2000.f });
 	ps1.setStartColor(sf::Color(250, 250, 250, 200));
-	ps1.setEndColor(sf::Color(25,100,250, 150));
+	ps1.setEndColor(sf::Color(25, 100, 250, 150));
 	ps1.setStartSize(50);
 	ps1.setEndSize(25);
 	ps1.setStartLifetime(0.3f);
 	ps1.startEmit();
 
-	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
-
 	// netowrk
 	player.addComponent<flow::NetworkEmitter>("playerUpdate");
 	player.addComponent<flow::NetworkGhostManager>("playerUpdate");
 
-	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 
 	// --- Configure the rigidBody's parameters ---
 	// Note: You can have multiple collision shapes on a single body!
@@ -234,7 +254,7 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	std::cout << "Radius: " << radius << std::endl;
 	b2Circle circle = { {0.0f, 0.0f}, radius + 2.f };
 	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
-	b2Body_SetMassData(bodyId, {11.f,b2Body_GetMassData(bodyId).center,150.f});
+	b2Body_SetMassData(bodyId, { 11.f,b2Body_GetMassData(bodyId).center,150.f });
 
 	//test for bullet?
 	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
