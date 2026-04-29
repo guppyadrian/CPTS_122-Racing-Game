@@ -13,6 +13,8 @@
 class TrackClock
 {
 public:
+	inline static TrackClock* instance = nullptr;
+
 	TrackClock(sf::RenderWindow& win, sf::Font& f) : _window(win), _trackText(f), _finalText(f)
 	{
 		_trackText.setCharacterSize(60);
@@ -25,6 +27,8 @@ public:
 		_finalText.setFillColor({255,255,0,0});
 		_finalText.setPosition({ 0, win.getSize().y - 30.f });
 		_finalText.setString("");
+
+		instance = this;
 	}
 	sf::Clock& get_clock()
 	{

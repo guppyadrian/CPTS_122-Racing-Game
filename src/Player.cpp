@@ -67,15 +67,7 @@ void PlayerController::fixedUpdate()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished()) //3 is Y button, 9 is esc
 	{
-		float radians = playerStartRot * (B2_PI / 180.0f);
-
-		b2Rot myRotation;
-		myRotation.c = b2ComputeCosSin(radians).cosine;
-		myRotation.s = b2ComputeCosSin(radians).sine;
-		b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
-		b2Body_SetAngularVelocity(id, 0.f);
-		b2Body_SetLinearVelocity(id, { 0.f,0.f });
-		mGameObject->getComponent<flow::LookAheadCamera>()->reset();
+		reset();
 	}
 
 	// 1. Handle Rotation & Braking
@@ -165,4 +157,27 @@ void PlayerController::fixedUpdate()
 		
 		flow::audio::MusicManager::getGlobal().stop();
 	}
+}
+
+
+void PlayerController::reset()
+{
+	b2BodyId id = _rb->getBodyId();
+
+	float radians = playerStartRot * (B2_PI / 180.0f);
+
+	b2Rot myRotation;
+	myRotation.c = b2ComputeCosSin(radians).cosine;
+	myRotation.s = b2ComputeCosSin(radians).sine;
+	b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
+	b2Body_SetAngularVelocity(id, 0.f);
+	b2Body_SetLinearVelocity(id, { 0.f,0.f });
+	mGameObject->getComponent<flow::LookAheadCamera>()->reset();
+
+	if (TrackClock::instance != nullptr)
+	{
+		TrackClock::instance->reset();
+	}
+
+	EndGoal::getInstance().reset();
 }

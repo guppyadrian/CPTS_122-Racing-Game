@@ -35,6 +35,9 @@ public:
 	void init() override;
 	void update(float dt) override {};
 	void fixedUpdate() override;
+
+	void reset();
+
 	PlayerController() = default;
 	~PlayerController() override = default;
 };

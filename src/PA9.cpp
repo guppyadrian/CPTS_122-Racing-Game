@@ -87,12 +87,6 @@ int main()
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished())
-		{
-			trackClock.reset();
-			EndGoal::getInstance().reset();
-		}
-
 		flow::SceneManager::getGlobal().draw();
 		if (auto* scene = dynamic_cast<flow::LevelScene*>(flow::SceneManager::getGlobal().getCurrentSceneptr())) // what am i doing with my life
 		{

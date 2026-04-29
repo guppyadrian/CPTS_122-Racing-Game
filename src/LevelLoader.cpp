@@ -30,6 +30,7 @@
 #include "Multiplayer.hpp"
 #include "WallGenerator.hpp"
 #include "Player.hpp"
+#include "Countdown.hpp"
 
 #include "flow/components/NetworkEmitter.hpp"
 #include "flow/components/NetworkGhost.hpp"
@@ -293,6 +294,12 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 		player.addComponent<PlayerController>();
 		player.getComponent<PlayerController>()->playerStartPos = playerPos;
 		player.getComponent<PlayerController>()->playerStartRot = playerRot;
+
+		if (Multiplayer::getInstance().inMultiplayer)
+		{
+			// timestamp for when the level starts
+			player.addComponent<Countdown>(Multiplayer::getInstance().startTime);
+		}
 	}
 
 	newScene->AddGameObject(std::move(player));
