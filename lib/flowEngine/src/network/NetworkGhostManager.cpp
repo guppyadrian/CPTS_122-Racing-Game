@@ -70,4 +70,9 @@ namespace flow
 
         NetworkManager::getGlobal().getClient().emit("handshakePlayerReady", '\0');
     }
+
+    NetworkGhostManager::~NetworkGhostManager()
+    {
+        NetworkManager::getGlobal().getClient().off(_eventName);
+    }
 }
