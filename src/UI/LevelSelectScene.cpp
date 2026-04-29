@@ -80,8 +80,6 @@ void LevelSelectScene::draw()
     
     _window.draw(text);
     _window.draw(_thumbnails[_levelSelected]);
-    
-    _window.display();
 }
 
 void LevelSelectScene::loadingDraw() const
