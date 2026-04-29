@@ -6,8 +6,6 @@
 
 #include <flow/components/LookAheadCamera.hpp>
 
-PlayerController::PlayerController() : _rb(nullptr), input(0) {}
-
 void PlayerController::init()
 {
 	_rb = mGameObject->getComponent<flow::Rigidbody>();
