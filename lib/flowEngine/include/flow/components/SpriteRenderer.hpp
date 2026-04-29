@@ -19,6 +19,7 @@ namespace flow
 		SpriteRenderer(const sf::Texture& texture);
 
 		// for loading tileable sprites
+		SpriteRenderer(std::string textureSrc, sf::IntRect rect);
 		SpriteRenderer(const sf::Texture& texture, sf::IntRect rect);
 		~SpriteRenderer();
 
