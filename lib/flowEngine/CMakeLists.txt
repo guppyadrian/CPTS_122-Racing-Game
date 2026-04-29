@@ -14,6 +14,8 @@ target_sources(flowEngine PRIVATE
         src/Transform.cpp
         src/Camera.cpp
         src/LookAheadCamera.cpp
+        src/AudioListener.cpp
+        src/AudioSource.cpp
         src/network/NetworkEmitter.cpp
         src/network/NetworkManager.cpp
         src/network/NetworkGhost.cpp

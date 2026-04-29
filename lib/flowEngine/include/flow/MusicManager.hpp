@@ -16,6 +16,11 @@ namespace flow::audio
 		void play()
 		{
 			if (!_isOpen) return;
+			music.setRelativeToListener(false);
+			music.setSpatializationEnabled(false);
+			music.setAttenuation(0.f);
+			music.setMaxDistance(1000001.f);
+			music.setMinDistance(1000000.f);
 			music.play();
 		}
 		void play(std::string str)
@@ -32,10 +37,13 @@ namespace flow::audio
 		void pause() { if (!_isOpen) return; music.pause(); }
 		void stop() { if (!_isOpen) return; music.stop(); }
 		void setLoop(bool b) { if (!_isOpen) return; music.setLooping(b); }
+		void setVolume(float v) { if (!_isOpen) return; music.setVolume(v); }
 
 	private:
 		sf::Music music;
 		bool _isOpen;
-		MusicManager():music() {}
+		MusicManager() :music()
+		{
+		}
 	};
 }

@@ -23,6 +23,8 @@
 #include <flow/components/LookAheadCamera.hpp>
 #include <flow/components/ParticleSystem.hpp>
 #include <flow/MusicManager.hpp>
+#include <flow/components/AudioListener.hpp>
+#include <flow/components/AudioSource.hpp>
 
 #include "EndGoal.hpp"
 #include "WallGenerator.hpp"
@@ -97,6 +99,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	flow::Rigidbody* pEndGoalObject = nullptr;
 
 	flow::audio::MusicManager::getGlobal().load(audioFile);
+	flow::audio::MusicManager::getGlobal().setVolume(90.f);
 
 	//Object stuff
 	std::string shapeLine;
@@ -248,6 +251,13 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	sf::View view = sf::View({ 0,0 }, { 640, 384 });
 	player.addComponent<flow::LookAheadCamera>(view);
+
+	player.addComponent<flow::audio::AudioListener>();
+
+	auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
+	thrustAudio.loop(true);
+	thrustAudio.setVolume(67.f);
+	thrustAudio.play();
 
 	newScene->AddGameObject(std::move(player));
 
