@@ -298,7 +298,8 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 		if (Multiplayer::getInstance().inMultiplayer)
 		{
 			// timestamp for when the level starts
-			player.addComponent<Countdown>(Multiplayer::getInstance().startTime);
+			auto time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+			player.addComponent<Countdown>(time + 3000);
 		}
 	}
 

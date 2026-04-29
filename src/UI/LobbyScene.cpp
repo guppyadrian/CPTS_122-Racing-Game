@@ -95,6 +95,7 @@ void LobbyScene::initialize()
     
     client.on<int>("player-count", [this](const int playerCount)
     {
+        std::cout << "Got player count: " << playerCount << std::endl;
         _playerCount = playerCount;
     });
     
@@ -134,6 +135,7 @@ void LobbyScene::initialize()
         if (_state == State::Hosting) return;
         asio::post(flow::NetworkManager::getGlobal().io(), []()
         {
+            if (!Multiplayer::getInstance().inMultiplayer) return;
             flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
             flow::SceneManager::getGlobal().switchScene("menu");
         });
@@ -228,12 +230,11 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
             case 1:
             {
                 auto& server = flow::NetworkManager::getGlobal().getServer();
-                long long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-                server.emit("start-time", now + 5000);
                 server.emit("start-game", Multiplayer::getInstance().trackSelected);
                 break;
             }
             case 2: // quit
+                Multiplayer::getInstance().inMultiplayer = false;
                 flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
                 flow::SceneManager::getGlobal().switchScene("menu");
                 break;
@@ -242,6 +243,7 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
     }
     else if (inputVector.y < 0) // deny
     {
+        Multiplayer::getInstance().inMultiplayer = false;
         flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
         flow::SceneManager::getGlobal().switchScene("menu");
     }
