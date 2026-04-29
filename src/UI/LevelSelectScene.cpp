@@ -9,6 +9,8 @@
 #include "flow/SceneManager.hpp"
 #include <flow/MusicManager.hpp>
 
+#include "UI/MenuScene.hpp"
+
 void LevelSelectScene::initialize()
 {
     _hasInitialized = true;
@@ -93,9 +95,8 @@ void LevelSelectScene::loadingDraw() const
 
 void LevelSelectScene::onEnter()
 {
-    if (!_hasInitialized) initialize();
-    
     UIScene::onEnter();
+    if (!_hasInitialized) initialize();
     
     _queueNextLevel = false;
 
@@ -118,5 +119,10 @@ void LevelSelectScene::handleInput(const sf::Vector2f inputVector)
     else if (inputVector.y > 0)
     {
         _queueNextLevel = true;
+    }
+    else if (inputVector.y < 0)
+    {
+        flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
+        flow::SceneManager::getGlobal().switchScene("menu", false);
     }
 }

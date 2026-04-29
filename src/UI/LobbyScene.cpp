@@ -15,9 +15,10 @@
 
 LobbyScene::LobbyScene(sf::RenderWindow& window, const State state) : UIScene("multiplayer-lobby", window), _state(state)
 {
-    _buttons.add("menu/playButton.png", {  0, 0}); // host
-    _buttons.add("menu/playButton.png", {200, 0}); // join
-    _buttons.add("menu/quitButton.png", {400, 0}); // quit
+    float y = _window.getSize().y / 2.0f;
+    _buttons.add("menu/selectmap.png", {  400, y}); // host
+    _buttons.add("menu/start.png", {1000, y}); // join
+    _buttons.add("menu/quitButton.png", {1600, y}); // quit
 }
 
 LobbyScene::~LobbyScene()
@@ -146,14 +147,19 @@ void LobbyScene::draw()
     if (!_connected)
     {
         drawText("Connecting.. Press ESC to cancel");
-    } else if (_state == State::Joining) {
-        
-    }
-    _buttons.draw(_window);
+    } 
+    else if (_state == State::Joining) 
+    {
+        drawText("Connected!");
+        drawText("press ESC to leave", {0, 100}, 40);
+    } 
+    else
+        _buttons.draw(_window);
 }
 
 void LobbyScene::onEnter()
 {
+    UIScene::onEnter();
     if (!_hasInitialized)
     {
         initialize();
@@ -171,11 +177,20 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
     if (inputVector.y > 0) // accept
     {
         // start game
-        if (_state == State::Hosting)
+        if (_state != State::Hosting) return;
+        
+        
+        switch (_buttons.selected())
         {
-            auto& server = flow::NetworkManager::getGlobal().getServer();
-            server.emit("start-game", "rr");
+            case 0: //select map
+                break;
+            case 1:
+            {
+                auto& server = flow::NetworkManager::getGlobal().getServer();
+                server.emit("start-game", "rr");
+            }
         }
+        
     }
     else if (inputVector.y < 0) // deny
     {
