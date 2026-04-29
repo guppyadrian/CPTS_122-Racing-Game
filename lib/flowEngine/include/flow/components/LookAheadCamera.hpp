@@ -20,7 +20,7 @@ namespace flow
 		sf::Vector2f mLastTransformPos;
 		sf::Vector2f mTarget;
 
-		float mLookAheadFactor = 60.f;
+		float mLookAheadFactor = 0.4f;
 		float mTargetLerp = 20.f;
 		float mCameraLerp = 5.f;
 	public:
@@ -60,7 +60,7 @@ namespace flow
 
 			sf::Vector2f transformPos = mGameObject->mTransform.getPosition();
 			sf::Vector2f lookAhead = transformPos - mLastTransformPos;
-			lookAhead *= mLookAheadFactor;
+			lookAhead *= mLookAheadFactor / dt;
 
 			// exponential decay to calculate framerate independant interpolation alpha
 			float targetAlpha = 1.0f - std::exp(-mTargetLerp * dt);
