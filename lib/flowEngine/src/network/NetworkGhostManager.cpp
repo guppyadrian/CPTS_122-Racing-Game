@@ -10,6 +10,7 @@
 #include "flow/SceneManager.hpp"
 #include "flow/components/SpriteRenderer.hpp"
 #include "flow/components/ParticleSystem.hpp"
+#include "flow/components/AudioSource.hpp"
 #include "network/BufferParser.hpp"
 #include "network/Shared.hpp"
 #include <string>
@@ -59,6 +60,10 @@ namespace flow
                     ps1.setEndSize(25);
                     ps1.setStartLifetime(0.3f);
                     ps1.startEmit();
+
+                    auto& thrustAudio = ghost.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
+                    thrustAudio.loop(true);
+                    thrustAudio.play();
                     
                     curScene.AddGameObject(std::move(ghost));
                 }

@@ -22,6 +22,8 @@
 #include <flow/components/Camera.hpp>
 #include <flow/components/LookAheadCamera.hpp>
 #include <flow/components/ParticleSystem.hpp>
+#include <flow/components/AudioListener.hpp>
+#include <flow/components/AudioSource.hpp>
 
 #include "EndGoal.hpp"
 #include "WallGenerator.hpp"
@@ -239,6 +241,12 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	sf::View view = sf::View({ 0,0 }, { 640, 384 });
 	player.addComponent<flow::LookAheadCamera>(view);
+
+	player.addComponent<flow::audio::AudioListener>();
+
+	auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
+	thrustAudio.loop(true);
+	thrustAudio.play();
 
 	newScene->AddGameObject(std::move(player));
 
