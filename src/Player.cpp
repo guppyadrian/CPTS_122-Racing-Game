@@ -52,7 +52,9 @@ void PlayerController::fixedUpdate()
 	}
 	if (sf::Joystick::isConnected(0))
 	{
-		float x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
+		float x = 0;
+			x += sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
+			x += -1* sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Z);
 		if (abs(x) > 0.01)
 		{
 			input += x / 100.f;
