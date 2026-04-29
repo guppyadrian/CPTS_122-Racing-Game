@@ -5,6 +5,8 @@
 #include "UI/LevelSelectScene.hpp"
 
 #include "LevelLoader.hpp"
+#include "flow/Renderer.hpp"
+#include "flow/SceneManager.hpp"
 
 void LevelSelectScene::update(float dt)
 {
@@ -25,11 +27,17 @@ void LevelSelectScene::update(float dt)
     }
     
     if (!_nextLevelPath.empty())
-        LevelLoader().readFile(_nextLevelPath);
+    {
+        flow::SceneManager::getGlobal().loadScene(LevelLoader().readFile(_nextLevelPath));
+        flow::SceneManager::getGlobal().switchScene(_nextLevelPath);
+    }
+    
 }
 
 void LevelSelectScene::draw()
 {
+    _window.setView(_window.getDefaultView()); // idk bro
+    
     _window.clear();
     sf::Text text(*_font, _levels[_levelSelected]);
     text.setPosition({_window.getSize().x / 2.f, _window.getSize().y - 150.f});
@@ -38,14 +46,13 @@ void LevelSelectScene::draw()
     text.setOrigin(textRect.getCenter());
     
     _window.draw(text);
+    _window.draw(_thumbnails[_levelSelected]);
     
     _window.display();
 }
 
 void LevelSelectScene::onEnter()
 {
-    UIScene::onEnter();
-    
     _font = std::make_unique<sf::Font>();
     if (!_font->openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
         throw std::runtime_error("Could not load font: assets/Pixel-Regular.ttf");
@@ -55,11 +62,20 @@ void LevelSelectScene::onEnter()
     _levels.clear();
     std::filesystem::path folder = "assets/levels";
     
-    for (const auto& lvl : std::filesystem::directory_iterator(folder))
+    for (const auto& lvlPath : std::filesystem::directory_iterator(folder))
     {
-        if (!lvl.is_regular_file()) continue;
-        _levels.push_back(lvl.path().stem().string());
-    } 
+        if (!lvlPath.is_regular_file()) continue;
+        _levels.push_back(lvlPath.path().stem().string());
+        
+        const auto lvl = LevelLoader().readFile(_levels.back());
+        _thumbnailTextures.push_back(std::make_unique<sf::Texture>(flow::Renderer::getGlobalRenderer().generateThumbnail(*lvl)));
+        auto& sprite = _thumbnails.emplace_back(*_thumbnailTextures.back());
+        sprite.setScale({0.7f, 0.7f});
+        sprite.setOrigin(sprite.getLocalBounds().getCenter());
+        sprite.setPosition({_window.getSize().x / 2.0f, _window.getSize().y / 2.0f - 100.0f});
+    }
+    
+    UIScene::onEnter();
 }
 
 void LevelSelectScene::handleInput(const sf::Vector2f inputVector)

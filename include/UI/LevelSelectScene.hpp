@@ -12,6 +12,8 @@ class LevelSelectScene : public UIScene
 {
     std::string _nextLevelPath;
     std::vector<std::string> _levels;
+    std::vector<std::unique_ptr<sf::Texture>> _thumbnailTextures;
+    std::vector<sf::Sprite> _thumbnails;
     int _levelSelected = 0;
     std::unique_ptr<sf::Font> _font;
 public:

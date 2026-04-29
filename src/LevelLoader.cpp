@@ -34,15 +34,14 @@
 #include "flow/components/NetworkGhost.hpp"
 #include "flow/components/NetworkGhostManager.hpp"
 
-void LevelLoader::readFile(std::string fileUUID)
+std::unique_ptr<flow::LevelScene> LevelLoader::readFile(const std::string& fileUUID)
 {
-	flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
-	if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return;
+	//flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
+	//if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return std::unique_ptr<flow::LevelScene>(); // TODO: do I need to add this back?
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
 	if (!file.is_open())
 	{
-		std::cerr << "Failed to open file: " << fileUUID << std::endl;
-		return;
+		throw std::runtime_error("Failed to open file: " + fileUUID);
 	}
 
 	_ss.str(""); //yes both "" and clear are needed; idk why
@@ -83,16 +82,16 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile);
+	return _init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile);
 }
 
-void LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
+std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
 	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum, const std::string& audioFile)
 {
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, grav));
 	auto newScene = make_unique<flow::LevelScene>(uuid);
 
-	flow::GameObject bg = flow::GameObject();
+	flow::GameObject bg;
 	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg/" + bgFile));
 	newScene->AddGameObject(std::move(bg));
 
@@ -167,14 +166,14 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	//Endgoal
 	EndGoal& goal = EndGoal::getInstance();
-	goal.setEndGoal(pEndGoalObject->getBodyId());
+	goal.setEndGoal(pEndGoalObject->getBodyId()); // TODO: this can be null according to clion -adrian
 	goal.setLaps(lvNum);
 
 
 
 
 	//Player stuff
-	flow::GameObject player = flow::GameObject();
+	flow::GameObject player;
 
 	player.mTransform.setPosition(playerPos);
 	player.mTransform.setRotationDeg(playerRot);
@@ -262,7 +261,5 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	newScene->AddGameObject(std::move(player));
 
 	// load the scene
-	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
-	flow::SceneManager::getGlobal().switchScene(uuid);
-	return;
+	return newScene;
 }

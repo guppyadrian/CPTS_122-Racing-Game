@@ -47,7 +47,7 @@ int main()
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(window));
