@@ -34,6 +34,8 @@
 
 void LevelLoader::readFile(std::string fileUUID)
 {
+	flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
+	if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return;
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
 	if (!file.is_open())
 	{

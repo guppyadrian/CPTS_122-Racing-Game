@@ -12,6 +12,7 @@ namespace flow
 		LevelScene(const std::string uuid);
 		~LevelScene() = default;
 		void onEnter() override;
+		void onExit() override;
 		void initialize();
 		void update(float dt);
 		// take by value and move into the internal vector to support non-copyable GameObject

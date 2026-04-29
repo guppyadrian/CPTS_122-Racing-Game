@@ -94,6 +94,27 @@ int main()
 			trackClock.reset();
 			EndGoal::getInstance().reset();
 		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+		{
+			load.readFile("rr");
+			trackClock.reset();
+			EndGoal::getInstance().reset();
+			flow::audio::MusicManager::getGlobal().play();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+		{
+			load.readFile("F-Zero");
+			trackClock.reset();
+			EndGoal::getInstance().reset();
+			flow::audio::MusicManager::getGlobal().play();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+		{
+			load.readFile("gbarr");
+			trackClock.reset();
+			EndGoal::getInstance().reset();
+			flow::audio::MusicManager::getGlobal().play();
+		}
 
 		window.clear();
 		flow::Renderer::getGlobalRenderer().drawAll();
