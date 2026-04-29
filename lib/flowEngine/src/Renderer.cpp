@@ -246,7 +246,7 @@ namespace flow
         output->display();
 
         // unflip the output fiew for the shader pass
-        sf::View view = output->getView();
+        view = output->getView();
         view.setSize({ view.getSize().x, static_cast<float>(fabs(view.getSize().y)) });
         output->setView(view);
 
