@@ -53,10 +53,10 @@ int main()
 
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.191", 25550);
 	
 	LevelLoader load;
-	load.readFile("gbarr");
+	load.readFile("rr");
 	EndGoal::getInstance().reset();
 
 	sf::Clock dtClock;

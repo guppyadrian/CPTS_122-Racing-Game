@@ -66,22 +66,26 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::string bgFile;
 	std::getline(_ss, bgFile);
 
+	std::string audioFile;
+	std::getline(_ss, audioFile);
+
 	sf::Vector2f playerPos;
 	float playerRot;
 	std::getline(_ss, line);
 	sscanf(line.c_str(), "%f,%f,%f", &playerPos.x, &playerPos.y, &playerRot);
 
 	float gravity;
-	std::getline(_ss, line); gravity = std::stof(line);
+	std::getline(_ss, line);
+	gravity = std::stof(line);
 
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum);
+	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile);
 }
 
 void LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
-	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum)
+	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum, const std::string& audioFile)
 {
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, grav));
 	auto newScene = make_unique<flow::LevelScene>(uuid);
@@ -92,7 +96,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	flow::Rigidbody* pEndGoalObject = nullptr;
 
-	flow::audio::MusicManager::getGlobal().load(uuid);
+	flow::audio::MusicManager::getGlobal().load(audioFile);
 
 	//Object stuff
 	std::string shapeLine;

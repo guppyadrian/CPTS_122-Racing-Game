@@ -27,7 +27,7 @@ namespace flow::audio
 		void load(std::string str)
 		{
 			music = sf::Music();
-			_isOpen = music.openFromFile("assets/audio/" + str + ".ogg");
+			_isOpen = music.openFromFile("assets/audio/" + str);
 		}
 		void pause() { if (!_isOpen) return; music.pause(); }
 		void stop() { if (!_isOpen) return; music.stop(); }
