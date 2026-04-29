@@ -17,6 +17,11 @@ namespace flow
 		_curScene->update(dt);
 	}
 
+	void SceneManager::draw()
+	{
+		_curScene->draw();
+	}
+
 	//Return: true if success, false if failed
 	bool SceneManager::switchScene(const std::string uuid)
 	{

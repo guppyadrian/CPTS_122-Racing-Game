@@ -27,6 +27,7 @@ namespace flow
 		}
 
 		void update(float dt);
+		void draw();
 		bool switchScene(const std::string uuid);
 		bool loadScene(std::unique_ptr<Scene> newScene);
 		bool loadScene(std::string uuid);

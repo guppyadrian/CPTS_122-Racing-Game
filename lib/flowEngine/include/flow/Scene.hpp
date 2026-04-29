@@ -13,6 +13,7 @@ namespace flow
 		virtual ~Scene() = default;
 		virtual void initialize() = 0;
 		virtual void update(float dt) = 0;
+		virtual void draw() = 0;
 		virtual void onEnter();
 		virtual void onExit();
 

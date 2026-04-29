@@ -37,7 +37,8 @@ namespace flow
 			static Renderer Instance;
 			return Instance;
 		}
-
+		
+		sf::RenderWindow& getWindow() { return *mWindowRef; }
 	
 		void attachWindow(sf::RenderWindow* window)
 		{

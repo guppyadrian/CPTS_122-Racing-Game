@@ -27,6 +27,7 @@
 #include "flow/components/NetworkEmitter.hpp"
 #include "flow/components/NetworkGhostManager.hpp"
 #include "network/NetworkManager.hpp"
+#include "UI/LevelSelectScene.hpp"
 #include "UI/MenuScene.hpp"
 
 int main()
@@ -50,6 +51,7 @@ int main()
 	// load.readFile("Test");
 	
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
+	flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(window));
 	flow::SceneManager::getGlobal().switchScene("menu");
 
 	sf::Font font;
@@ -76,14 +78,6 @@ int main()
 	{
 		dt = dtClock.restart().asSeconds();
 
-		// SFML in this workspace uses an optional-style pollEvent that returns
-		// std::optional<sf::Event>. Use that form to handle events.
-		while (auto event = window.pollEvent())
-		{
-			if (event->is<sf::Event::Closed>())
-				window.close();
-		}
-
 		flow::PhysicsManager::getGlobal().tick(dt);
 
 		flow::SceneManager::getGlobal().update(dt);
@@ -100,12 +94,11 @@ int main()
 		int tMs = trackClock.getElapsedTime().asMilliseconds() % 1000;
 		trackText.setString(std::to_string(tSec) + ":" + std::to_string(tMs));
 
-		window.clear();
-		flow::Renderer::getGlobalRenderer().drawAll();
-		window.setView(window.getDefaultView());
+		flow::SceneManager::getGlobal().draw();
+		window.setView(window.getDefaultView()); // TODO: is this necessary?
 		window.draw(fpsText);
 		window.draw(trackText);
-		window.display();
+		//window.display();
 	}
 
 	gp::network::NetworkManager::Stop();
