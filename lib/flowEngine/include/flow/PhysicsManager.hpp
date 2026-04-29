@@ -46,6 +46,11 @@ namespace flow
 			b2World_SetGravity(mWorldId, { gravity.x, gravity.y });
 		};
 
+		static float getFixedTimestep()
+		{
+			return getGlobal().fixedTimestep;
+		}
+
 		void tick(float dt);
 
 		b2BodyId addRigidbody(Rigidbody* rb, b2BodyDef* bodyDef);

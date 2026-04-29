@@ -32,7 +32,14 @@ namespace flow::audio
 		void setAttenuation(float v) { mSound.setAttenuation(v); };
 
 		void setVolume(float v) { mSound.setVolume(v); }
+		float getVolume() { return mSound.getVolume(); }
+
 		void setPitch(float v) { mSound.setPitch(v); }
+
+		sf::Music::Status getStatus()
+		{
+			return mSound.getStatus();
+		}
 
 		void init() override;
 		void update(float dt) override;

@@ -13,13 +13,12 @@ namespace flow::audio
 			std::cerr << "Audio Souce failed to load audio!" << std::endl;
 		}
 
-		mSound.setDopplerFactor(1.f);
-		mSound.setRelativeToListener(true);
+		mSound.setDopplerFactor(10.f);
 		mSound.setSpatializationEnabled(true);
-		mSound.setMaxDistance(10000.f);
-		mSound.setMinDistance(1000.f);
-		mSound.setAttenuation(1000.f);
-		mSound.setVolume(50.f);
+		mSound.setMaxDistance(1000000.f);
+		mSound.setMinDistance(20000.f);
+		mSound.setAttenuation(0.f);
+		mSound.setVolume(100.f);
 		hasLoaded = true;
 	}
 
@@ -33,8 +32,10 @@ namespace flow::audio
 		sf::Vector2f pos = mGameObject->mTransform.getPosition();
 		sf::Vector2f velocity = pos - lastPos;
 
-		mSound.setPosition(sf::Vector3f(pos.x, 0, pos.y));
-		mSound.setVelocity(sf::Vector3f(velocity.x,0,velocity.y));
+		mSound.setPosition(sf::Vector3f(pos.x, pos.y, 0));
+		mSound.setVelocity(sf::Vector3f(velocity.x, velocity.y, 0));
+
+		//std::cout << "Audio Position: " << pos.x << ", " << pos.y << std::endl;
 
 		lastPos = mGameObject->mTransform.getPosition();
 	}

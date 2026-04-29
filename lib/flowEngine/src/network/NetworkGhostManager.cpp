@@ -78,7 +78,11 @@ namespace flow
                         ps1.startEmit();
 
                         auto& thrustAudio = ghost.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
-                        thrustAudio.setVolume(67.f);
+                        thrustAudio.setVolume(160.f);
+                        thrustAudio.setMaxDistance(100000.f);
+                        thrustAudio.setMinDistance(30.0f);
+                        thrustAudio.setAttenuation(0.35f);
+                        thrustAudio.setPitch(1.6f);
                         thrustAudio.loop(true);
                         thrustAudio.play();
 
