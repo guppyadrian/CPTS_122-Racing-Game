@@ -10,10 +10,10 @@
 MenuScene::MenuScene(sf::RenderWindow &window)
     : UIScene("menu", window)
 {
-    const float y = static_cast<float>(_window.getSize().y) / 2 - 200;
-    _buttons.add("menu/playButton.png", {100, y}, {0.3f, 0.3f}); // play
-    _buttons.add("menu/playButton.png", {500, y}, {0.3f, 0.3f}); // mutliplayer
-    _buttons.add("menu/quitButton.png", {900, y}, {0.3f, 0.3f}); // quit
+    //const float y = static_cast<float>(_window.getSize().y) / 2 - 200;
+    _buttons.add("menu/playButton.png", {100, 0}, {0.9f, 0.9f }); // play
+    _buttons.add("menu/lanButton.png", {700, 0}, { 0.9f, 0.9f }); // mutliplayer
+    _buttons.add("menu/quitButton.png", {1300, 0}, { 0.9f, 0.9f }); // quit
 }
 
 void MenuScene::update(const float dt)
