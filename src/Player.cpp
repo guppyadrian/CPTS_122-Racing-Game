@@ -93,6 +93,7 @@ void PlayerController::fixedUpdate()
 	auto r1 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray1, b2DefaultQueryFilter());
 	auto r2 = b2World_CastRayClosest(flow::PhysicsManager::getGlobal().getWorldId(), origin, ray2, b2DefaultQueryFilter());
 
+
 	if (r1.hit || r2.hit)
 	{
 		float rayDist = b2MaxFloat(((1 - r1.fraction) * (1 - r1.fraction)), ((1 - r2.fraction) * (1 - r2.fraction)));
@@ -107,6 +108,7 @@ void PlayerController::fixedUpdate()
 		_jetFlame->stopEmit(); // stop particle system
 	}
 	b2Body_ApplyForceToCenter(id, worldForce + thrustForce, true);
+	
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 	{
