@@ -18,7 +18,7 @@ void UIButton::update(const float)
     
     if (_sprite.getScale() != targetScale)
     {
-        _sprite.setScale(targetScale);
+        _sprite.setScale(_sprite.getScale() + (targetScale - _sprite.getScale()) * 0.1f);
         _sprite.setOrigin(_sprite.getLocalBounds().getCenter());
     }
 }
