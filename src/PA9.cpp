@@ -19,6 +19,7 @@
 #include <flow/SceneManager.hpp>
 #include <flow/LevelScene.hpp>
 #include <flow/components/Camera.hpp>
+#include <flow/MusicManager.hpp>
 
 #include "Player.hpp"
 #include "LevelLoader.hpp"
@@ -58,6 +59,7 @@ int main()
 	load.readFile("gbarr");
 	EndGoal::getInstance().reset();
 	
+	flow::audio::MusicManager::getGlobal().play("rr");
 
 	sf::Clock dtClock;
 	float dt;
