@@ -13,13 +13,19 @@ namespace flow::audio
 			return Instance;
 		}
 
+		void play()
+		{
+			music.play();
+		}
 		void play(std::string str)
 		{
-			
-			if (music.openFromFile("assets/audio/" + str + ".ogg"))
-			{
-				music.play();
-			}
+			load(str);
+			play();
+			setLoop(true);
+		}
+		void load(std::string str)
+		{
+			music.openFromFile("assets/audio/" + str + ".ogg");
 		}
 		void pause() { music.pause(); }
 		void stop() { music.stop(); }

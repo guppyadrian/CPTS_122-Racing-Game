@@ -58,14 +58,14 @@ int main()
 	LevelLoader load;
 	load.readFile("gbarr");
 	EndGoal::getInstance().reset();
-	
-	flow::audio::MusicManager::getGlobal().play("rr");
 
 	sf::Clock dtClock;
 	float dt;
 	sf::Text fpsText(font);
 	fpsText.setCharacterSize(30);
 	fpsText.setFillColor(sf::Color::White);
+
+	flow::audio::MusicManager::getGlobal().play();
 
 	while (window.isOpen())
 	{
