@@ -91,7 +91,7 @@ namespace flow
                     _ghosts[id]->mGameObject->mTransform.setRotationRad(transform[2]);
                 }
             }
-            catch (std::runtime_error ec)
+            catch (std::bad_cast ec)
             {
                 return;
             }
