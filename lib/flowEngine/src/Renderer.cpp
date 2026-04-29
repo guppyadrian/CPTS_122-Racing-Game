@@ -234,16 +234,21 @@ namespace flow
 
         std::swap(input, output);
 
+        // flip the output fiew for the shader pass
+        sf::View view = output->getView();
+        view.setSize({ view.getSize().x, static_cast<float>(-fabs(view.getSize().y)) });
+        output->setView(view);
+
         // distort the screen
         crtDistortion.setUniform("texture", input->getTexture());
         crtDistortion.setUniform("distortion", 1.2f);
         output->draw(sf::Sprite(input->getTexture()), &crtDistortion);
         output->display();
 
-        // flip the output fiew for the shader pass
-        sf::View view = mWindowRef->getView();
-        view.setSize({ view.getSize().x, static_cast<float>(-fabs(view.getSize().y)) });
-        mWindowRef->setView(view);
+        // unflip the output fiew for the shader pass
+        view = output->getView();
+        view.setSize({ view.getSize().x, static_cast<float>(fabs(view.getSize().y)) });
+        output->setView(view);
 
         return sf::Texture(output->getTexture()); // Output the final composite
     }
