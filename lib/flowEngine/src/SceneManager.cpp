@@ -26,8 +26,9 @@ namespace flow
 	}
 
 	//Return: true if success, false if failed
-	bool SceneManager::switchScene(const std::string& uuid)
+	bool SceneManager::switchScene(const std::string& uuid, const bool deleteOld)
 	{
+		_deleteOld = deleteOld;
 		for (int i = 0; i < _sceneList.size(); i++)
 		{
 			if (_sceneList[i]->get_uuid() == uuid)
@@ -46,7 +47,7 @@ namespace flow
 	void SceneManager::_switchScene()
 	{
 		const auto nextScene = _sceneList[_queueNextScene].get();
-		if (_curScene)
+		if (_curScene && _deleteOld)
 		{
 			_curScene->onExit();
 			removeScene(_curScene->get_uuid());

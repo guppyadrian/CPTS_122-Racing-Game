@@ -5,6 +5,38 @@
 #include "UI/LevelSelectScene.hpp"
 
 #include "LevelLoader.hpp"
+#include "flow/Renderer.hpp"
+#include "flow/SceneManager.hpp"
+
+void LevelSelectScene::initialize()
+{
+    _hasInitialized = true;
+    
+    _font = std::make_unique<sf::Font>();
+    if (!_font->openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
+        throw std::runtime_error("Could not load font: assets/Pixel-Regular.ttf");
+    }
+    
+    // load levels
+    _levels.clear();
+    _thumbnails.clear();
+    _thumbnailTextures.clear();
+    _levelPaths.clear();
+    std::filesystem::path folder = "assets/levels";
+    
+    for (const auto& lvlPath : std::filesystem::directory_iterator(folder))
+    {
+        if (!lvlPath.is_regular_file()) continue;
+        _levelPaths.push_back(lvlPath.path().stem().string());
+        const auto lvl = LevelLoader().readFile(lvlPath.path().stem().string(), true);
+        _levels.push_back(lvl->get_uuid());
+        _thumbnailTextures.push_back(std::make_unique<sf::Texture>(flow::Renderer::getGlobalRenderer().generateThumbnail(*lvl)));
+        auto& sprite = _thumbnails.emplace_back(*_thumbnailTextures.back());
+        sprite.setScale({0.7f, 0.7f});
+        sprite.setOrigin(sprite.getLocalBounds().getCenter());
+        sprite.setPosition({_window.getSize().x / 2.0f, _window.getSize().y / 2.0f - 100.0f});
+    }
+}
 
 void LevelSelectScene::update(float dt)
 {
@@ -24,12 +56,18 @@ void LevelSelectScene::update(float dt)
         }
     }
     
-    if (!_nextLevelPath.empty())
-        LevelLoader().readFile(_nextLevelPath);
+    if (_queueNextLevel)
+    {
+        flow::SceneManager::getGlobal().loadScene(LevelLoader().readFile(_levelPaths[_levelSelected]));
+        flow::SceneManager::getGlobal().switchScene(_levels[_levelSelected], false);
+    }
+    
 }
 
 void LevelSelectScene::draw()
 {
+    _window.setView(_window.getDefaultView()); // idk bro
+    
     _window.clear();
     sf::Text text(*_font, _levels[_levelSelected]);
     text.setPosition({_window.getSize().x / 2.f, _window.getSize().y - 150.f});
@@ -38,28 +76,18 @@ void LevelSelectScene::draw()
     text.setOrigin(textRect.getCenter());
     
     _window.draw(text);
+    _window.draw(_thumbnails[_levelSelected]);
     
     _window.display();
 }
 
 void LevelSelectScene::onEnter()
 {
+    if (!_hasInitialized) initialize();
+    
     UIScene::onEnter();
     
-    _font = std::make_unique<sf::Font>();
-    if (!_font->openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
-        throw std::runtime_error("Could not load font: assets/Pixel-Regular.ttf");
-    }
-    
-    // load levels
-    _levels.clear();
-    std::filesystem::path folder = "assets/levels";
-    
-    for (const auto& lvl : std::filesystem::directory_iterator(folder))
-    {
-        if (!lvl.is_regular_file()) continue;
-        _levels.push_back(lvl.path().stem().string());
-    } 
+    _queueNextLevel = false;
 }
 
 void LevelSelectScene::handleInput(const sf::Vector2f inputVector)
@@ -76,6 +104,6 @@ void LevelSelectScene::handleInput(const sf::Vector2f inputVector)
     }
     else if (inputVector.y > 0)
     {
-        _nextLevelPath = _levels[_levelSelected];
+        _queueNextLevel = true;
     }
 }

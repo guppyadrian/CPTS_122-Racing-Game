@@ -33,16 +33,16 @@
 #include "flow/components/NetworkEmitter.hpp"
 #include "flow/components/NetworkGhost.hpp"
 #include "flow/components/NetworkGhostManager.hpp"
+#include "Panels.hpp"
 
-void LevelLoader::readFile(std::string fileUUID)
+std::unique_ptr<flow::LevelScene> LevelLoader::readFile(const std::string& fileUUID, const bool preview)
 {
-	flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
-	if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return;
+	//flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
+	//if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return std::unique_ptr<flow::LevelScene>(); // TODO: do I need to add this back?
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
 	if (!file.is_open())
 	{
-		std::cerr << "Failed to open file: " << fileUUID << std::endl;
-		return;
+		throw std::runtime_error("Failed to open file: " + fileUUID);
 	}
 
 	_ss.str(""); //yes both "" and clear are needed; idk why
@@ -83,23 +83,30 @@ void LevelLoader::readFile(std::string fileUUID)
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	_init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile);
+	return _init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile, preview);
 }
 
-void LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
-	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum, const std::string& audioFile)
+std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
+	const sf::Vector2f& playerPos, const float& playerRot, const sf::Color& color, const int& lvNum, const std::string& audioFile, const bool preview)
 {
 	flow::PhysicsManager::getGlobal().setGravity(sf::Vector2f(0, grav));
 	auto newScene = make_unique<flow::LevelScene>(uuid);
 
-	flow::GameObject bg = flow::GameObject();
+	flow::GameObject bg;
 	bg.addComponent<flow::SpriteRenderer>(std::string("assets/bg/" + bgFile));
 	newScene->AddGameObject(std::move(bg));
 
 	flow::Rigidbody* pEndGoalObject = nullptr;
 
-	flow::audio::MusicManager::getGlobal().load(audioFile);
-	flow::audio::MusicManager::getGlobal().setVolume(90.f);
+	if (!preview)
+	{
+		flow::audio::MusicManager::getGlobal().load(audioFile);
+		flow::audio::MusicManager::getGlobal().setVolume(90.f);
+	}
+
+	flow::GameObject player;
+	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
+	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 
 	//Object stuff
 	std::string shapeLine;
@@ -151,30 +158,48 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 			else
 			{
 				c = color;
-			}		
+			}
 
 
 			flow::GameObject lastWall = WallGenerator::GenerateWall({ x, y }, length, angle, c);
 			// Tag its Box2D body as the end goal trigger
 			pEndGoalObject = lastWall.getComponent<flow::Rigidbody>();
-			if (pEndGoalObject){
+			if (pEndGoalObject) {
 				b2Body_SetUserData(pEndGoalObject->getBodyId(), &EndGoal::getInstance());
 			}
 
 			newScene->AddGameObject(std::move(lastWall));
 		}
+		else if (type == "Boost")
+		{
+			std::string posStr, sizeStr, angleStr;
+			std::getline(ss, posStr, ';');
+			std::getline(ss, sizeStr, ';');
+			std::getline(ss, angleStr, ';');
+
+			float x, y;
+			int w, h;
+			sscanf(posStr.c_str(), "%f,%f", &x, &y);
+			sscanf(sizeStr.c_str(), "%d,%d", &w, &h);
+
+			float angle = std::stof(angleStr);
+			flow::GameObject boosterPanel;
+			auto& n = boosterPanel.addComponent<flow::SpriteRenderer>("assets/boost.png", sf::IntRect({ 0,0 }, { w,h }));
+			boosterPanel.addComponent<BoosterPanel>(rbComponent.getBodyId(), *player.getComponent<flow::SpriteRenderer>(), n);
+			boosterPanel.addComponent<flow::Rigidbody>(); //remove if Logan fixes Fixed Update :)
+			boosterPanel.mTransform.setPosition({ x,y });
+			boosterPanel.mTransform.setRotationDeg(angle);
+			
+			newScene->AddGameObject(std::move(boosterPanel));
+		}
 	}
 
 	//Endgoal
 	EndGoal& goal = EndGoal::getInstance();
-	goal.setEndGoal(pEndGoalObject->getBodyId());
+	goal.setEndGoal(pEndGoalObject->getBodyId()); // TODO: this can be null according to clion -adrian
 	goal.setLaps(lvNum);
 
 
-
-
-	//Player stuff
-	flow::GameObject player = flow::GameObject();
 
 	player.mTransform.setPosition(playerPos);
 	player.mTransform.setRotationDeg(playerRot);
@@ -194,24 +219,24 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	// wider fire effect particle system
 	auto& ps1 = player.addComponent<flow::ParticleSystem>();
-	ps1.setStartPosition({0.f, 300.f});
+	ps1.setStartPosition({ 0.f, 300.f });
 	ps1.setParticleCount(500);
 	ps1.setStartRandomVelocity(1500.f);
 	ps1.setStartVelocity({ 0.f, 2000.f });
 	ps1.setStartColor(sf::Color(250, 250, 250, 200));
-	ps1.setEndColor(sf::Color(25,100,250, 150));
+	ps1.setEndColor(sf::Color(25, 100, 250, 150));
 	ps1.setStartSize(50);
 	ps1.setEndSize(25);
 	ps1.setStartLifetime(0.3f);
 	ps1.startEmit();
 
-	player.addComponent<flow::SpriteRenderer>(std::string("assets/player.png"));
-
 	// netowrk
-	player.addComponent<flow::NetworkEmitter>("playerUpdate");
-	player.addComponent<flow::NetworkGhostManager>("playerUpdate");
+	if (!preview)
+	{
+		player.addComponent<flow::NetworkEmitter>("playerUpdate");
+		player.addComponent<flow::NetworkGhostManager>("playerUpdate");	
+	}
 
-	auto& rbComponent = player.addComponent<flow::Rigidbody>();
 
 	// --- Configure the rigidBody's parameters ---
 	// Note: You can have multiple collision shapes on a single body!
@@ -235,7 +260,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	std::cout << "Radius: " << radius << std::endl;
 	b2Circle circle = { {0.0f, 0.0f}, radius + 2.f };
 	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
-	b2Body_SetMassData(bodyId, {11.f,b2Body_GetMassData(bodyId).center,150.f});
+	b2Body_SetMassData(bodyId, { 11.f,b2Body_GetMassData(bodyId).center,150.f });
 
 	//test for bullet?
 	b2Body_SetBullet(player.getComponent<flow::Rigidbody>()->getBodyId(), true);
@@ -252,17 +277,18 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	sf::View view = sf::View({ 0,0 }, { 640, 384 });
 	player.addComponent<flow::LookAheadCamera>(view);
 
-	player.addComponent<flow::audio::AudioListener>();
+	if (!preview)
+	{
+		player.addComponent<flow::audio::AudioListener>();
 
-	auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
-	thrustAudio.loop(true);
-	thrustAudio.setVolume(67.f);
-	thrustAudio.play();
+		auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
+		thrustAudio.loop(true);
+		thrustAudio.setVolume(67.f);
+		thrustAudio.play();
+	}
 
 	newScene->AddGameObject(std::move(player));
 
 	// load the scene
-	flow::SceneManager::getGlobal().loadScene(std::move(newScene));
-	flow::SceneManager::getGlobal().switchScene(uuid);
-	return;
+	return newScene;
 }

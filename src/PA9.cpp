@@ -1,5 +1,5 @@
 ﻿// Logan Rainchild
-
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -47,7 +47,7 @@ int main()
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(window));
@@ -61,9 +61,9 @@ int main()
 	TrackClock trackClock(window, font);
 	EndGoal::getInstance().trackClockRef = &trackClock;
 	
-	LevelLoader load;
-	// load.readFile("rr");
-	// EndGoal::getInstance().reset();
+	//LevelLoader load;
+	//load.readFile("boost");
+	EndGoal::getInstance().reset();
 
 	sf::Clock dtClock;
 	float dt;
@@ -92,27 +92,6 @@ int main()
 		{
 			trackClock.reset();
 			EndGoal::getInstance().reset();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
-		{
-			load.readFile("rr");
-			trackClock.reset();
-			EndGoal::getInstance().reset();
-			flow::audio::MusicManager::getGlobal().play();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
-		{
-			load.readFile("F-Zero");
-			trackClock.reset();
-			EndGoal::getInstance().reset();
-			flow::audio::MusicManager::getGlobal().play();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
-		{
-			load.readFile("gbarr");
-			trackClock.reset();
-			EndGoal::getInstance().reset();
-			flow::audio::MusicManager::getGlobal().play();
 		}
 
 		flow::SceneManager::getGlobal().draw();
