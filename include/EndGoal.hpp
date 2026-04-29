@@ -32,7 +32,7 @@ public:
 		myRotation.s = b2ComputeCosSin(radians).sine;
 		b2Body_SetTransform(_playerid, { playerStartPos.x , playerStartPos.y }, myRotation);
 		b2Body_SetAngularVelocity(_playerid, 0.f);
-		b2Body_SetLinearVelocity(_playerid, b2RotateVector(myRotation, { 0.f,-50.f }));
+		b2Body_SetLinearVelocity(_playerid, b2RotateVector(myRotation, { 0.f,-100.f }));
 
 		//Timer reset
 		trackClockRef->lapDone();

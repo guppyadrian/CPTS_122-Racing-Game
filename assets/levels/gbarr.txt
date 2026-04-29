@@ -2,6 +2,7 @@ gbarr
 3
 255,255,255,0
 gbarr.png
+gbarr.ogg
 -915,190,0
 0
 
