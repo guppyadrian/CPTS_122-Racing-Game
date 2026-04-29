@@ -18,7 +18,8 @@ target_sources(flowEngine PRIVATE
         src/AudioSource.cpp
         src/network/NetworkEmitter.cpp
         src/network/NetworkManager.cpp
-        src/network/NetworkGhost.cpp)
+        src/network/NetworkGhost.cpp
+        src/MusicManager.cpp)
 
 target_include_directories(flowEngine PUBLIC include)
 

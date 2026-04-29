@@ -22,6 +22,7 @@
 #include <flow/components/Camera.hpp>
 #include <flow/components/LookAheadCamera.hpp>
 #include <flow/components/ParticleSystem.hpp>
+#include <flow/MusicManager.hpp>
 #include <flow/components/AudioListener.hpp>
 #include <flow/components/AudioSource.hpp>
 
@@ -35,6 +36,8 @@
 
 void LevelLoader::readFile(std::string fileUUID)
 {
+	flow::Scene* curScene = flow::SceneManager::getGlobal().getCurrentSceneptr();
+	if ((curScene != nullptr) && (curScene->get_uuid() == fileUUID)) return;
 	std::ifstream file("assets/levels/" + fileUUID + ".txt");
 	if (!file.is_open())
 	{
@@ -90,6 +93,8 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	newScene->AddGameObject(std::move(bg));
 
 	flow::Rigidbody* pEndGoalObject = nullptr;
+
+	flow::audio::MusicManager::getGlobal().load(uuid);
 
 	//Object stuff
 	std::string shapeLine;
