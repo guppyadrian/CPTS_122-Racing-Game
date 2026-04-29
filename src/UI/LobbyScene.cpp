@@ -49,6 +49,7 @@ void LobbyScene::initialize()
         server.onConnection = [this, &server](gp::network::Socket socket) mutable // TODO: handledisconnection
         {
             _playerCount++;
+            
             int id = _idAccumulator++;
             socket->on("handshakePlayerReady", [id, socket]()
             {
@@ -66,7 +67,13 @@ void LobbyScene::initialize()
                 
                 server.emit("plyr", buffer);
             });
-            socket->on("disconnect", [this]() mutable {_playerCount--;});
+            socket->on("disconnect", [this]() mutable
+            {
+                _playerCount--;
+                flow::NetworkManager::getGlobal().getServer().emit("player-count", _playerCount);
+            });
+            
+            flow::NetworkManager::getGlobal().getServer().emit("player-count", _playerCount);
         };
     }
     
@@ -84,6 +91,11 @@ void LobbyScene::initialize()
     client.on<long long>("start-time", [](const long long startTime)
     {
         Multiplayer::getInstance().startTime = startTime;
+    });
+    
+    client.on<int>("player-count", [this](const int playerCount)
+    {
+        _playerCount = playerCount;
     });
     
     client.on<std::string>("start-game", [](const std::string &levelPath)
@@ -169,14 +181,18 @@ void LobbyScene::draw()
     if (!_connected)
     {
         drawText("Connecting.. Press ESC to cancel");
+        return;
     } 
-    else if (_state == State::Joining) 
+    
+    if (_state == State::Joining) 
     {
         drawText("Connected!");
         drawText("press ESC to leave", {0, 100}, 40);
     } 
     else
         _buttons.draw(_window);
+    
+    drawText("Players: " + std::to_string(_playerCount), {-800, -500}, 40);
 }
 
 void LobbyScene::onEnter()
