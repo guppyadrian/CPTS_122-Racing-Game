@@ -1,3 +1,9 @@
+/**
+ * @file Transform.hpp
+ * @author Logan Rainchild
+ * @brief a minor abstraction of sf::Transformable used in gameObjects
+ */
+
 #pragma once
 
 #include <SFML/System/Vector2.hpp>

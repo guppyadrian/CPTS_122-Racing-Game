@@ -1,3 +1,9 @@
+/**
+ * @file Renderer.hpp
+ * @author Logan Rainchild
+ * @brief Global singleton for managing all Renderables and applying shader effects
+ */
+
 #pragma once
 
 #include <vector>

@@ -1,3 +1,10 @@
+/**
+ * @file Camera.hpp
+ * @author Logan Rainchild
+ * @brief A Component for gameObjects that lets you manipulate the camera ouput rect scale and position
+ */
+
+
 #pragma once
 
 #include "flow/Component.hpp"

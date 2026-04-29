@@ -1,3 +1,10 @@
+/**
+ * @file Player.hpp
+ * @author Johnathan Emanuelli
+ * @author Logan Rainchild
+ * @brief Player Controller Component that handles player physics and FX
+ */
+
 #pragma once
 #include <flow/Component.hpp>
 #include <flow/GameObject.hpp>

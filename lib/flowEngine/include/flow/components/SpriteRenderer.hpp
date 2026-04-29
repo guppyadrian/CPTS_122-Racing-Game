@@ -1,3 +1,9 @@
+/**
+ * @file SpriteRenderer.hpp
+ * @author Logan Rainchild
+ * @brief A way to add textures to gameObjects
+ */
+
 #pragma once
 
 #include "flow/Component.hpp"

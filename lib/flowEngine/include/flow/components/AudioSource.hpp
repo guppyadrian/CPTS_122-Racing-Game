@@ -1,3 +1,10 @@
+/**
+ * @file AudioSource.hpp
+ * @author Logan Rainchild
+ * @brief A Component that provides spatial output for gameObjects
+ */
+
+
 #pragma once
 
 #include <SFML/Audio.hpp>

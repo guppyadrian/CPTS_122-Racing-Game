@@ -1,3 +1,9 @@
+/**
+ * @file GameObject.hpp
+ * @author Logan Rainchild
+ * @brief A container for Components with a transform. It is not reccomended to inherit from this!
+ */
+
 #pragma once
 
 #include <vector>

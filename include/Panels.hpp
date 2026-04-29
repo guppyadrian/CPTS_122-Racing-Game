@@ -1,3 +1,9 @@
+/**
+ * @file Pannels.hpp
+ * @author Johnathan Emanuelli
+ * @brief A component for boost pads
+ */
+
 #pragma once
 #include <flow/Component.hpp>
 #include <flow/GameObject.hpp>

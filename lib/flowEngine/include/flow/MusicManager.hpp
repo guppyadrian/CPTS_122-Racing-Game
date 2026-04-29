@@ -1,3 +1,9 @@
+/**
+ * @file MusicManager.hpp
+ * @author Johnathan Emanuelli
+ * @brief Global singleton for background music
+ */
+
 #pragma once
 #include <SFML/Audio.hpp>
 

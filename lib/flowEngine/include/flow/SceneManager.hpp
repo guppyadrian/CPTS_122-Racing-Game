@@ -1,3 +1,10 @@
+/**
+ * @file Scene.hpp
+ * @author Johnathan Emanuelli
+ * @author Logan Rainchild
+ * @brief A singleton that handles loading, transitioning, and updating scenes
+ */
+
 #pragma once
 #include <vector>
 #include <string>

@@ -1,3 +1,10 @@
+/**
+ * @file LevelScene.hpp
+ * @author Johnathan Emanuelli
+ * @author Logan Rainchild
+ * @brief a Scene that stores a list of gameObjects.
+ */
+
 #pragma once
 #include "Scene.hpp"
 #include "GameObject.hpp"

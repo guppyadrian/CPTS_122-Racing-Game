@@ -1,3 +1,9 @@
+/**
+ * @file LevelLoader.hpp
+ * @author Johnathan Emanuelli
+ * @brief Master loader, loads level files and sets up the entire level scene
+ */
+
 #pragma once //Include everything bc I said so
 #include <sstream>
 

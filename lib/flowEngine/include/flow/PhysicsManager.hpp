@@ -1,3 +1,9 @@
+/**
+ * @file PhysicsManager.hpp
+ * @author Logan Rainchild
+ * @brief Global singleton for managing all box2d physics bodies and fixedUpdate calls
+ */
+
 #pragma once
 
 #include "components/Rigidbody.hpp"

@@ -1,3 +1,9 @@
+/**
+ * @file TrackClock.hpp
+ * @author Johnathan Emanuelli
+ * @brief Handles lap time calculation and display
+ */
+
 #pragma once
 #include <vector>
 #include <string>
