@@ -33,6 +33,8 @@ namespace gp::network
 
         // connect to a TCP server using address and port
         void connect(const std::string& address, uint16_t port);
+        
+        void disconnect() { _socket.close(); _listeners.clear(); }
 
         // Emits an event to the server
         template<Serializable T>
@@ -47,7 +49,7 @@ namespace gp::network
         void on(const std::string& eventName, const std::function<void()>& callback);
 
         // removes an event listener for a certain eventName
-        void off(const std::string& eventName);
+        void off(const std::string eventName);
 
         [[nodiscard]] bool connected() const { return _socket.is_open(); }
 

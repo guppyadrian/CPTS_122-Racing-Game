@@ -9,6 +9,7 @@
 void ButtonArray::add(const std::string& texturePath, const sf::Vector2f pos, const sf::Vector2f scale)
 {
     _buttons.push_back(std::make_unique<UIButton>(texturePath, pos, scale));
+    if (_buttons.size() == 1) _buttons.back()->select();
 }
 
 void ButtonArray::next()
@@ -31,6 +32,7 @@ void ButtonArray::prev()
 
 void ButtonArray::draw(sf::RenderWindow &window)
 {
+    int i = 0;
     for (const auto& button : _buttons)
     {
         window.draw(button->getSprite());

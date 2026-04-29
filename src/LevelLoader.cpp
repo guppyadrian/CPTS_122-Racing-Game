@@ -83,7 +83,7 @@ std::unique_ptr<flow::LevelScene> LevelLoader::readFile(const std::string& fileU
 	std::getline(_ss, line); //blank line
 	//rest should be handled in _init() for objects
 
-	return _init(gravity, uuid, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile, preview);
+	return _init(gravity, fileUUID, bgFile, playerPos, playerRot, mainColor, lvNum, audioFile, preview);
 }
 
 std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const std::string& uuid, const std::string& bgFile,
@@ -233,8 +233,8 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 	// netowrk
 	if (!preview)
 	{
-		player.addComponent<flow::NetworkEmitter>("playerUpdate");
-		player.addComponent<flow::NetworkGhostManager>("playerUpdate");	
+		player.addComponent<flow::NetworkEmitter>("plyr");
+		player.addComponent<flow::NetworkGhostManager>("plyr");	
 	}
 
 
@@ -257,7 +257,6 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 
 	// --- Box2D box expects half-width and half-height ---
 	float radius = std::min(local.size.x * scale.x, local.size.y * scale.y) * 0.5f;
-	std::cout << "Radius: " << radius << std::endl;
 	b2Circle circle = { {0.0f, 0.0f}, radius + 2.f };
 	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
 	b2Body_SetMassData(bodyId, { 11.f,b2Body_GetMassData(bodyId).center,150.f });

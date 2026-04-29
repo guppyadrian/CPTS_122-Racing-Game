@@ -44,7 +44,9 @@ add_executable (RacerGame
         src/UI/MenuScene.cpp
         src/UI/UIButton.cpp
         src/UI/ButtonArray.cpp
-        src/UI/LevelSelectScene.cpp)
+        src/UI/LevelSelectScene.cpp
+        src/UI/LobbyScene.cpp
+        include/Multiplayer.hpp)
 
 target_include_directories(RacerGame PRIVATE include)
 

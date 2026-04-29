@@ -7,13 +7,14 @@
 
 #include "flow/Scene.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
-#include "SFML/Graphics/Shape.hpp"
-#include "SFML/Graphics/Sprite.hpp"
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 class UIScene : public flow::Scene
 {
 protected:
     sf::RenderWindow& _window;
+    std::unique_ptr<sf::Font> _font;
 public:
     explicit UIScene(const std::string& sceneUUID, sf::RenderWindow& window) : Scene(sceneUUID), _window(window) {}
 
@@ -34,9 +35,20 @@ protected:
             case sf::Keyboard::Key::Left:
                 return {-1.0f, 0.0f};
             case sf::Keyboard::Key::Space:
+            case sf::Keyboard::Key::Enter:
                 return {0.0f, 1.0f};
+            case sf::Keyboard::Key::Escape:
+                return {0.0f, -1.0f};
             default:
                 return {0.0f, 0.0f};
+        }
+    }
+    
+    void loadFont()
+    {
+        _font = std::make_unique<sf::Font>();
+        if (!_font->openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
+            throw std::runtime_error("Could not load font: assets/Pixel-Regular.ttf");
         }
     }
 };

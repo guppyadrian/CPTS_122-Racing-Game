@@ -19,6 +19,13 @@ namespace gp::network
         doAccept();
     }
 
+    void NetworkServer::stop()
+    {
+        _acceptor->close();
+        _acceptor.reset();
+        _connections.clear();
+    }
+
     void NetworkServer::emit(const std::string &eventName, const ByteBuffer &data)
     {
         for (const auto& connection : _connections)

@@ -47,7 +47,7 @@ int main()
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
+	//flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(window));
@@ -80,6 +80,7 @@ int main()
 		flow::PhysicsManager::getGlobal().tick(dt);
 
 		flow::SceneManager::getGlobal().update(dt);
+		flow::NetworkManager::getGlobal().io().poll();
 
 		trackClock.update();
 		EndGoal::getInstance().update();

@@ -12,10 +12,7 @@ void LevelSelectScene::initialize()
 {
     _hasInitialized = true;
     
-    _font = std::make_unique<sf::Font>();
-    if (!_font->openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
-        throw std::runtime_error("Could not load font: assets/Pixel-Regular.ttf");
-    }
+    loadFont();
     
     // show loading screen
     loadingDraw();
@@ -62,7 +59,7 @@ void LevelSelectScene::update(float dt)
     if (_queueNextLevel)
     {
         flow::SceneManager::getGlobal().loadScene(LevelLoader().readFile(_levelPaths[_levelSelected]));
-        flow::SceneManager::getGlobal().switchScene(_levels[_levelSelected], false);
+        flow::SceneManager::getGlobal().switchScene(_levelPaths[_levelSelected], false);
     }
     
 }

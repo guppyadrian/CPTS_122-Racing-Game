@@ -55,7 +55,7 @@ namespace gp::network
         _listeners[eventName] = [callback](const std::any&){ callback(); };
     }
 
-    void NetworkClient::off(const std::string &eventName)
+    void NetworkClient::off(const std::string eventName)
     {
         _listeners.erase(eventName);
     }
@@ -92,6 +92,7 @@ namespace gp::network
                 std::cerr << "Failed to read message header!" << std::endl;
                 std::cerr << ec.message() << std::endl;
                 _socket.close();
+                if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
                 return;
             }
 
@@ -109,6 +110,7 @@ namespace gp::network
                 std::cerr << "Failed to read message body!" << std::endl;
                 std::cerr << ec.message() << std::endl;
                 _socket.close();
+                if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
                 return;
             }
 
@@ -128,6 +130,7 @@ namespace gp::network
             {
                 std::cerr << "Failed to write: " << ec.message() << std::endl;
                 _socket.close();
+                if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
                 return;
             }
             _writeBuffer.pop_front();

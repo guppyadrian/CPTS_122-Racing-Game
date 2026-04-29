@@ -24,6 +24,8 @@ namespace gp::network
     public:
         NetworkServer();
         void listen(uint16_t port);
+        
+        void stop();
 
         std::function<void(Socket)> onConnection;
         template <Serializable T>
