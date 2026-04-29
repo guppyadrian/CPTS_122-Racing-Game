@@ -17,6 +17,9 @@ void LevelSelectScene::initialize()
         throw std::runtime_error("Could not load font: assets/Pixel-Regular.ttf");
     }
     
+    // show loading screen
+    loadingDraw();
+    
     // load levels
     _levels.clear();
     _thumbnails.clear();
@@ -78,6 +81,17 @@ void LevelSelectScene::draw()
     _window.draw(text);
     _window.draw(_thumbnails[_levelSelected]);
     
+    _window.display();
+}
+
+void LevelSelectScene::loadingDraw() const
+{
+    _window.clear();
+    sf::Text text(*_font, "Loading...");
+    text.setCharacterSize(100);
+    text.setOrigin(text.getLocalBounds().getCenter());
+    text.setPosition(sf::Vector2f(_window.getSize()) / 2.0f);
+    _window.draw(text);
     _window.display();
 }
 
