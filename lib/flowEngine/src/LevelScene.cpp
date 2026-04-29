@@ -16,10 +16,6 @@ namespace flow
 
 	void LevelScene::onExit()
 	{
-		for (int i = 0; i < _gameObjects.size(); i++)
-		{
-			_gameObjects[i].~GameObject();
-		}
 	}
 
 	void LevelScene::initialize()
