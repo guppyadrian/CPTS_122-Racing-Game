@@ -1,5 +1,7 @@
 #include "flow/LevelScene.hpp"
 
+#include "flow/Renderer.hpp"
+
 namespace flow
 {
 
@@ -29,13 +31,27 @@ namespace flow
 
 	void LevelScene::update(float dt)
 	{
+		auto& window = Renderer::getGlobalRenderer().getWindow();
+		while (const auto event = window.pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+				window.close();
+		}
 		for (int i = 0; i < _gameObjects.size(); i++)
 		{
 			_gameObjects[i].update(dt);
 		}
 	}
 
-    GameObject& LevelScene::AddGameObject(flow::GameObject gameObject)
+	void LevelScene::draw()
+	{
+		auto& window = Renderer::getGlobalRenderer().getWindow();
+		window.clear();
+		
+		Renderer::getGlobalRenderer().drawAll();
+	}
+
+	GameObject& LevelScene::AddGameObject(flow::GameObject gameObject)
 	{
 		_gameObjects.push_back(std::move(gameObject));
 		if (hasInitialized)

@@ -11,12 +11,14 @@ namespace flow
 		bool hasInitialized = false;
 	public:
 		LevelScene(const std::string uuid);
-		~LevelScene() = default;
+		~LevelScene() override = default;
 		void onEnter() override;
 		void onExit() override;
-		void initialize();
-		void update(float dt);
 		// take by value and move into the internal vector to support non-copyable GameObject
+		void initialize() override;
+		void update(float dt) override;
+		void draw() override;
+        // take by value and move into the internal vector to support non-copyable GameObject
 		GameObject& AddGameObject(flow::GameObject gameObject);
 		//TODO: Implement RemoveGameObject
 	};

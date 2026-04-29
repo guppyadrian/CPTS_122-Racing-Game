@@ -29,6 +29,8 @@
 #include "flow/components/NetworkGhostManager.hpp"
 #include "network/NetworkManager.hpp"
 #include "TrackClock.hpp"
+#include "UI/LevelSelectScene.hpp"
+#include "UI/MenuScene.hpp"
 
 int main()
 {
@@ -43,6 +45,14 @@ int main()
 	
 	b2World_SetMaximumLinearSpeed(flow::PhysicsManager::getGlobal().getWorldId(), 500.f);
 	
+	// NETWORK
+	gp::network::NetworkManager::Start();
+	flow::NetworkManager::getGlobal().getClient().connect("10.59.226.61", 25550);
+	
+	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
+	flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(window));
+	flow::SceneManager::getGlobal().switchScene("menu");
+
 	sf::Font font;
 	if (!font.openFromFile("assets/Pixel-Regular.ttf")) { // Load a font
 		return -1; // Handle error
@@ -50,14 +60,10 @@ int main()
 
 	TrackClock trackClock(window, font);
 	EndGoal::getInstance().trackClockRef = &trackClock;
-
-	// NETWORK
-	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
 	LevelLoader load;
-	load.readFile("rr");
-	EndGoal::getInstance().reset();
+	// load.readFile("rr");
+	// EndGoal::getInstance().reset();
 
 	sf::Clock dtClock;
 	float dt;
@@ -70,13 +76,6 @@ int main()
 	while (window.isOpen())
 	{
 		dt = dtClock.restart().asSeconds();
-		// SFML in this workspace uses an optional-style pollEvent that returns
-		// std::optional<sf::Event>. Use that form to handle events.
-		while (auto event = window.pollEvent())
-		{
-			if (event->is<sf::Event::Closed>())
-				window.close();
-		}
 
 		flow::PhysicsManager::getGlobal().tick(dt);
 
@@ -116,12 +115,14 @@ int main()
 			flow::audio::MusicManager::getGlobal().play();
 		}
 
-		window.clear();
-		flow::Renderer::getGlobalRenderer().drawAll();
-		window.setView(window.getDefaultView());
-		window.draw(fpsText);
-		window.draw(trackClock.getText());
-		window.draw(trackClock.getFinalText());
+		flow::SceneManager::getGlobal().draw();
+		if (auto* scene = dynamic_cast<flow::LevelScene*>(flow::SceneManager::getGlobal().getCurrentSceneptr())) // what am i doing with my life
+		{
+			window.setView(window.getDefaultView());
+			window.draw(fpsText);
+			window.draw(trackClock.getText());
+			window.draw(trackClock.getFinalText());	
+		}
 		window.display();
 	}
 

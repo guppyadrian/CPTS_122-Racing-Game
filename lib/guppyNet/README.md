@@ -1,4 +1,5 @@
 # guppyNet
+By Adrian Nelson  
 Super simple networking!  
 Written in ~1000 lines of code  
 Inspired by [Socket.io](https://socket.io/) with its awesome event based stuff :)
