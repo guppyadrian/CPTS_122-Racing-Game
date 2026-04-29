@@ -6,6 +6,7 @@
 #include "UIScene.hpp"
 #include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
+#include <SFML/Graphics/Sprite.hpp>
 
 
 class LevelSelectScene : public UIScene
