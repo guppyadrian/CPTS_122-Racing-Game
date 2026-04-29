@@ -22,6 +22,7 @@ namespace gp::network
                 if (ec)
                 {
                     std::cout << "Failed to resolve: " << ec.message() << std::endl;
+                    if (_listeners.contains("connect_error")) _listeners["connect_error"](ByteBuffer{});
                     return;
                 }
 
@@ -31,6 +32,7 @@ namespace gp::network
                         if (ec2)
                         {
                             std::cerr << "Failed to connect: " << ec2.message() << std::endl;
+                            if (_listeners.contains("connect_error")) _listeners["connect_error"](ByteBuffer{});
                             return;
                         }
                         onConnect();

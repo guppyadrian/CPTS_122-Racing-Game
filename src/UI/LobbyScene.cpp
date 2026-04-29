@@ -89,6 +89,11 @@ void LobbyScene::initialize()
         Multiplayer::getInstance().id = id;
     });
     
+    client.on("connect_error", [&client, this]() mutable
+    {
+        client.connect(_lastIP, 25550); 
+    });
+    
     client.on("disconnect", [this]() mutable
     {
         _connected = false;
@@ -103,6 +108,7 @@ void LobbyScene::initialize()
     if (_state == State::Hosting)
     {
         client.connect("localhost", 25550);
+        _lastIP = "localhost";
     } 
     else
     {
@@ -111,6 +117,7 @@ void LobbyScene::initialize()
         std::string line;
         std::getline(infile, line); // TODO: works?
         client.connect(line, 25550);
+        _lastIP = line;
     }
 }
 
@@ -138,12 +145,10 @@ void LobbyScene::draw()
     _window.clear();
     if (!_connected)
     {
-        sf::Text text(*_font, "Connecting... Press ESC to cancel");
-        text.setCharacterSize(70);
-        text.setOrigin(text.getLocalBounds().getCenter());
-        text.setPosition(sf::Vector2f(_window.getSize()) / 2.0f);
-        _window.draw(text);
-    } else
+        drawText("Connecting.. Press ESC to cancel");
+    } else if (_state == State::Joining) {
+        
+    }
     _buttons.draw(_window);
 }
 

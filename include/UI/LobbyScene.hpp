@@ -24,6 +24,7 @@ private:
     ButtonArray _buttons;
     State _state;
     int _idAccumulator = 0;
+    std::string _lastIP;
 public:
     
     explicit LobbyScene(sf::RenderWindow& window, State state);

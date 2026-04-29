@@ -11,6 +11,9 @@
 #include "UI/LevelSelectScene.hpp"
 #include <algorithm>
 
+#include "Multiplayer.hpp"
+#include "UI/MenuScene.hpp"
+
 void PlayerController::init()
 {
 	_rb = mGameObject->getComponent<flow::Rigidbody>();
@@ -149,8 +152,17 @@ void PlayerController::fixedUpdate()
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 	{
-		flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(flow::Renderer::getGlobalRenderer().getWindow()));
-		flow::SceneManager::getGlobal().switchScene("level-select"); // adrian: dude why does this have to be 2 lines???!
+		if (Multiplayer::getInstance().inMultiplayer)
+		{
+			flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
+			flow::SceneManager::getGlobal().switchScene("menu");
+		}
+		else // not in multiplayer
+		{
+			flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(flow::Renderer::getGlobalRenderer().getWindow()));
+			flow::SceneManager::getGlobal().switchScene("level-select"); // adrian: dude why does this have to be 2 lines???!
+		}
+		
 		flow::audio::MusicManager::getGlobal().stop();
 	}
 }
