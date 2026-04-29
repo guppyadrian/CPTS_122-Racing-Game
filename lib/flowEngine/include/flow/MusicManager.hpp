@@ -15,6 +15,7 @@ namespace flow::audio
 
 		void play()
 		{
+			if (!_isOpen) return;
 			music.play();
 		}
 		void play(std::string str)
@@ -25,14 +26,16 @@ namespace flow::audio
 		}
 		void load(std::string str)
 		{
-			music.openFromFile("assets/audio/" + str + ".ogg");
+			music = sf::Music();
+			_isOpen = music.openFromFile("assets/audio/" + str + ".ogg");
 		}
-		void pause() { music.pause(); }
-		void stop() { music.stop(); }
-		void setLoop(bool b) { music.setLooping(b); }
+		void pause() { if (!_isOpen) return; music.pause(); }
+		void stop() { if (!_isOpen) return; music.stop(); }
+		void setLoop(bool b) { if (!_isOpen) return; music.setLooping(b); }
 
 	private:
 		sf::Music music;
+		bool _isOpen;
 		MusicManager():music() {}
 	};
 }
