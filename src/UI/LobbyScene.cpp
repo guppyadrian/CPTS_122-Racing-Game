@@ -20,7 +20,10 @@ LobbyScene::LobbyScene(sf::RenderWindow& window, const State state) : UIScene("m
     float y = _window.getSize().y / 2.0f;
     _buttons.add("menu/selectmap.png", {  400, y}); // host
     _buttons.add("menu/start.png", {1000, y}); // join
-    _buttons.add("menu/quitButton.png", {1600, y}, {0.5f, 0.5f}); // quit
+    _buttons.add("menu/leave.png", {1600, y}); // quit
+    
+    if (state == State::Hosting)
+        Multiplayer::getInstance().server = true;
 }
 
 LobbyScene::~LobbyScene()

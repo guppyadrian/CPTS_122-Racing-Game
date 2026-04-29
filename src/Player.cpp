@@ -149,6 +149,11 @@ void PlayerController::fixedUpdate()
 		{
 			//flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
 			//flow::SceneManager::getGlobal().switchScene("multiplayer-lobby");
+			if (!Multiplayer::getInstance().server)
+			{
+				flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
+				flow::SceneManager::getGlobal().switchScene("menu");
+			} else
 			if (!Multiplayer::getInstance().endEmitted)
 			{
 				flow::NetworkManager::getGlobal().getServer().emit("end-game", '\0');

@@ -18,7 +18,7 @@ MenuScene::MenuScene(sf::RenderWindow &window)
     
     _lobbyButtons.add("menu/host.png", { 400, y}, {1.0f, 1.0f}); // host
     _lobbyButtons.add("menu/join.png",  { 1000, y}, {1.0f, 1.0f}); // join
-    _lobbyButtons.add("menu/quitButton.png", {1600, y}, {0.5f, 0.5f}); // back
+    _lobbyButtons.add("menu/leave.png", {1600, y}); // back
 }
 
 void MenuScene::update(const float dt)

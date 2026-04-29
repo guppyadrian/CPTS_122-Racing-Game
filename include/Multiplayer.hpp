@@ -19,6 +19,7 @@ public:
     long long startTime{-1};
     std::string trackSelected{"rr"};
     bool endEmitted{false};
+    bool server{false};
     
     void reset()
     {
@@ -27,5 +28,6 @@ public:
         startTime = -1;
         trackSelected = "rr";
         endEmitted = false;
+        server = false;
     }
 };
