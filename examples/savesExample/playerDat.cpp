@@ -2,7 +2,7 @@
 
 void PlayerDat::readSaveData()
 {
-    std::ifstream inStream("sav.csv", 'r');
+    std::ifstream inStream("sav.csv");
 
     std::string line;
 
@@ -29,7 +29,7 @@ void PlayerDat::readSaveData()
 
 void PlayerDat::writeSaveData()
 {
-    std::ofstream outStream("sav.csv", 'w');
+    std::ofstream outStream("sav.csv");
 
     outStream << "uuid, bestTime" << std::endl;
 
