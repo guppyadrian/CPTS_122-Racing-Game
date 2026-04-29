@@ -3,6 +3,8 @@
 //
 
 #pragma once
+#include <list>
+
 #include "ServerConnection.hpp"
 #include "asio/ip/tcp.hpp"
 #include "network/Serialize.hpp"
@@ -20,10 +22,12 @@ namespace gp::network
     private:
         asio::io_context& _io;
         std::optional<tcp::acceptor> _acceptor;
-        std::vector<Socket> _connections;
+        std::list<Socket> _connections;
     public:
         NetworkServer();
         void listen(uint16_t port);
+        
+        void stop();
 
         std::function<void(Socket)> onConnection;
         template <Serializable T>
@@ -32,6 +36,7 @@ namespace gp::network
 
     private:
         void doAccept();
+        void onClose();
     };
 
     template<Serializable T>

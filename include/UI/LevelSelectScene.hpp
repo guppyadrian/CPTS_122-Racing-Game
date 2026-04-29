@@ -6,6 +6,7 @@
 #include "UIScene.hpp"
 #include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
+#include <SFML/Graphics/Sprite.hpp>
 
 
 class LevelSelectScene : public UIScene
@@ -16,7 +17,6 @@ class LevelSelectScene : public UIScene
     std::vector<std::unique_ptr<sf::Texture>> _thumbnailTextures;
     std::vector<sf::Sprite> _thumbnails;
     int _levelSelected = 0;
-    std::unique_ptr<sf::Font> _font;
     bool _hasInitialized{false};
 public:
     explicit LevelSelectScene(sf::RenderWindow& window) : UIScene("level-select", window)
@@ -26,7 +26,7 @@ public:
     void initialize() override;
     void update(float dt) override;
     void draw() override;
-    void loadingDraw() const;
+    void loadingDraw();
     void onEnter() override;
     void onExit() override { _font.reset(); };
 private:

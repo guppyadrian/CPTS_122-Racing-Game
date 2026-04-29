@@ -15,8 +15,9 @@ namespace flow
     class NetworkManager
     {
     private:
-        network::NetworkClient _client{};
-        network::NetworkServer _server{};
+        network::NetworkClient* _client{}; // got some weird issues so now this is purposely a "memory leak"
+        network::NetworkServer* _server{};
+        asio::io_context _io{};
     public:
         NetworkManager(const NetworkManager&) = delete;
         NetworkManager& operator=(const NetworkManager&) = delete;
@@ -25,11 +26,16 @@ namespace flow
             return Instance;
         }
 
-        network::NetworkClient& getClient() { return _client; }
-        network::NetworkServer& getServer() { return _server; }
+        network::NetworkClient& getClient() { return *_client; }
+        network::NetworkServer& getServer() { return *_server; }
+        asio::io_context& io() { return _io; }
 
     private:
-        NetworkManager() = default;
+        NetworkManager()
+        {
+            _client = new network::NetworkClient();
+            _server = new network::NetworkServer();
+        }
     };
     
 } // flow

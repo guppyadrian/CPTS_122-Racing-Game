@@ -22,6 +22,7 @@ namespace gp::network
                 if (ec)
                 {
                     std::cout << "Failed to resolve: " << ec.message() << std::endl;
+                    if (_listeners.contains("connect_error")) _listeners["connect_error"](ByteBuffer{});
                     return;
                 }
 
@@ -31,6 +32,7 @@ namespace gp::network
                         if (ec2)
                         {
                             std::cerr << "Failed to connect: " << ec2.message() << std::endl;
+                            if (_listeners.contains("connect_error")) _listeners["connect_error"](ByteBuffer{});
                             return;
                         }
                         onConnect();
@@ -55,7 +57,7 @@ namespace gp::network
         _listeners[eventName] = [callback](const std::any&){ callback(); };
     }
 
-    void NetworkClient::off(const std::string &eventName)
+    void NetworkClient::off(const std::string eventName)
     {
         _listeners.erase(eventName);
     }
@@ -91,7 +93,11 @@ namespace gp::network
             {
                 std::cerr << "Failed to read message header!" << std::endl;
                 std::cerr << ec.message() << std::endl;
-                _socket.close();
+                try
+                {
+                    if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});    
+                }
+                catch (std::runtime_error ec) {}
                 return;
             }
 
@@ -108,7 +114,7 @@ namespace gp::network
             {
                 std::cerr << "Failed to read message body!" << std::endl;
                 std::cerr << ec.message() << std::endl;
-                _socket.close();
+                if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
                 return;
             }
 
@@ -127,7 +133,7 @@ namespace gp::network
             if (ec)
             {
                 std::cerr << "Failed to write: " << ec.message() << std::endl;
-                _socket.close();
+                if (_listeners.contains("disconnect")) _listeners["disconnect"](ByteBuffer{});
                 return;
             }
             _writeBuffer.pop_front();

@@ -47,7 +47,7 @@ int main()
 	
 	// NETWORK
 	gp::network::NetworkManager::Start();
-	flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
+	//flow::NetworkManager::getGlobal().getClient().connect("10.59.233.190", 25550);
 	
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(window));
 	flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(window));
@@ -78,6 +78,7 @@ int main()
 		flow::PhysicsManager::getGlobal().tick(dt);
 
 		flow::SceneManager::getGlobal().update(dt);
+		flow::NetworkManager::getGlobal().io().poll();
 
 		trackClock.update();
 		EndGoal::getInstance().update();
@@ -85,12 +86,6 @@ int main()
 		// simple fps logging
 		float fps = 1.f / dt;
 		fpsText.setString(std::to_string(static_cast<int>(fps)) + " FPS");
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished())
-		{
-			trackClock.reset();
-			EndGoal::getInstance().reset();
-		}
 
 		flow::SceneManager::getGlobal().draw();
 		if (auto* scene = dynamic_cast<flow::LevelScene*>(flow::SceneManager::getGlobal().getCurrentSceneptr())) // what am i doing with my life

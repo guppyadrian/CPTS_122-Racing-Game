@@ -11,6 +11,10 @@
 #include "UI/LevelSelectScene.hpp"
 #include <algorithm>
 
+#include "Multiplayer.hpp"
+#include "flow/NetworkManager.hpp"
+#include "UI/MenuScene.hpp"
+
 void PlayerController::init()
 {
 	_rb = mGameObject->getComponent<flow::Rigidbody>();
@@ -64,15 +68,7 @@ void PlayerController::fixedUpdate()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) || sf::Joystick::isButtonPressed(0, 3) || EndGoal::getInstance().finished()) //3 is Y button, 9 is esc
 	{
-		float radians = playerStartRot * (B2_PI / 180.0f);
-
-		b2Rot myRotation;
-		myRotation.c = b2ComputeCosSin(radians).cosine;
-		myRotation.s = b2ComputeCosSin(radians).sine;
-		b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
-		b2Body_SetAngularVelocity(id, 0.f);
-		b2Body_SetLinearVelocity(id, { 0.f,0.f });
-		mGameObject->getComponent<flow::LookAheadCamera>()->reset();
+		reset();
 	}
 
 	// 1. Handle Rotation & Braking
@@ -149,8 +145,45 @@ void PlayerController::fixedUpdate()
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 	{
-		flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(flow::Renderer::getGlobalRenderer().getWindow()));
-		flow::SceneManager::getGlobal().switchScene("level-select"); // adrian: dude why does this have to be 2 lines???!
+		if (Multiplayer::getInstance().inMultiplayer)
+		{
+			//flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(flow::Renderer::getGlobalRenderer().getWindow()));
+			//flow::SceneManager::getGlobal().switchScene("multiplayer-lobby");
+			if (!Multiplayer::getInstance().endEmitted)
+			{
+				flow::NetworkManager::getGlobal().getServer().emit("end-game", '\0');
+				Multiplayer::getInstance().endEmitted = true;
+			}
+		}
+		else // not in multiplayer
+		{
+			flow::SceneManager::getGlobal().loadScene(std::make_unique<LevelSelectScene>(flow::Renderer::getGlobalRenderer().getWindow()));
+			flow::SceneManager::getGlobal().switchScene("level-select"); // adrian: dude why does this have to be 2 lines???!
+		}
+		
 		flow::audio::MusicManager::getGlobal().stop();
 	}
+}
+
+
+void PlayerController::reset()
+{
+	b2BodyId id = _rb->getBodyId();
+
+	float radians = playerStartRot * (B2_PI / 180.0f);
+
+	b2Rot myRotation;
+	myRotation.c = b2ComputeCosSin(radians).cosine;
+	myRotation.s = b2ComputeCosSin(radians).sine;
+	b2Body_SetTransform(id, { playerStartPos.x , playerStartPos.y }, myRotation);
+	b2Body_SetAngularVelocity(id, 0.f);
+	b2Body_SetLinearVelocity(id, { 0.f,0.f });
+	mGameObject->getComponent<flow::LookAheadCamera>()->reset();
+
+	if (TrackClock::instance != nullptr)
+	{
+		TrackClock::instance->reset();
+	}
+
+	EndGoal::getInstance().reset();
 }

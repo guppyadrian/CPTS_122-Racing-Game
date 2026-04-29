@@ -18,14 +18,9 @@
 
 namespace flow
 {
-    NetworkGhostManager::NetworkGhostManager(const std::string& eventName)
-    : _eventName(eventName)
+    NetworkGhostManager::NetworkGhostManager(const std::string& eventName, const int id)
+    : _eventName(eventName), _id(id)
     {
-        NetworkManager::getGlobal().getClient().on<int>("handshakePlayerID", [this](const int id)
-        {
-            _id = id;
-        });
-        
         NetworkManager::getGlobal().getClient().on(eventName, [this](const network::ByteBuffer& buffer)
         {
             try
@@ -97,12 +92,11 @@ namespace flow
             }
             catch (std::bad_cast ec)
             {
+                std::cerr << "bad cast: " << ec.what() << std::endl;
                 return;
             }
             
         });
-
-        NetworkManager::getGlobal().getClient().emit("handshakePlayerReady", '\0');
     }
 
     NetworkGhostManager::~NetworkGhostManager()

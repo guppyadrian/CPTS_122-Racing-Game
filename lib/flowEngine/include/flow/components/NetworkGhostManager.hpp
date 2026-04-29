@@ -21,7 +21,7 @@ namespace flow
         int _id = -1;
         //std::shared_ptr<GameObject> _prefab; TODO: maybe in the future when game objects can be copied
     public:
-        explicit NetworkGhostManager(const std::string& eventName);
+        explicit NetworkGhostManager(const std::string& eventName, int id);
         ~NetworkGhostManager() override;
         // format: int32_t playerID float x float y float z
         

@@ -9,14 +9,16 @@ UIButton::UIButton(const std::string& texturePath, const sf::Vector2f pos, const
 {
     _sprite.setPosition(pos);
     _sprite.setScale(scale);
+    _sprite.setOrigin(_sprite.getLocalBounds().getCenter());
 }
 
 void UIButton::update(const float)
 {
-    const sf::Vector2f targetScale = _scale * (_selected ? 1.1f : 1.0f);
+    const sf::Vector2f targetScale = _scale * (_selected ? 1.3f : 1.0f);
     
     if (_sprite.getScale() != targetScale)
     {
         _sprite.setScale(targetScale);
+        _sprite.setOrigin(_sprite.getLocalBounds().getCenter());
     }
 }

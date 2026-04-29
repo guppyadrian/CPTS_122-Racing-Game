@@ -13,8 +13,16 @@
 class MenuScene : public UIScene
 {
 private:
-    ButtonArray _buttons;
+    enum class State // state machine??? i lowkey don't know what a state machine is
+    {
+        Menu,
+        Lobby
+    };
+    
+    ButtonArray _mainMenuButtons;
+    ButtonArray _lobbyButtons;
     std::string _queueNextScene;
+    State _state{State::Menu};
 public:
     explicit MenuScene(sf::RenderWindow& window);
 
@@ -22,5 +30,6 @@ public:
     void update(float dt) override;
     void draw() override;
 private:
-    void handleInput(sf::Vector2f inputVector);
+    void handleInputMain(sf::Vector2f inputVector);
+    void handleInputLobby(sf::Vector2f inputVector);
 };
