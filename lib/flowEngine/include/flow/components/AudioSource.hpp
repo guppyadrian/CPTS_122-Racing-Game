@@ -12,8 +12,7 @@ namespace flow::audio
 
 		sf::Vector2f lastPos;
 
-		sf::SoundBuffer mBuffer;
-		sf::Sound mSound;
+		sf::Music mSound;
 
 	public:
 
@@ -26,10 +25,13 @@ namespace flow::audio
 		void stop() { mSound.stop(); }
 
 		void loop(bool loop) { mSound.setLooping(loop); }
+		void setLoopPoints(sf::Music::TimeSpan timespan) { mSound.setLoopPoints(timespan); }
 
 		void setMinDistance(float v) { mSound.setMinDistance(v); };
 		void setMaxDistance(float v) { mSound.setMaxDistance(v); };
 		void setAttenuation(float v) { mSound.setAttenuation(v); };
+
+		void setVolume(float v) { mSound.setVolume(v); }
 		void setPitch(float v) { mSound.setPitch(v); }
 
 		void init() override;

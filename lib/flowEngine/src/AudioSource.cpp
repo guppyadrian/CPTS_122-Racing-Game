@@ -5,14 +5,14 @@
 
 namespace flow::audio
 {
-	AudioSource::AudioSource(std::string file) : mSound(mBuffer)
+	AudioSource::AudioSource(std::string file) : mSound()
 	{
 		
-		if (!mBuffer.loadFromFile(file))
+		if (!mSound.openFromFile(file))
 		{
 			std::cerr << "Audio Souce failed to load audio!" << std::endl;
 		}
-		mSound.setBuffer(mBuffer);
+
 		mSound.setDopplerFactor(1.f);
 		mSound.setRelativeToListener(true);
 		mSound.setSpatializationEnabled(true);

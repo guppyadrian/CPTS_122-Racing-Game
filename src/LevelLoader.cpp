@@ -99,6 +99,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 	flow::Rigidbody* pEndGoalObject = nullptr;
 
 	flow::audio::MusicManager::getGlobal().load(audioFile);
+	flow::audio::MusicManager::getGlobal().setVolume(90.f);
 
 	//Object stuff
 	std::string shapeLine;
@@ -255,6 +256,7 @@ void LevelLoader::_init(const float& grav, const std::string& uuid, const std::s
 
 	auto& thrustAudio = player.addComponent<flow::audio::AudioSource>("assets/sfx/thrustLoop.mp3");
 	thrustAudio.loop(true);
+	thrustAudio.setVolume(67.f);
 	thrustAudio.play();
 
 	newScene->AddGameObject(std::move(player));
