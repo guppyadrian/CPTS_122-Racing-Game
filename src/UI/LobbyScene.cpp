@@ -195,7 +195,11 @@ void LobbyScene::handleInput(const sf::Vector2f inputVector)
                 long long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 server.emit("start-time", now + 3000);
                 server.emit("start-game", "rr");
+                break;
             }
+            case 2: // quit
+                flow::SceneManager::getGlobal().loadScene(std::make_unique<MenuScene>(_window));
+                flow::SceneManager::getGlobal().switchScene("menu");
         }
         
     }
