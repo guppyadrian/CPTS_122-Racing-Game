@@ -11,14 +11,14 @@
 MenuScene::MenuScene(sf::RenderWindow &window)
     : UIScene("menu", window)
 {
-    //const float y = static_cast<float>(_window.getSize().y) / 2 - 200;
-    _mainMenuButtons.add("menu/playButton.png", {100, 0}, {0.9f, 0.9f }); // play
-    _mainMenuButtons.add("menu/lanButton.png", {700, 0}, { 0.9f, 0.9f }); // mutliplayer
-    _mainMenuButtons.add("menu/quitButton.png", {1300, 0}, { 0.9f, 0.9f }); // quit
+    const float y = _window.getSize().y / 2.0f;
+    _mainMenuButtons.add("menu/playButton.png", {400, y}, {0.7f, 0.7f }); // play
+    _mainMenuButtons.add("menu/lanButton.png", {1000, y}, { 0.7f, 0.7f }); // mutliplayer
+    _mainMenuButtons.add("menu/quitButton.png", {1600, y}, { 0.7f, 0.7f }); // quit
     
-    _lobbyButtons.add("menu/lanButton.png", { 100, 0}, {0.5f, 0.5f}); // host
-    _lobbyButtons.add("menu/playButton.png",  { 700, 0}, {0.5f, 0.5f}); // join
-    _lobbyButtons.add("menu/quitButton.png", {1300, 0}, {0.5f, 0.5f}); // back
+    _lobbyButtons.add("menu/host.png", { 400, y}, {1.0f, 1.0f}); // host
+    _lobbyButtons.add("menu/join.png",  { 1000, y}, {1.0f, 1.0f}); // join
+    _lobbyButtons.add("menu/quitButton.png", {1600, y}, {0.7f, 0.7f}); // back
 }
 
 void MenuScene::update(const float dt)

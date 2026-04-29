@@ -21,7 +21,7 @@ public:
     void initialize() override {}
     void update(float dt) override {}
     void draw() override {}
-    void onEnter() override { _window.setView(_window.getDefaultView()); }
+    void onEnter() override { _window.setView(_window.getDefaultView()); _window.pollEvent(); }
     void onExit() override {}
 protected:
     static sf::Vector2f getInputVector(const sf::Keyboard::Key key)

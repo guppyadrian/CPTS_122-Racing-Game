@@ -59,6 +59,10 @@ namespace flow
 
 	bool SceneManager::loadScene(std::unique_ptr<Scene> newScene)
 	{
+		for (const auto& scene : _sceneList)
+		{
+			if (scene->get_uuid() == newScene->get_uuid()) return false;
+		}
 		_sceneList.push_back(std::move(newScene));
 		return true;
 	}

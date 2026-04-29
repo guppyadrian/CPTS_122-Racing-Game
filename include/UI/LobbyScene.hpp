@@ -14,9 +14,7 @@ public:
     enum class State // state machine??? i lowkey don't know what a state machine is
     {
         Hosting,
-        Hosted,
-        Joining,
-        Joined
+        Joining
     };
 private:
     bool _hasInitialized = false;
