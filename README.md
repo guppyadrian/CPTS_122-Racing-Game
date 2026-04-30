@@ -4,7 +4,17 @@ Very cool game..
 
 ## Installing
 - run `git clone https://github.com/guppyadrian/CPTS_122-Racing-Game.git --recurse-submodules`
-- Open the folder in Visual Studio
+- Open the folder in Visual Studio 
+- Build RacerGame.exe
+- Open exe in out folder
+
+### Playing
+- Use 'A','D', Left Arrow, Right Arrow to navigate (and steer in gameplay)
+- Use Space to select
+- R to restart
+- Esc to return to menu
+- Align thruster with wall to build speed
+- Get to the end fast
 
 ## Contributing
 - All external libraries must go in the `external/` folder!
