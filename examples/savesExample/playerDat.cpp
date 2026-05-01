@@ -31,7 +31,7 @@ void PlayerDat::readSaveData()
         levelNames.push_back(tok);
 
         std::getline(lineStream, tok, '\n');
-        levelTimes.push_back(stod(tok));
+        levelTimes.push_back(stof(tok));
     }
 
     inStream.close();
@@ -56,22 +56,28 @@ void PlayerDat::writeSaveData()
 void PlayerDat::setLevelTime(float time, std::string curLevel)
 {
     int levelNum = 0;
+    int found = 0;
 
-    while (levelNum < levelNames.size() && curLevel != levelNames[levelNum])
+    while (levelNum < levelNames.size())
     {
+        if (curLevel == levelNames[levelNum])
+        {
+            found = 1;
+        }
         levelNum++;
     }
 
-    if (levelNames[levelNum] == curLevel)
+    if (levelNames[levelNum] == curLevel && found == 1)
     {
-        if (levelTimes[levelNum] < time)
+        if (levelTimes[levelNum] > time)
         {
             levelTimes[levelNum] = time;
         }
     }
     else
     {
-        //error so the number stays the same (no code needed)
+        levelTimes.push_back(time);
+        levelNames.push_back(curLevel);
     }
 }
 

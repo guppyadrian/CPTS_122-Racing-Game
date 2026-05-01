@@ -1,4 +1,4 @@
-Ex 1
+Obsticles
 1
 255,255,255,255
 bg.png
