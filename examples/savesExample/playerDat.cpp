@@ -1,5 +1,15 @@
 #include "playerDat.h"
 
+std::vector<std::string>& PlayerDat::getLevelVector()
+{
+    return levelNames;
+}
+
+std::vector<double>& PlayerDat::getLevelTimes()
+{
+    return levelTimes;
+}
+
 void PlayerDat::readSaveData()
 {
     std::ifstream inStream("sav.csv");
@@ -27,6 +37,7 @@ void PlayerDat::readSaveData()
     inStream.close();
 }
 
+//change how far the levelTimes decimal goes out in this print and it will do it through the whole project
 void PlayerDat::writeSaveData()
 {
     std::ofstream outStream("sav.csv");
@@ -42,11 +53,11 @@ void PlayerDat::writeSaveData()
 }
 
 //the string uuid can be changed to an int easy
-void PlayerDat::setLevelTime(int time, std::string curLevel)
+void PlayerDat::setLevelTime(double time, std::string curLevel)
 {
     int levelNum = 0;
 
-    while (curLevel != levelNames[levelNum] && levelNum < levelNames.size())
+    while (levelNum < levelNames.size() && curLevel != levelNames[levelNum])
     {
         levelNum++;
     }
@@ -62,4 +73,13 @@ void PlayerDat::setLevelTime(int time, std::string curLevel)
     {
         //error so the number stays the same (no code needed)
     }
+}
+
+void PlayerDat::deleteSaveData()
+{
+    for(int i = 0; i < levelNames.size(); i++)
+    {
+        levelTimes[i] = 0;
+    }
+    writeSaveData();
 }
