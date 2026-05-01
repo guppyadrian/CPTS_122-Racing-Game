@@ -5,7 +5,7 @@ std::vector<std::string>& PlayerDat::getLevelVector()
     return levelNames;
 }
 
-std::vector<float>& PlayerDat::getLevelTimes()
+std::vector<long long>& PlayerDat::getLevelTimes()
 {
     return levelTimes;
 }
@@ -53,7 +53,7 @@ void PlayerDat::writeSaveData()
 }
 
 //the string uuid can be changed to an int easy
-void PlayerDat::setLevelTime(float time, std::string curLevel)
+void PlayerDat::setLevelTime(long long time, std::string curLevel)
 {
     int levelNum = 0;
     int found = 0;

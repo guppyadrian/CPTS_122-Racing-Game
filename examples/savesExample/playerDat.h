@@ -16,7 +16,7 @@ class PlayerDat
     std::vector<std::string>& getLevelVector();
 
     //literally only needed for the tests
-    std::vector<float>& getLevelTimes();
+    std::vector<long long>& getLevelTimes();
 
     //reads save file
     void readSaveData();
@@ -28,9 +28,9 @@ class PlayerDat
 
     //curLevel == uuid
     //the string uuid can be changed to an int eas
-    void setLevelTime(float time, std::string curLevel);
+    void setLevelTime(long long time, std::string curLevel);
     private:
-    std::vector<float> levelTimes;
+    std::vector<long long> levelTimes;
     std::vector<std::string> levelNames;
 
 };
