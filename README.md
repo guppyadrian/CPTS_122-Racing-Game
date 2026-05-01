@@ -3,7 +3,7 @@
 Very cool game..
 
 ## Installing
-- run `git clone https://github.com/guppyadrian/CPTS_122-Racing-Game.git --recurse-submodules`
+- run `git clone https://github.com/guppyadrian/CPTS_122-Racing-Game.git`
 - Open the folder in Visual Studio 
 - Build RacerGame.exe
 - Open exe in out folder

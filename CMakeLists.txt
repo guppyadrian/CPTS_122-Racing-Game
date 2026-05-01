@@ -27,21 +27,12 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION "${CMAKE_CURRENT_BINA
 project ("PA9")
 
 Include(FetchContent)
-
 FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
         GIT_TAG        v3.8.1 # or a later release
 )
-
 FetchContent_MakeAvailable(Catch2)
-
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  include(CTest)
-  include(Catch)
-  enable_testing()
-  add_subdirectory(test)
-endif()
 
 
 # Add source to this project's executable.
@@ -67,6 +58,14 @@ add_subdirectory(lib/flowEngine)
 
 # examples
 add_subdirectory(examples)
+
+# tests
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+  include(Catch)
+  enable_testing()
+  add_subdirectory(test)
+endif()
 
 # Add assets folder
 copy_assets(RacerGame)

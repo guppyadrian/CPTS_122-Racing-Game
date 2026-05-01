@@ -18,6 +18,6 @@ namespace flow
 	}
 	float Transform::getRotationDeg()
 	{
-		return getRotation().asRadians();
+		return getRotation().asDegrees();
 	}
 }

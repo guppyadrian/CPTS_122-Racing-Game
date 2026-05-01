@@ -18,10 +18,19 @@
 # we are using catch2 now, for multiple tests in one file :)
 
 
-add_executable(tests flowEngineTests.cpp guppyNetTests.cpp)
+add_executable(tests flowEngineTests.cpp
+        gameTests.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain SFML::Graphics flowEngine)
 target_include_directories(tests PRIVATE
         ${catch2_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/include
 )
+target_sources(tests PRIVATE
+        ${CMAKE_SOURCE_DIR}/src/WallGenerator.cpp
+        ${CMAKE_SOURCE_DIR}/src/UI/ButtonArray.cpp
+        ${CMAKE_SOURCE_DIR}/src/UI/UIButton.cpp
+)
+
+copy_assets(tests)
 
 catch_discover_tests(tests)

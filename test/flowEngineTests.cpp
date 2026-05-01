@@ -5,11 +5,13 @@
 
 #include "flow/LevelScene.hpp"
 #include "flow/SceneManager.hpp"
+#include "flow/components/NetworkEmitter.hpp"
+#include "flow/components/NetworkGhost.hpp"
 #include "flow/components/Rigidbody.hpp"
 
-// Jonathon made test cases using Claude, I modified them to use Catch2
+// Jonathon made test cases using Claude, Adrian modified them to use Catch2
 
-TEST_CASE( "GameObject Construction", "[gameObject][transform]" )
+TEST_CASE( "GameObject Construction", "[gameObject][flowEngine]" )
 {
     flow::GameObject gameObject;
     
@@ -18,7 +20,7 @@ TEST_CASE( "GameObject Construction", "[gameObject][transform]" )
     REQUIRE(gameObject.mTransform.getPosition().y == 0.0f);
 }
 
-TEST_CASE( "GameObject Transform Manipulation", "[gameObject][transform]" )
+TEST_CASE( "GameObject Transform Manipulation", "[gameObject][flowEngine]" )
 {
     flow::GameObject gameObject;
     sf::Vector2f testPos(100.0f, 50.0f);
@@ -36,7 +38,7 @@ TEST_CASE( "GameObject Transform Manipulation", "[gameObject][transform]" )
     REQUIRE(gameObject.mTransform.getScale().y == testScale.y);
 }
 
-TEST_CASE( "GameObject Move Sematics ?", "[gameObject][transform]" )
+TEST_CASE( "GameObject Move Sematics ?", "[gameObject][flowEngine]" )
 {
     flow::GameObject original;
     original.mTransform.setPosition(sf::Vector2f(50.0f, 75.0f));
@@ -46,7 +48,7 @@ TEST_CASE( "GameObject Move Sematics ?", "[gameObject][transform]" )
     REQUIRE(moved.mTransform.getPosition().y == 75.0f);
 }
 
-TEST_CASE( "GameObject With RigidBody", "[gameObject][component][rigidbody]" )
+TEST_CASE( "GameObject With RigidBody", "[gameObject][component][rigidbody][flowEngine]" )
 {
     flow::GameObject gameObject;
 
@@ -59,7 +61,7 @@ TEST_CASE( "GameObject With RigidBody", "[gameObject][component][rigidbody]" )
     REQUIRE(&rbComponent == retrievedComponent);
 }
 
-TEST_CASE( "GameObject Component Pointer ?", "[gameObject][component][rigidbody]" )
+TEST_CASE( "GameObject Component Pointer ?", "[gameObject][component][rigidbody][flowEngine]" )
 {
     flow::GameObject gameObject;
 
@@ -69,7 +71,7 @@ TEST_CASE( "GameObject Component Pointer ?", "[gameObject][component][rigidbody]
     REQUIRE(rbComponent.mGameObject == &gameObject);
 }
 
-TEST_CASE( "Scene Construction", "[scene][gameObject][transform][levelScene]" )
+TEST_CASE( "Scene Construction", "[scene][gameObject][flowEngine]" )
 {
     auto scene = std::make_unique<flow::LevelScene>("test_scene");
 
@@ -82,7 +84,7 @@ TEST_CASE( "Scene Construction", "[scene][gameObject][transform][levelScene]" )
     REQUIRE(addedObject.mTransform.getPosition().y == 20.0f);
 }
 
-TEST_CASE( "Scene Lifecycle", "[scene][levelScene]" )
+TEST_CASE( "Scene Lifecycle", "[flowEngine][levelScene]" )
 {
     auto scene = std::make_unique<flow::LevelScene>("lifecycle_test");
     
@@ -90,7 +92,7 @@ TEST_CASE( "Scene Lifecycle", "[scene][levelScene]" )
     scene->onExit();
 }
 
-TEST_CASE( "SceneManager Singleton", "[sceneManager]" )
+TEST_CASE( "SceneManager Singleton", "[sceneManager][flowEngine]" )
 {
     flow::SceneManager& manager1 = flow::SceneManager::getGlobal();
     flow::SceneManager& manager2 = flow::SceneManager::getGlobal();
@@ -98,7 +100,7 @@ TEST_CASE( "SceneManager Singleton", "[sceneManager]" )
     REQUIRE(&manager1 == &manager2);
 }
 
-TEST_CASE( "SceneManager Load Scene", "[scene][sceneManager][levelScene]" )
+TEST_CASE( "SceneManager Load Scene", "[scene][sceneManager][flowEngine]" )
 {
     flow::SceneManager& manager = flow::SceneManager::getGlobal();
 
@@ -117,7 +119,7 @@ TEST_CASE( "SceneManager Load Scene", "[scene][sceneManager][levelScene]" )
     REQUIRE(currentScene.get_uuid() == "test_load_scene_9");
 }
 
-TEST_CASE( "SceneManager Remove Scene", "[scene][sceneManager][levelScene]" )
+TEST_CASE( "SceneManager Remove Scene", "[scene][sceneManager][flowEngine]" )
 {
     flow::SceneManager& manager = flow::SceneManager::getGlobal();
 
@@ -128,3 +130,75 @@ TEST_CASE( "SceneManager Remove Scene", "[scene][sceneManager][levelScene]" )
     bool removeSuccess = manager.removeScene("scene_to_remove_10");
     REQUIRE(removeSuccess);
 }
+
+TEST_CASE( "NetworkEmitter", "[flowEngine][networkEmitter][network]" )
+{
+    flow::GameObject networkObject;
+    std::string eventName = "player_position_update";
+
+    auto& emitter = networkObject.addComponent<flow::NetworkEmitter>(eventName);
+
+    // Verify component was added
+    auto* retrievedEmitter = networkObject.getComponent<flow::NetworkEmitter>();
+    REQUIRE(retrievedEmitter != nullptr);
+    REQUIRE(&emitter == retrievedEmitter);
+}
+
+TEST_CASE( "NetworkGhost", "[flowEngine][networkGhost][network]" )
+{
+    flow::GameObject ghostObject;
+    int ghostId = 42;
+
+    auto& ghost = ghostObject.addComponent<flow::NetworkGhost>(ghostId);
+
+    // Verify component was added
+    auto* retrievedGhost = ghostObject.getComponent<flow::NetworkGhost>();
+    REQUIRE(retrievedGhost != nullptr);
+    REQUIRE(&ghost == retrievedGhost);
+}
+
+TEST_CASE( "Multiple NetworkEmitters", "[flowEngine][networkEmitter][network]" )
+{
+    flow::GameObject object;
+
+    std::string eventNames[] = {
+        "position_sync",
+        "rotation_sync",
+        "velocity_sync",
+        "state_change"
+    };
+
+    for (int i = 0; i < 4; i++) {
+        auto& emitter = object.addComponent<flow::NetworkEmitter>(eventNames[i]);
+        REQUIRE(object.getComponent<flow::NetworkEmitter>() != nullptr);
+    }
+}
+
+TEST_CASE( "NetworkGhost & Rigidbody", "[flowEngine][networkGhost][network][rigidbody]" )
+{
+    flow::GameObject ghostPlayer;
+    ghostPlayer.mTransform.setPosition(sf::Vector2f(250.0f, 150.0f));
+
+    auto& rb = ghostPlayer.addComponent<flow::Rigidbody>();
+    auto& ghost = ghostPlayer.addComponent<flow::NetworkGhost>(1);
+
+    REQUIRE(ghostPlayer.getComponent<flow::Rigidbody>() != nullptr);
+    REQUIRE(ghostPlayer.getComponent<flow::NetworkGhost>() != nullptr);
+}
+
+TEST_CASE( "NetworkGhosts in Scene", "[flowEngine][network][networkGhost][scene]" )
+{
+    auto scene = std::make_unique<flow::LevelScene>("network_ghost_scene");
+
+    // Add multiple ghost players
+    for (int i = 0; i < 4; i++) {
+        flow::GameObject ghostPlayer;
+        ghostPlayer.mTransform.setPosition(sf::Vector2f(100.0f + (i * 60.0f), 200.0f));
+
+        auto& ghost = ghostPlayer.addComponent<flow::NetworkGhost>(i + 1);
+        auto& rb = ghostPlayer.addComponent<flow::Rigidbody>();
+
+        scene->AddGameObject(std::move(ghostPlayer));
+    }
+}
+

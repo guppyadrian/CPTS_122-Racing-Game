@@ -44,8 +44,8 @@ int main()
 {
     NetworkManager::Start();
     
-    NetworkServer server(3000);
-    server.listen();
+    NetworkServer server;
+    server.listen(3000);
     
     server.onConnection = [](Socket socket)
     {
