@@ -1,4 +1,4 @@
-#include "playerDat.hpp"
+#include "PlayerDat.hpp"
 
 std::vector<std::string>& PlayerDat::getLevelVector()
 {
@@ -55,30 +55,20 @@ void PlayerDat::writeSaveData()
 //the string uuid can be changed to an int easy
 void PlayerDat::setLevelTime(long long time, std::string curLevel)
 {
-    int levelNum = 0;
-    int found = 0;
-
-    while (levelNum < levelNames.size())
+    for (int i = 0; i < levelNames.size(); i++)
     {
-        if (curLevel == levelNames[levelNum])
+        if (curLevel == levelNames[i])
         {
-            found = 1;
-        }
-        levelNum++;
-    }
-
-    if (levelNames[levelNum] == curLevel && found == 1)
-    {
-        if (levelTimes[levelNum] > time)
-        {
-            levelTimes[levelNum] = time;
+            if (levelTimes[i] > time || levelTimes[i] == 0)
+                levelTimes[i] = time;
+            writeSaveData();
+            return;
         }
     }
-    else
-    {
-        levelTimes.push_back(time);
-        levelNames.push_back(curLevel);
-    }
+
+    levelNames.push_back(curLevel);
+    levelTimes.push_back(time);
+    writeSaveData();
 }
 
 void PlayerDat::deleteSaveData()
