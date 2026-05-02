@@ -199,6 +199,7 @@ std::unique_ptr<flow::LevelScene> LevelLoader::_init(const float& grav, const st
 
 	//Endgoal
 	EndGoal& goal = EndGoal::getInstance();
+	//goal.trackClockRef->reset();
 	goal.setEndGoal(pEndGoalObject->getBodyId()); // TODO: this can be null according to clion -adrian
 	goal.setLaps(lvNum);
 

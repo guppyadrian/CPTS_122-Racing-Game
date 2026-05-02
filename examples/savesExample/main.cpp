@@ -1,8 +1,8 @@
-#include "PlayerDat.h"
+#include "PlayerData.hpp"
 
 int main(void)
 {
-    PlayerDat testData;
+    PlayerData testData;
     double newTime = 3.3;
 
     testData.readSaveData();

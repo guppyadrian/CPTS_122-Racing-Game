@@ -47,6 +47,7 @@ add_executable (RacerGame
         src/EndGoal.cpp
         src/TrackClock.cpp
         src/Countdown.cpp
+        src/PlayerData.cpp
         src/UI/MenuScene.cpp
         src/UI/UIButton.cpp
         src/UI/ButtonArray.cpp
