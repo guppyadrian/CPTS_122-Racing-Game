@@ -9,13 +9,14 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 
-class LevelSelectScene : public UIScene
+class LevelSelectScene final : public UIScene
 {
     bool _queueNextLevel{false};
     std::vector<std::string> _levels;
     std::vector<std::string> _levelPaths; // 4 vectors of stuff? no problem :)
     std::vector<std::unique_ptr<sf::Texture>> _thumbnailTextures;
     std::vector<sf::Sprite> _thumbnails;
+    std::vector<long long> _levelTimes; // we are assuming a time of 0 means no time. It should be impossible to get 0 seconds
     int _levelSelected = 0;
     bool _hasInitialized{false};
 public:

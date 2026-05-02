@@ -7,16 +7,11 @@
 #include <sstream>
 
 
-class PlayerDat
+class PlayerData
 {
     public:
-    static PlayerDat& getInstance() {
-        static PlayerDat instance;
-        return instance;
-    }
-
-    PlayerDat(const PlayerDat&) = delete;
-    PlayerDat& operator=(const PlayerDat&) = delete;
+    PlayerData() = default;
+    ~PlayerData() = default;
 
     std::vector<std::string>& getLevelVector();
 
@@ -35,7 +30,6 @@ class PlayerDat
     //the string uuid can be changed to an int eas
     void setLevelTime(long long time, std::string curLevel);
     private:
-    PlayerDat() = default;
     std::vector<long long> levelTimes;
     std::vector<std::string> levelNames;
 

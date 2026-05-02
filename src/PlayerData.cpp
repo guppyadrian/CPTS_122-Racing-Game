@@ -1,20 +1,23 @@
-#include "playerDat.hpp"
+#include "PlayerData.hpp"
 
-std::vector<std::string>& PlayerDat::getLevelVector()
+std::vector<std::string>& PlayerData::getLevelVector()
 {
     return levelNames;
 }
 
-std::vector<long long>& PlayerDat::getLevelTimes()
+std::vector<long long>& PlayerData::getLevelTimes()
 {
     return levelTimes;
 }
 
-void PlayerDat::readSaveData()
+void PlayerData::readSaveData()
 {
-    std::ifstream inStream("sav.csv");
+    std::ifstream inStream("assets/save.csv");
 
     std::string line;
+
+    levelNames.clear();
+    levelTimes.clear();
 
     //header
     std::getline(inStream, line);
@@ -23,7 +26,6 @@ void PlayerDat::readSaveData()
     while(std::getline(inStream, line))
     {
         std::string uuid;
-        int time;
         std::stringstream lineStream(line);
         std::string tok;
 
@@ -38,9 +40,9 @@ void PlayerDat::readSaveData()
 }
 
 //change how far the levelTimes decimal goes out in this print and it will do it through the whole project
-void PlayerDat::writeSaveData()
+void PlayerData::writeSaveData()
 {
-    std::ofstream outStream("sav.csv");
+    std::ofstream outStream("assets/save.csv");
 
     outStream << "uuid, bestTime" << std::endl;
 
@@ -53,39 +55,41 @@ void PlayerDat::writeSaveData()
 }
 
 //the string uuid can be changed to an int easy
-void PlayerDat::setLevelTime(long long time, std::string curLevel)
+void PlayerData::setLevelTime(long long time, std::string curLevel)
 {
-    int levelNum = 0;
-    int found = 0;
-
-    while (levelNum < levelNames.size())
+    for (int i = 0; i < levelNames.size(); i++)
     {
-        if (curLevel == levelNames[levelNum])
+        if (curLevel == levelNames[i])
         {
-            found = 1;
-        }
-        levelNum++;
-    }
-
-    if (levelNames[levelNum] == curLevel && found == 1)
-    {
-        if (levelTimes[levelNum] > time)
-        {
-            levelTimes[levelNum] = time;
+            if (levelTimes[i] > time || levelTimes[i] == 0)
+                levelTimes[i] = time;
+            writeSaveData();
+            return;
         }
     }
-    else
-    {
-        levelTimes.push_back(time);
-        levelNames.push_back(curLevel);
-    }
+
+    levelNames.push_back(curLevel);
+    levelTimes.push_back(time);
+    writeSaveData();
 }
 
-void PlayerDat::deleteSaveData()
+void PlayerData::deleteSaveData()
 {
     for(int i = 0; i < levelNames.size(); i++)
     {
         levelTimes[i] = 0;
     }
     writeSaveData();
+}
+
+long long PlayerData::getLevelTime(const std::string& levelName) const
+{
+    for (int i = 0; i < levelNames.size(); i++)
+    {
+        if (levelName == levelNames[i])
+        {
+            return levelTimes[i];
+        }
+    }
+    return 0;
 }

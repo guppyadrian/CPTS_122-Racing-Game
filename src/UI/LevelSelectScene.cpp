@@ -10,6 +10,7 @@
 #include <flow/MusicManager.hpp>
 
 #include "Multiplayer.hpp"
+#include "PlayerData.hpp"
 #include "UI/MenuScene.hpp"
 
 void LevelSelectScene::initialize()
@@ -20,6 +21,8 @@ void LevelSelectScene::initialize()
     
     // show loading screen
     loadingDraw();
+
+    PlayerData::getInstance().readSaveData();
     
     // load levels
     _levels.clear();
@@ -89,6 +92,19 @@ void LevelSelectScene::draw()
     
     _window.draw(text);
     _window.draw(_thumbnails[_levelSelected]);
+
+    const long long bestTime = PlayerData::getInstance().getLevelTime(_levelPaths[_levelSelected]);
+    int tSec = bestTime / 1000;
+    int tMs = bestTime % 1000;
+
+    if (bestTime == 0)
+    {
+        drawText("Best time: None!", {0, _window.getSize().y / -2.1f}, 40);
+    }
+    else
+    {
+        drawText("Best time: " + std::to_string(tSec) + ":" + std::to_string(tMs), {0, _window.getSize().y / -2.1f}, 40);
+    }
 }
 
 void LevelSelectScene::loadingDraw()

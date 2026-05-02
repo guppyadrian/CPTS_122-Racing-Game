@@ -9,7 +9,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "playerDat.hpp"
+#include "PlayerData.hpp"
 #include "flow/SceneManager.hpp"
 
 class TrackClock
@@ -49,7 +49,7 @@ public:
 		if (_lapsLeft == 0)
 		{
 			long long totalTime = _trackClock.getElapsedTime().asMilliseconds();
-			PlayerDat::getInstance().setLevelTime(totalTime, flow::SceneManager::getGlobal().getCurrentScene().get_uuid());
+			PlayerData::getInstance().setLevelTime(totalTime, flow::SceneManager::getGlobal().getCurrentScene().get_uuid());
 		}
 
 		_finalText.setPosition({ 0, _window.getSize().y - 50.f  - 30.f * _times.size()});
