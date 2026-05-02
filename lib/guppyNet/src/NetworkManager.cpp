@@ -24,7 +24,6 @@ namespace gp::network
 
         _running = false;
         _guard.reset();
-        _io.stop();
         if (_thread.joinable()) _thread.join();
     }
 

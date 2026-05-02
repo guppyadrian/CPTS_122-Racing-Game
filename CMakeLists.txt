@@ -26,11 +26,13 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION "${CMAKE_CURRENT_BINA
 
 project ("PA9")
 
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  include(CTest)
-  enable_testing()
-  add_subdirectory(test)
-endif()
+Include(FetchContent)
+FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG        v3.8.1 # or a later release
+)
+FetchContent_MakeAvailable(Catch2)
 
 
 # Add source to this project's executable.
@@ -57,12 +59,16 @@ add_subdirectory(lib/flowEngine)
 # examples
 add_subdirectory(examples)
 
+# tests
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+  include(Catch)
+  enable_testing()
+  add_subdirectory(test)
+endif()
+
 # Add assets folder
 copy_assets(RacerGame)
-
-# I heard this is supposed to help with SFML fetching from github all the time
-set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE BOOL "" FORCE)
-set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
 
 # add libs
 
