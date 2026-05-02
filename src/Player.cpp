@@ -37,6 +37,12 @@ void PlayerController::init()
 	b2Body_SetAngularDamping(_rb->getBodyId(), 0.3f);
 
 	_startVolume = _boostSFX->getVolume();
+
+	if (TrackClock::instance != nullptr)
+	{
+		TrackClock::instance->reset();
+		EndGoal::getInstance().reset();
+	}
 }
 
 void PlayerController::fixedUpdate()
