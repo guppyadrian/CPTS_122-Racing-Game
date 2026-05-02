@@ -2,6 +2,8 @@
 
 Very cool game..
 
+Dev Log: https://www.youtube.com/watch?v=-YlrL_92i7M
+
 ## Installing
 - run `git clone https://github.com/guppyadrian/CPTS_122-Racing-Game.git`
 - Open the folder in Visual Studio 
@@ -34,7 +36,7 @@ Very cool game..
 - Sources files are `.cpp`, headers are `.hpp`
 
 ### Students
-Logan Donner Lab6
-Adrian Nelson Lab6
-Johnathan Emanuelli Lab7
-Lane Evanger Lab7
+- Logan Rainchild Lab6
+- Adrian Nelson Lab6
+- Johnathan Emanuelli Lab7
+- Lane Evanger Lab7
