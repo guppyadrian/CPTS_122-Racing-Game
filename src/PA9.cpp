@@ -1,4 +1,10 @@
-﻿// Logan Rainchild
+﻿/**
+ * @file PA9.cpp
+ * @author Logan Rainchild
+ * @author Adrian Nelson
+ * @author Johnathan Emanuelli
+ * @brief A 2D Racing Game with a menu, level select, and lan muliplayer
+ */
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include <iostream>
 #include <memory>
