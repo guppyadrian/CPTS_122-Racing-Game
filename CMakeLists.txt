@@ -37,6 +37,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
+# add the application icon for windows
+if(WIN32)
+    set(APP_ICON_RC "${CMAKE_CURRENT_SOURCE_DIR}/assets/app/appicon.rc")
+endif()
 
 # Add source to this project's executable.
 add_executable (RacerGame
@@ -53,7 +57,7 @@ add_executable (RacerGame
         src/UI/ButtonArray.cpp
         src/UI/LevelSelectScene.cpp
         src/UI/LobbyScene.cpp
-        include/Multiplayer.hpp)
+        include/Multiplayer.hpp ${APP_ICON_RC})
 
 target_include_directories(RacerGame PRIVATE include)
 
